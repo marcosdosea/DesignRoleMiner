@@ -6,9 +6,9 @@ import java.util.List;
 import br.com.metricminer2.MetricMiner2;
 import br.com.metricminer2.RepositoryMining;
 import br.com.metricminer2.Study;
+import br.com.metricminer2.filter.range.Commits;
 import br.com.metricminer2.persistence.csv.CSVFile;
 import br.com.metricminer2.scm.GitRepository;
-import br.com.metricminer2.scm.commitrange.Commits;
 
 public class ProjectStudy implements Study {
 

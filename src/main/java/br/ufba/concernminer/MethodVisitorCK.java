@@ -21,14 +21,20 @@ public class MethodVisitorCK implements CommitVisitor{
 			repo.getScm().checkout(commit.getHash());
 			CKReport report = new CK().calculate(repo.getPath());
 			
-			writer.write("Commit", "Class", "DIT", "NOM", "Method", "LOC", "CC" );
+			writer.write("Commit", "Class","Concern", "SuperClass","interfaces", "DIT", "NOM", "Method", "LOC", "CC", "Efferent", "NOP" );
 			
 			for(CKNumber classMetrics: report.all()) {
 				
 				Map<MethodData, MethodMetrics> metricsByMethod = classMetrics.getMetricsByMethod();
+				
+				String superClass = classMetrics.getSuperClassNameLevel1();
+				
 				for(MethodData metodo: metricsByMethod.keySet()) {
 					MethodMetrics methodMetrics = metricsByMethod.get(metodo);
-					writer.write(commit.getHash(), classMetrics.getClassName(), classMetrics.getDit(), classMetrics.getNom(), metodo.getNomeMethod(), methodMetrics.getLinesOfCode(), methodMetrics.getComplexity() );
+					writer.write(commit.getHash(), classMetrics.getClassName(), "\"" + classMetrics.getConcern() + "\"", "\"" + superClass +"\"", 
+							"\""+classMetrics.getInterfaces() + "\"",  classMetrics.getDit(), classMetrics.getNom(), 
+							metodo.getNomeMethod(), methodMetrics.getLinesOfCode(), methodMetrics.getComplexity(), 
+							methodMetrics.getEfferentCoupling(), methodMetrics.getNumberOfParameters() );
 				}
 			}
 		} finally {
