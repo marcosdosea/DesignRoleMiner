@@ -1,5 +1,6 @@
 package br.ufba.concernminer;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.github.mauricioaniche.ck.CK;
@@ -23,6 +24,10 @@ public class MethodVisitorCK implements CommitVisitor{
 			
 			writer.write("Commit", "Class","Concern", "SuperClass","interfaces", "DIT", "NOM", "Method", "LOC", "CC", "Efferent", "NOP" );
 			
+			
+			desconsiderarConcerns(commit, writer, report, 1);
+			
+			
 			for(CKNumber classMetrics: report.all()) {
 				
 				Map<MethodData, MethodMetrics> metricsByMethod = classMetrics.getMetricsByMethod();
@@ -41,6 +46,28 @@ public class MethodVisitorCK implements CommitVisitor{
 			repo.getScm().reset();
 		}
 	}
+	
+	private void desconsiderarConcerns(Commit commit, PersistenceMechanism writer, CKReport report,
+			int quantidadeCorte) {
+
+		// primeiro conta quantas classes associadas ao conecern
+		Map<String, Integer> mapConcerns = new HashMap<String, Integer>();
+		for (CKNumber classMetrics : report.all()) {
+			Integer quantidade = mapConcerns.get(classMetrics.getConcern());
+			if (quantidade != null) 
+				mapConcerns.put(classMetrics.getConcern(), ++quantidade);
+			else
+				mapConcerns.put(classMetrics.getConcern(), 1);
+		}
+		// Verifica se conncer deve ser desconsiderado
+		for (CKNumber classMetrics : report.all()) {
+			Integer quantidade = mapConcerns.get(classMetrics.getConcern());
+			if (quantidade <= quantidadeCorte)
+				classMetrics.setConcern("util");
+		}
+
+	}
+
 
 	@Override
 	public String name() {
