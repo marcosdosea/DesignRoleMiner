@@ -18,13 +18,13 @@ public class DIT extends ASTVisitor implements Metric {
 	@Override
 	public boolean visit(TypeDeclaration node) {
 		ITypeBinding binding = node.resolveBinding();
-		
+
 		if (binding.getQualifiedName().contains("XOAuthConsumer"))
 			System.out.println("aqui");
-		
+
 		if (binding.isMember())
 			return false;
-		
+
 		if (binding != null)
 			calculate(binding);
 
@@ -35,16 +35,20 @@ public class DIT extends ASTVisitor implements Metric {
 		ITypeBinding father = binding.getSuperclass();
 
 		if (father != null) {
+
 			String fatherName = father.getName();
-			if (dit == 1) {
-				superClassLevel1 = fatherName;
-			} else if (dit == 2) {
-				superClassLevel2 = superClassLevel1;
-				superClassLevel1 = fatherName;
-			} else if (dit >= 3) {
-				superClassLevel3 = superClassLevel2;
-				superClassLevel2 = superClassLevel1;
-				superClassLevel1 = fatherName;
+
+			if (!fatherName.endsWith("Object")) {
+				if (dit == 1) {
+					superClassLevel1 = fatherName;
+				} else if (dit == 2) {
+					superClassLevel2 = superClassLevel1;
+					superClassLevel1 = fatherName;
+				} else if (dit >= 3) {
+					superClassLevel3 = superClassLevel2;
+					superClassLevel2 = superClassLevel1;
+					superClassLevel1 = fatherName;
+				}
 			}
 
 			if (father.isFromSource()) { // classe pai é interna

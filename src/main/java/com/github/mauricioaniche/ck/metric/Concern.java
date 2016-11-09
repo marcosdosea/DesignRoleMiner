@@ -1,8 +1,7 @@
 package com.github.mauricioaniche.ck.metric;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.Hashtable;
 import java.util.Set;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
@@ -20,37 +19,45 @@ public class Concern extends ASTVisitor implements Metric {
 
 	String concern = "util";
 	int dit = 1;
-	static final Map<String, String> defaultConcerns = new HashMap<String, String>();
+	static final Hashtable<String, String> defaultConcerns = new Hashtable<String, String>();
 	Set<String> listAnnotations = new HashSet<String>();
 
 	static {
 		// general
 		defaultConcerns.put("test", "test");
 		defaultConcerns.put("exception", "exception");
-		defaultConcerns.put("entity", "entity");
 		defaultConcerns.put("repository", "persistence");
 		defaultConcerns.put("dao", "persistence");
+		defaultConcerns.put("storage", "persistence");
+		defaultConcerns.put("thread", "asynctask");
+		defaultConcerns.put("throwable", "asynctask");
 
 		// web
+		defaultConcerns.put("entity", "entity");
+		defaultConcerns.put("pojo", "entity");
 		defaultConcerns.put("controller", "controller");
 		defaultConcerns.put("model", "model");
-
+		defaultConcerns.put("service", "service");
+		
 		// android
 		defaultConcerns.put("actionbar", "actionbar");
 		defaultConcerns.put("dialog", "dialog");
 		defaultConcerns.put("presentation", "dialog");
 		defaultConcerns.put("Instrumentation", "instrumentation");
-		defaultConcerns.put("service", "service");
 		defaultConcerns.put("notification", "notification");
-		defaultConcerns.put("content", "content");
-		defaultConcerns.put("AsyncTaskLoader", "content");
+		defaultConcerns.put("content", "persistence");
+		defaultConcerns.put("AsyncTaskLoader", "persistence");
 		defaultConcerns.put("asynctask", "asynctask");
-		defaultConcerns.put("thread", "asynctask");
-		defaultConcerns.put("throwable", "asynctask");
 		defaultConcerns.put("activity", "activity");
 		defaultConcerns.put("fragment", "fragment");
 		defaultConcerns.put("view", "view");
 		defaultConcerns.put("listener", "view");
+
+		// eclipse
+		defaultConcerns.put("wizard", "view");
+		defaultConcerns.put("preferencepage", "view");
+		
+		
 	}
 
 	public boolean visit(MarkerAnnotation node) {
@@ -98,7 +105,7 @@ public class Concern extends ASTVisitor implements Metric {
 	public boolean visit(TypeDeclaration node) {
 		ITypeBinding binding = node.resolveBinding();
 
-		if (binding.getQualifiedName().contains("SimpleDecoderAudioRenderer"))
+		if (binding.getQualifiedName().contains("KotlinDiagnosticsTestCase"))
 			System.out.println("aqui");
 
 		if (binding.isMember())
