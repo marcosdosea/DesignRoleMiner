@@ -136,10 +136,10 @@ public class Concern extends ASTVisitor implements Metric {
 					defaultConcern = findDefaultConcern(interfacesConcern);
 					concern = defaultConcern.isEmpty() ? concern : defaultConcern;
 				} else if (fatherName.endsWith("Object")) {
-					defaultConcern = findDefaultConcern(binding.getQualifiedName());
+					defaultConcern = findDefaultConcern(binding.getName());
 					concern = defaultConcern.isEmpty() ? binding.getName() : defaultConcern;
 				} else {
-					defaultConcern = findDefaultConcern(father.getQualifiedName());
+					defaultConcern = findDefaultConcern(father.getName());
 					concern = defaultConcern.isEmpty() ? father.getName() : defaultConcern;
 				}
 

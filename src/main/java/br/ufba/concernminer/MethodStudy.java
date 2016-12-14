@@ -21,49 +21,58 @@ public class MethodStudy implements Study {
 		// mineEclipseVersions();
 		// mineWebVersions();
 		// mineAndroidVersions();
-		
-		mineMVCExample();
-		//mineAndroidApplications();
-		//mineEclipseApplications();
-		//mineWebApplications();
-		
+
+		// mineMVCExample();
+		// mineAndroidApplications();
+		// mineEclipseApplications();
+		mineWebApplications();
 
 	}
-	
+
 	private void mineMVCExample() {
 		new RepositoryMining().in(GitRepository.singleProject("C:/Users/Marcos Dósea/Desktop/spring-mvc-showcase"))
-		.through(Commits.onlyInHead()).withThreads(5)
-		.process(new MethodVisitorCK(), new CSVFile("C:/Users/Marcos Dósea/Desktop/spring-mvc-showcase-metrics.csv")).mine();
+				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorCK(),
+						new CSVFile("C:/Users/Marcos Dósea/Desktop/spring-mvc-showcase-metrics.csv"))
+				.mine();
 	}
-	
 
 	private void mineWebApplications() {
+
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/bigbluebutton"))
 				.through(Commits.onlyInHead()).withThreads(5)
-				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Web/bigbluebutton-metrics.csv")).mine();
-
-		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/airpal")).through(Commits.onlyInHead())
-				.withThreads(5).process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Web/airpal-metrics.csv"))
-				.mine();
-
-		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/heritrix3"))
-				.through(Commits.onlyInHead()).withThreads(5)
-				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Web/heritrix3-metrics.csv")).mine();
-
-		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/JDeSurvey"))
-				.through(Commits.onlyInHead()).withThreads(5)
-				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Web/JDeSurvey-metrics.csv")).mine();
+				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Web/method-bigbluebutton-metrics.csv")).mine();
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/openmrs-core"))
 				.through(Commits.onlyInHead()).withThreads(5)
-				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Web/openmrs-core-metrics.csv")).mine();
+				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Web/method-openmrs-core-metrics.csv")).mine();
+
+		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/heritrix3"))
+				.through(Commits.onlyInHead()).withThreads(5)
+				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Web/method-heritrix3-metrics.csv")).mine();
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/qalingo-engine"))
 				.through(Commits.onlyInHead()).withThreads(5)
-				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Web/qalingo-engine-metrics.csv")).mine();
+				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Web/method-qalingo-engine-metrics.csv")).mine();
+
+		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/libreplan"))
+				.through(Commits.onlyInHead()).withThreads(5)
+				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Web/method-libreplan-metrics.csv")).mine();
+
+		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/JDeSurvey"))
+				.through(Commits.onlyInHead()).withThreads(5)
+				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Web/method-JDeSurvey-metrics.csv")).mine();
+
+		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/web-budget"))
+				.through(Commits.onlyInHead()).withThreads(5)
+				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Web/method-web-budget-metrics.csv")).mine();
 	}
 
 	private void mineEclipseApplications() {
+		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Eclipse/Activiti-Designer"))
+				.through(Commits.onlyInHead()).withThreads(5)
+				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Eclipse/Activiti-Designer-metrics.csv"))
+				.mine();
+
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Eclipse/angularjs-eclipse"))
 				.through(Commits.onlyInHead()).withThreads(5)
 				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Eclipse/angularjs-eclipse-metrics.csv"))
@@ -74,19 +83,15 @@ public class MethodStudy implements Study {
 				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Eclipse/arduino-eclipse-plugin-metrics.csv"))
 				.mine();
 
-		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Eclipse/cucumber-eclipse"))
+		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Eclipse/droolsjbpm-tools"))
 				.through(Commits.onlyInHead()).withThreads(5)
-				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Eclipse/cucumber-eclipse-metrics.csv"))
+				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Eclipse/droolsjbpm-tools-metrics.csv"))
 				.mine();
 
-		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Eclipse/hadoop2x-eclipse-plugin"))
+		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Eclipse/sonarlint-eclipse"))
 				.through(Commits.onlyInHead()).withThreads(5)
-				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Eclipse/hadoop2x-eclipse-plugin-metrics.csv"))
+				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Eclipse/sonarlint-eclipse-metrics.csv"))
 				.mine();
-
-		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Eclipse/kotlin-eclipse"))
-				.through(Commits.onlyInHead()).withThreads(5)
-				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Eclipse/kotlin-eclipse-metrics.csv")).mine();
 	}
 
 	private void mineAndroidApplications() {
