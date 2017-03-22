@@ -1,4 +1,4 @@
-package br.ufba.concernminer;
+package br.ufba.designroleminer;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.MethodDeclaration;

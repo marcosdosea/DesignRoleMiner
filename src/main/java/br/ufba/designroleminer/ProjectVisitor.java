@@ -1,4 +1,4 @@
-package br.ufba.concernminer;
+package br.ufba.designroleminer;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;

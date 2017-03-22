@@ -1,6 +1,8 @@
-package br.ufba.concernminer;
+package br.ufba.designroleminer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.github.mauricioaniche.ck.CK;
@@ -14,6 +16,16 @@ import br.com.metricminer2.scm.SCMRepository;
 
 public class ClassVisitorCK implements CommitVisitor {
 
+	List<String> listaConcerns = new ArrayList<String>();
+
+	public ClassVisitorCK(List<String> listaConcerns) {
+		this.listaConcerns = listaConcerns;
+	}
+
+	public ClassVisitorCK() {
+		super();
+	}
+	
 	@Override
 	public void process(SCMRepository repo, Commit commit, PersistenceMechanism writer) {
 		try {
@@ -25,15 +37,25 @@ public class ClassVisitorCK implements CommitVisitor {
 
 			desconsiderarConcerns(commit, writer, report, 1);
 
-			for (CKNumber classMetrics : report.all()) {
-
-				String superClass = classMetrics.getSuperClassNameLevel1();
-
-				writer.write(commit.getHash(), classMetrics.getClassName(), "\"" + classMetrics.getConcern() + "\"",
-						"\"" + superClass + "\"", "\"" + classMetrics.getInterfaces() + "\"", classMetrics.getDit(),
-						classMetrics.getNom(), classMetrics.getCbo(), classMetrics.getLcom(), classMetrics.getNoc(),
-						classMetrics.getRfc(), classMetrics.getWmc());
-
+			if (listaConcerns.size() == 0) {
+				for (CKNumber classMetrics : report.all()) {
+					String superClass = classMetrics.getSuperClassNameLevel1();
+					writer.write(commit.getHash(), classMetrics.getClassName(), "\"" + classMetrics.getConcern() + "\"",
+							"\"" + superClass + "\"", "\"" + classMetrics.getInterfaces() + "\"", classMetrics.getDit(),
+							classMetrics.getNom(), classMetrics.getCbo(), classMetrics.getLcom(), classMetrics.getNoc(),
+							classMetrics.getRfc(), classMetrics.getWmc());
+				}
+			} else {
+				for (CKNumber classMetrics : report.all()) {
+					String superClass = classMetrics.getSuperClassNameLevel1();
+					if (listaConcerns.contains(classMetrics.getConcern())) {
+						writer.write(commit.getHash(), classMetrics.getClassName(),
+								"\"" + classMetrics.getConcern() + "\"", "\"" + superClass + "\"",
+								"\"" + classMetrics.getInterfaces() + "\"", classMetrics.getDit(),
+								classMetrics.getNom(), classMetrics.getCbo(), classMetrics.getLcom(),
+								classMetrics.getNoc(), classMetrics.getRfc(), classMetrics.getWmc());
+					}
+				}
 			}
 		} finally {
 			repo.getScm().reset();
