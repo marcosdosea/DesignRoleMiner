@@ -14,7 +14,7 @@ public class CKNumber {
 	private String superClassNameLevel2;
 	private String superClassNameLevel3;
 	private List<String> interfaces;
-	private String concern;
+	private String designRole;
 	
 	
 	private int dit;
@@ -182,12 +182,12 @@ public class CKNumber {
 		return type;
 	}
 	
-	public String getConcern() {
-		return concern;
+	public String getDesignRole() {
+		return designRole;
 	}
 
-	public void setConcern(String concern) {
-		this.concern = concern;
+	public void setConcern(String designRole) {
+		this.designRole = designRole;
 	}
 
 

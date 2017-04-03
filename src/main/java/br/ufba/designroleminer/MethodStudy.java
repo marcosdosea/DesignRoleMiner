@@ -19,10 +19,10 @@ public class MethodStudy implements Study {
 
 	public void execute() {
 
-		// mineAndroidApplications();
+		mineAndroidApplications();
 		// mineEclipseApplications();
 		//mineWebApplications();
-		mineVersions();
+		//mineVersions();
 
 	}
 

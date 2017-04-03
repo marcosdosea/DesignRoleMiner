@@ -34,7 +34,7 @@ public class DIT extends ASTVisitor implements Metric {
 	private void calculate(ITypeBinding binding) {
 		ITypeBinding father = binding.getSuperclass();
 
-		if (father != null) {
+		if ((father != null) && (!father.isMember())) {
 
 			String fatherName = father.getName();
 
