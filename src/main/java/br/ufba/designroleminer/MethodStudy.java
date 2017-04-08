@@ -18,10 +18,9 @@ public class MethodStudy implements Study {
 	}
 
 	public void execute() {
-
 		mineAndroidApplications();
-		// mineEclipseApplications();
-		//mineWebApplications();
+		mineEclipseApplications();
+		mineWebApplications();
 		//mineVersions();
 
 	}
@@ -45,16 +44,16 @@ public class MethodStudy implements Study {
 				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Web/method-qalingo-engine-metrics.csv")).mine();
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/libreplan"))
-				.through(Commits.onlyInHead()).withThreads(5)
+				.through(Commits.onlyInHead())
 				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Web/method-libreplan-metrics.csv")).mine();
 
-		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/JDeSurvey"))
-				.through(Commits.onlyInHead()).withThreads(5)
-				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Web/method-JDeSurvey-metrics.csv")).mine();
-
-		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/web-budget"))
-				.through(Commits.onlyInHead()).withThreads(5)
-				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Web/method-web-budget-metrics.csv")).mine();
+//		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/JDeSurvey"))
+//				.through(Commits.onlyInHead()).withThreads(5)
+//				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Web/method-JDeSurvey-metrics.csv")).mine();
+//
+//		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/web-budget"))
+//				.through(Commits.onlyInHead()).withThreads(5)
+//				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Web/method-web-budget-metrics.csv")).mine();
 	}
 
 	private void mineEclipseApplications() {

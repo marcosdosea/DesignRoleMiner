@@ -34,14 +34,14 @@ public class ClassVisitorCK implements CommitVisitor {
 		try {
 			repo.getScm().checkout(commit.getHash());
 			CK ck = new CK();
-			ck.plug(new Callable<Metric>() {
-				
-				@Override
-				public Metric call() throws Exception {
-					// TODO Auto-generated method stub
-					return new DesignRole();
-				}
-			});
+//			ck.plug(new Callable<Metric>() {
+//				
+//				@Override
+//				public Metric call() throws Exception {
+//					// TODO Auto-generated method stub
+//					return new DesignRole();
+//				}
+//			});
 			
 			CKReport report = ck.calculate(repo.getPath());
 

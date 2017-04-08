@@ -18,10 +18,9 @@ public class ClassStudy2 implements Study {
 	}
 
 	public void execute() {
-		//mineAndroidApplications();
-		//mineEclipseApplications();
+		mineAndroidApplications();
+		mineEclipseApplications();
 		mineWebApplications();
-
 		//mineVersions();
 	}
 
@@ -46,7 +45,7 @@ public class ClassStudy2 implements Study {
 				.mine();
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/libreplan"))
-				.through(Commits.onlyInHead()).withThreads(5)
+				.through(Commits.single("f2e700f3739ce38d008100c3d515fce3f0755369"))
 				.process(new ClassVisitorDR(), new CSVFile("D:/Projetos/_Web/dr-libreplan.csv")).mine();
 
 //		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/JDeSurvey"))

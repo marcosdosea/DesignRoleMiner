@@ -87,7 +87,7 @@ public class CK {
 	}
 
 	private List<Metric> defaultMetrics() {
-		return new ArrayList<>(Arrays.asList(new DIT(), new NOC(), new WMC(), new CBO(), new LCOM(), new RFC(), new NOM(), new MethodMetric()/*, new DesignRole()*/));
+		return new ArrayList<>(Arrays.asList(new DIT(), new NOC(), new WMC(), new CBO(), new LCOM(), new RFC(), new NOM(), new MethodMetric(), new DesignRole()));
 	}
 
 	private List<Metric> userMetrics() {
