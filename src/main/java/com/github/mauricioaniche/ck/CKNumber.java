@@ -16,7 +16,6 @@ public class CKNumber {
 	private List<String> interfaces;
 	private String designRole;
 	
-	
 	private int dit;
 	private int noc;
 	private int wmc;

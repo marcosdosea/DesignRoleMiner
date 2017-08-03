@@ -51,6 +51,8 @@ public class MethodMetric extends ASTVisitor implements Metric {
     private List<SingleVariableDeclaration> currentParameters;
     private Map<String, String> declaredTypes;
     private Set<String> usedTypes;
+    private int currentInitialChar;
+    private CompilationUnit cu;
     
     public MethodMetric() {
         metricsByMethod = new HashMap<MethodData, MethodMetrics>();
@@ -84,6 +86,10 @@ public class MethodMetric extends ASTVisitor implements Metric {
 
     public boolean visit(MethodDeclaration node) {  	
     	currentMethod = node.getName().getIdentifier();
+    	currentInitialChar = node.getStartPosition();
+    	if (currentMethod.startsWith("addJobDirectory")) {
+    		System.out.println("addjobdirectory");
+    	}
     	
     	node.resolveBinding();
 
@@ -96,13 +102,16 @@ public class MethodMetric extends ASTVisitor implements Metric {
     	}
     	
     	MethodData methodData = getMethodData();
+
+    	methodData.setInitialLine(cu.getLineNumber(node.getName().getStartPosition()));
+    	methodData.setInitialChar(node.getStartPosition());
+    	methodData.setFinalChar(node.getLength()+node.getStartPosition());
     	if (!metricsByMethod.containsKey(methodData))
     		metricsByMethod.put(methodData, new MethodMetrics());
     	
     	MethodMetrics methodMetrics =  metricsByMethod.get(methodData);
-    	methodMetrics.setLinesOfCode(Utils.countLineNumbers(node.toString()));
+    	methodMetrics.setLinesOfCode(Utils.countLineNumbers(node.getBody().toString()));
     	methodMetrics.setNumberOfParameters(node.parameters().size());
-    	
     	methodStack.push(getMethodData());
     	increaseCc();
     	return super.visit(node);
@@ -282,11 +291,13 @@ public class MethodMetric extends ASTVisitor implements Metric {
 		MethodData methodData = new MethodData();
     	methodData.setNomeMethod(currentMethod);
     	methodData.setParameters(currentParameters);
+    	methodData.setInitialChar(currentInitialChar);
 		return methodData;
 	}
 
 	@Override
 	public void execute(CompilationUnit cu, CKNumber result, CKReport report) {
+		this.cu = cu;
 		cu.accept(this);
 	}
 

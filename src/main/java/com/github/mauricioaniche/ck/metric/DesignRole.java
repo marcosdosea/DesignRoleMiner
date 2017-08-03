@@ -14,11 +14,9 @@ import org.eclipse.jdt.core.dom.MarkerAnnotation;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
 import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.eclipse.jdt.core.util.IModifierConstants;
 
 import com.github.mauricioaniche.ck.CKNumber;
 import com.github.mauricioaniche.ck.CKReport;
-import com.sun.xml.internal.ws.spi.db.BindingInfo;
 
 public class DesignRole extends ASTVisitor implements Metric {
 
@@ -153,7 +151,7 @@ public class DesignRole extends ASTVisitor implements Metric {
 				if ((dit == 1) && fatherName.endsWith("Object") && (interfaces.length() == 0)) {
 					if (ehEntityDesignRole(binding))
 						designRole = "Entity";
-					designRole = "Util";
+					designRole = "Undefined";
 				} else if ((dit == 1) && fatherName.endsWith("Object") && (interfaces.length() > 0)) {
 					defaultDesignRole = findDefaultDesignRole(interfaces);
 					designRole = defaultDesignRole.isEmpty() ? interfaces : defaultDesignRole;

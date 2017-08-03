@@ -21,7 +21,6 @@ public class ClassStudy implements Study {
 		 mineAndroidApplications();
 		// mineEclipseApplications();
 		//mineWebApplications();
-
 		//mineVersions();
 	}
 
@@ -49,13 +48,13 @@ public class ClassStudy implements Study {
 				.through(Commits.onlyInHead()).withThreads(5)
 				.process(new ClassVisitorCK(), new CSVFile("D:/Projetos/_Web/class-libreplan-metrics.csv")).mine();
 
-		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/JDeSurvey"))
-				.through(Commits.onlyInHead()).withThreads(5)
-				.process(new ClassVisitorCK(), new CSVFile("D:/Projetos/_Web/class-JDeSurvey-metrics.csv")).mine();
-
-		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/web-budget"))
-				.through(Commits.onlyInHead()).withThreads(5)
-				.process(new ClassVisitorCK(), new CSVFile("D:/Projetos/_Web/class-web-budget-metrics.csv")).mine();
+//		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/JDeSurvey"))
+//				.through(Commits.onlyInHead()).withThreads(5)
+//				.process(new ClassVisitorCK(), new CSVFile("D:/Projetos/_Web/class-JDeSurvey-metrics.csv")).mine();
+//
+//		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/web-budget"))
+//				.through(Commits.onlyInHead()).withThreads(5)
+//				.process(new ClassVisitorCK(), new CSVFile("D:/Projetos/_Web/class-web-budget-metrics.csv")).mine();
 	}
 
 	private void mineEclipseApplications() {
@@ -145,7 +144,7 @@ public class ClassStudy implements Study {
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/openmrs-core"))
 			.through(Commits.list(openmrsWeb)).withThreads(5)
 			.process(new ClassVisitorCK(filterWebDesignRoles), new CSVFile("D:/Projetos/_Web/versions-class-openmrs-core-metrics.csv"))
-			.mine();
+			.mine(); 
 	}
 	
 }

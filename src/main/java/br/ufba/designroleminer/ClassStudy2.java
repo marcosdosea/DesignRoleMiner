@@ -18,10 +18,31 @@ public class ClassStudy2 implements Study {
 	}
 
 	public void execute() {
-		mineAndroidApplications();
-		mineEclipseApplications();
-		mineWebApplications();
+		//mineAndroidApplications();
+		//mineEclipseApplications();
+		//mineWebApplications();
+		//mineDesignRoles();
 		//mineVersions();
+		
+		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/heritrix3"))
+		.through(Commits.onlyInHead())
+		.process(new ClassVisitorDR(), new CSVFile("D:/Projetos/_Web/dr-heritrix3.csv")).mine();
+	}
+
+	private void mineDesignRoles() {
+		List<String> androidDR = new ArrayList<String>();
+		androidDR.add("Activity");
+		androidDR.add("Persistence");
+		mineAndroidDesignRoles(androidDR);
+		List<String> eclipseDR = new ArrayList<String>();
+		eclipseDR.add("Dialog");
+		eclipseDR.add("View");
+		mineEclipseDesignRoles(eclipseDR);
+		List<String> webDR = new ArrayList<String>();
+		webDR.add("View");
+		webDR.add("Entity");
+		webDR.add("Persistence");
+		mineWebDesignRoles(webDR);
 	}
 
 
@@ -47,14 +68,6 @@ public class ClassStudy2 implements Study {
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/libreplan"))
 				.through(Commits.single("f2e700f3739ce38d008100c3d515fce3f0755369"))
 				.process(new ClassVisitorDR(), new CSVFile("D:/Projetos/_Web/dr-libreplan.csv")).mine();
-
-//		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/JDeSurvey"))
-//				.through(Commits.onlyInHead()).withThreads(5)
-//				.process(new ClassVisitorDR(), new CSVFile("D:/Projetos/_Web/dr-JDeSurvey.csv")).mine();
-//
-//		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/web-budget"))
-//				.through(Commits.onlyInHead()).withThreads(5)
-//				.process(new ClassVisitorDR(), new CSVFile("D:/Projetos/_Web/dr-web-budget.csv")).mine();
 	}
 
 	private void mineEclipseApplications() {
@@ -106,6 +119,82 @@ public class ClassStudy2 implements Study {
 				.withThreads(5).process(new ClassVisitorDR(), new CSVFile("D:/Projetos/_Android/dr-k9.csv"))
 				.mine();
 	}
+
+	private void mineAndroidDesignRoles(List<String> drs) {
+		
+		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Android/bitcoin-wallet"))
+				.through(Commits.onlyInHead()).withThreads(5)
+				.process(new ClassVisitorDR(drs, "bitcoin"), new CSVFile("D:/Projetos/_Android/drs-android-bitcoin.csv")).mine();
+
+		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Android/ExoPlayer"))
+				.through(Commits.onlyInHead()).withThreads(5)
+				.process(new ClassVisitorDR(drs, "exoplayer"), new CSVFile("D:/Projetos/_Android/drs-android-exoplayer.csv")).mine();
+
+		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Android/Talon-for-Twitter"))
+				.through(Commits.onlyInHead()).withThreads(5)
+				.process(new ClassVisitorDR(drs, "talon"), new CSVFile("D:/Projetos/_Android/drs-android-talon.csv"))
+				.mine();
+
+		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Android/sms-backup-plus"))
+				.through(Commits.onlyInHead()).withThreads(5)
+				.process(new ClassVisitorDR(drs, "sms-backup"), new CSVFile("D:/Projetos/_Android/drs-android-sms.csv")).mine();
+
+		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Android/k-9")).through(Commits.onlyInHead())
+				.withThreads(5).process(new ClassVisitorDR(drs, "k9"), new CSVFile("D:/Projetos/_Android/drs-android-k9.csv"))
+				.mine();
+	}
+	
+	private void mineEclipseDesignRoles(List<String> eclipseDR) {
+		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Eclipse/Activiti-Designer"))
+				.through(Commits.onlyInHead()).withThreads(5)
+				.process(new ClassVisitorDR(eclipseDR, "Activiti"), new CSVFile("D:/Projetos/_Eclipse/drs-eclipse-Activiti.csv"))
+				.mine();
+
+		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Eclipse/angularjs-eclipse"))
+				.through(Commits.onlyInHead()).withThreads(5)
+				.process(new ClassVisitorDR(eclipseDR, "AngularJS"), new CSVFile("D:/Projetos/_Eclipse/drs-eclipse-angularjs.csv"))
+				.mine();
+
+		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Eclipse/arduino-eclipse-plugin"))
+				.through(Commits.onlyInHead()).withThreads(5).process(new ClassVisitorDR(eclipseDR, "Arduino"),
+						new CSVFile("D:/Projetos/_Eclipse/drs-eclipse-arduino.csv"))
+				.mine();
+
+		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Eclipse/droolsjbpm-tools"))
+				.through(Commits.onlyInHead()).withThreads(5)
+				.process(new ClassVisitorDR(eclipseDR, "DroolsJBPM"), new CSVFile("D:/Projetos/_Eclipse/drs-eclipse-droolsjbpm.csv"))
+				.mine();
+
+		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Eclipse/sonarlint-eclipse"))
+				.through(Commits.onlyInHead()).withThreads(5)
+				.process(new ClassVisitorDR(eclipseDR, "Sonarlint"), new CSVFile("D:/Projetos/_Eclipse/drs-eclipse-sonarlint.csv"))
+				.mine();
+	}
+
+	private void mineWebDesignRoles(List<String> webDR) {
+		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/bigbluebutton"))
+				.through(Commits.onlyInHead()).withThreads(5)
+				.process(new ClassVisitorDR(webDR,"bigbluebutton"), new CSVFile("D:/Projetos/_Web/drs-web-bigbluebutton.csv"))
+				.mine();
+
+		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/openmrs-core"))
+				.through(Commits.onlyInHead()).withThreads(5)
+				.process(new ClassVisitorDR(webDR, "openmrs"), new CSVFile("D:/Projetos/_Web/drs-web-openmrs-core.csv")).mine();
+
+		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/heritrix3"))
+				.through(Commits.onlyInHead()).withThreads(5)
+				.process(new ClassVisitorDR(), new CSVFile("D:/Projetos/_Web/dr-heritrix3.csv")).mine();
+
+		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/qalingo-engine"))
+				.through(Commits.onlyInHead()).withThreads(5)
+				.process(new ClassVisitorDR(webDR, "qalingo"), new CSVFile("D:/Projetos/_Web/drs-web-qalingo-engine.csv"))
+				.mine();
+
+		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/libreplan"))
+				.through(Commits.single("f2e700f3739ce38d008100c3d515fce3f0755369"))
+				.process(new ClassVisitorDR(webDR, "libreplan"), new CSVFile("D:/Projetos/_Web/drs-web-libreplan.csv")).mine();
+	}
+
 
 	private void mineVersions() {
 		List<String> k9Android = new ArrayList<String>();

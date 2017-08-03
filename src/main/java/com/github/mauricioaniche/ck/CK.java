@@ -72,6 +72,7 @@ public class CK {
 			parser.setCompilerOptions(options);
 			parser.setEnvironment(null, srcDirs, null, true);
 			parser.createASTs(partition.toArray(new String[partition.size()]), null, new String[0], storage, null);
+		
 		}
 		
 		log.info("Finished parsing");

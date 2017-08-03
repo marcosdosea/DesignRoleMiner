@@ -34,15 +34,7 @@ public class ClassVisitorCK implements CommitVisitor {
 		try {
 			repo.getScm().checkout(commit.getHash());
 			CK ck = new CK();
-//			ck.plug(new Callable<Metric>() {
-//				
-//				@Override
-//				public Metric call() throws Exception {
-//					// TODO Auto-generated method stub
-//					return new DesignRole();
-//				}
-//			});
-			
+
 			CKReport report = ck.calculate(repo.getPath());
 
 			writer.write("Commit", "Class", "Design Role", "SuperClass", "interfaces", "DIT", "NOM", "CBO", "LCOM", "NOC",

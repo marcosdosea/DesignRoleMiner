@@ -4,15 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import com.github.mauricioaniche.ck.CK;
 import com.github.mauricioaniche.ck.CKNumber;
 import com.github.mauricioaniche.ck.CKReport;
 import com.github.mauricioaniche.ck.MethodData;
 import com.github.mauricioaniche.ck.MethodMetrics;
-import com.github.mauricioaniche.ck.metric.DesignRole;
-import com.github.mauricioaniche.ck.metric.Metric;
 
 import br.com.metricminer2.domain.Commit;
 import br.com.metricminer2.persistence.PersistenceMechanism;
@@ -22,9 +19,18 @@ import br.com.metricminer2.scm.SCMRepository;
 public class MethodVisitorCK implements CommitVisitor {
 
 	List<String> listaConcerns = new ArrayList<String>();
+	String applicationName;
+	Map<String, String> tags = null;
 
-	public MethodVisitorCK(List<String> listaConcerns) {
+	public MethodVisitorCK(List<String> listaConcerns, String applicationName) {
 		this.listaConcerns = listaConcerns;
+		this.applicationName = applicationName;
+	}
+
+	public MethodVisitorCK(List<String> listaConcerns, String applicationName, Map<String, String> tags) {
+		this.listaConcerns = listaConcerns;
+		this.applicationName = applicationName;
+		this.tags = tags;
 	}
 
 	public MethodVisitorCK() {
@@ -36,42 +42,52 @@ public class MethodVisitorCK implements CommitVisitor {
 		try {
 			repo.getScm().checkout(commit.getHash());
 			CK ck = new CK();
-//			ck.plug(new Callable<Metric>() {
-//				
-//				@Override
-//				public Metric call() throws Exception {
-//					// TODO Auto-generated method stub
-//					return new DesignRole();
-//				}
-//			});
-			
-			CKReport report = ck.calculate(repo.getPath());
 
-			writer.write("Class", "Design Role", "Method", "LOC", "CC", "Efferent", "NOP");
+			CKReport report = ck.calculate(repo.getPath());
 
 			desconsiderarConcerns(commit, writer, report, 1);
 
 			if (listaConcerns.size() == 0) {
+				writer.write("Class", "Design Role", "Method", "LOC", "CC", "Efferent", "NOP", "CI", "CF", "LI");
+
 				for (CKNumber classMetrics : report.all()) {
 					Map<MethodData, MethodMetrics> metricsByMethod = classMetrics.getMetricsByMethod();
 					for (MethodData metodo : metricsByMethod.keySet()) {
 						MethodMetrics methodMetrics = metricsByMethod.get(metodo);
-						writer.write(classMetrics.getClassName(),
-								"\"" + classMetrics.getDesignRole() + "\"", metodo.getNomeMethod(), 
-								methodMetrics.getLinesOfCode(), methodMetrics.getComplexity(), 
-								methodMetrics.getEfferentCoupling(), methodMetrics.getNumberOfParameters());
+						writer.write(classMetrics.getClassName(), "\"" + classMetrics.getDesignRole() + "\"",
+								metodo.getNomeMethod(), methodMetrics.getLinesOfCode(), methodMetrics.getComplexity(),
+								methodMetrics.getEfferentCoupling(), methodMetrics.getNumberOfParameters(), metodo.getInitialChar(),
+								metodo.getFinalChar(), metodo.getInitialLine());
 					}
 				}
 			} else {
-				for (CKNumber classMetrics : report.all()) {
-					if (listaConcerns.contains(classMetrics.getDesignRole())) {
-						Map<MethodData, MethodMetrics> metricsByMethod = classMetrics.getMetricsByMethod();
-						for (MethodData metodo : metricsByMethod.keySet()) {
-							MethodMetrics methodMetrics = metricsByMethod.get(metodo);
-							writer.write(classMetrics.getClassName(),
-									"\"" + classMetrics.getDesignRole() + "\"", metodo.getNomeMethod(), 
-									methodMetrics.getLinesOfCode(), methodMetrics.getComplexity(), 
-									methodMetrics.getEfferentCoupling(), methodMetrics.getNumberOfParameters());
+				if (tags == null) {
+					writer.write("Application", "Class", "Design Role", "Method", "LOC", "CC", "Efferent", "NOP");
+					for (CKNumber classMetrics : report.all()) {
+						if (listaConcerns.contains(classMetrics.getDesignRole())) {
+							Map<MethodData, MethodMetrics> metricsByMethod = classMetrics.getMetricsByMethod();
+							for (MethodData metodo : metricsByMethod.keySet()) {
+								MethodMetrics methodMetrics = metricsByMethod.get(metodo);
+								writer.write(applicationName, classMetrics.getClassName(),
+										"\"" + classMetrics.getDesignRole() + "\"", metodo.getNomeMethod(),
+										methodMetrics.getLinesOfCode(), methodMetrics.getComplexity(),
+										methodMetrics.getEfferentCoupling(), methodMetrics.getNumberOfParameters());
+							}
+						}
+					}
+				} else {
+					writer.write("Application", "Tag", "Class", "Design Role", "Method", "LOC", "CC", "Efferent", "NOP");
+					String tag = tags.get(commit.getHash());
+					for (CKNumber classMetrics : report.all()) {
+						if (listaConcerns.contains(classMetrics.getDesignRole())) {
+							Map<MethodData, MethodMetrics> metricsByMethod = classMetrics.getMetricsByMethod();
+							for (MethodData metodo : metricsByMethod.keySet()) {
+								MethodMetrics methodMetrics = metricsByMethod.get(metodo);
+								writer.write(applicationName, tag, classMetrics.getClassName(),
+										"\"" + classMetrics.getDesignRole() + "\"", metodo.getNomeMethod(),
+										methodMetrics.getLinesOfCode(), methodMetrics.getComplexity(),
+										methodMetrics.getEfferentCoupling(), methodMetrics.getNumberOfParameters());
+							}
 						}
 					}
 				}
