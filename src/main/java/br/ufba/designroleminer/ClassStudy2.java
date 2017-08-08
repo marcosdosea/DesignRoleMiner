@@ -15,12 +15,13 @@ public class ClassStudy2 implements Study {
 
 	public static void main(String[] args) {
 		new MetricMiner2().start(new ClassStudy2());
+		
 	}
 
 	public void execute() {
 		//mineAndroidApplications();
 		//mineEclipseApplications();
-		//mineWebApplications();
+		mineWebApplications();
 		//mineDesignRoles();
 		//mineVersions();
 		

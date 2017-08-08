@@ -1,9 +1,5 @@
 package br.ufba.designroleminer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import br.com.metricminer2.MetricMiner2;
 import br.com.metricminer2.RepositoryMining;
 import br.com.metricminer2.Study;

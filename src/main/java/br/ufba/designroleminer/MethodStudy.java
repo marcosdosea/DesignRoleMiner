@@ -22,7 +22,7 @@ public class MethodStudy implements Study {
 	public void execute() {
 //		mineAndroidApplications();
 //		mineEclipseApplications();
-//		mineWebApplications();
+		mineWebApplications();
 //		
 		List<String> androidDR =  Arrays.asList("Activity", "Persistence");
 //		mineAndroidDesignRoles(androidDR);
@@ -32,10 +32,7 @@ public class MethodStudy implements Study {
 //		mineWebDesignRoles(webDR);
 		//mineVersions(androidDR, eclipseDR, webDR);
 		
-		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/heritrix3"))
-		.through(Commits.onlyInHead()).withThreads(5)
-		.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Web/method-heritrix3-metrics.csv")).mine();
-
+	
 	}
 
 	private void mineWebApplications() {
