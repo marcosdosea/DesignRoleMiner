@@ -1,0 +1,16 @@
+C:\Users\Marcos\eclipse-workspace\SAE\SAECheqDevTO
+C:\Users\Marcos\eclipse-workspace\SAE\SAEConcBancNG
+C:\Users\Marcos\eclipse-workspace\SAE\SAEConciliacaoBancariaTO
+C:\Users\Marcos\eclipse-workspace\SAE\SAEConsultasTO
+C:\Users\Marcos\eclipse-workspace\SAE\SAECustodiaisTO
+C:\Users\Marcos\eclipse-workspace\SAE\SAEDAO
+C:\Users\Marcos\eclipse-workspace\SAE\SAEEmissaoDAETO
+C:\Users\Marcos\eclipse-workspace\SAE\SAEIsencaoTributosTO
+C:\Users\Marcos\eclipse-workspace\SAE\SAENE
+C:\Users\Marcos\eclipse-workspace\SAE\SAENG
+C:\Users\Marcos\eclipse-workspace\SAE\SAEOperTO
+C:\Users\Marcos\eclipse-workspace\SAE\SAETalonarioTO
+C:\Users\Marcos\eclipse-workspace\SAE\SAETB
+C:\Users\Marcos\eclipse-workspace\SAE\SAETI
+C:\Users\Marcos\eclipse-workspace\SAE\SAEUtil
+C:\Users\Marcos\eclipse-workspace\SAE\SAEWS

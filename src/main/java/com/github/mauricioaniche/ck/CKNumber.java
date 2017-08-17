@@ -15,6 +15,7 @@ public class CKNumber {
 	private String superClassNameLevel3;
 	private List<String> interfaces;
 	private String designRole;
+	private boolean ehArchitecturalRole;
 	
 	private int dit;
 	private int noc;
@@ -182,7 +183,7 @@ public class CKNumber {
 	}
 	
 	public String getDesignRole() {
-		return designRole;
+		return designRole.toUpperCase();
 	}
 
 	public void setConcern(String designRole) {
@@ -198,6 +199,14 @@ public class CKNumber {
 		this.metricsByMethod = metricsByMethod;
 	}
 
+	
+	public boolean isArchitecturalRole() {
+		return ehArchitecturalRole;
+	}
+
+	public void setArchitecturalRole(boolean ehArchitecturalRole) {
+		this.ehArchitecturalRole = ehArchitecturalRole;
+	}
 	@Override
 	public String toString() {
 		return "CKNumber [file=" + file + ", className=" + className + ", type=" + type + ", dit=" + dit + ", noc="

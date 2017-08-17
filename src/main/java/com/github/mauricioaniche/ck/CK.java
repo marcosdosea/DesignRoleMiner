@@ -12,8 +12,8 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 
 import com.github.mauricioaniche.ck.metric.CBO;
-import com.github.mauricioaniche.ck.metric.DesignRole;
 import com.github.mauricioaniche.ck.metric.DIT;
+import com.github.mauricioaniche.ck.metric.DesignRole;
 import com.github.mauricioaniche.ck.metric.LCOM;
 import com.github.mauricioaniche.ck.metric.MethodMetric;
 import com.github.mauricioaniche.ck.metric.Metric;

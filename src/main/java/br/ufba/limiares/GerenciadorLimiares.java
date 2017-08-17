@@ -1,6 +1,10 @@
 package br.ufba.limiares;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import com.github.mauricioaniche.ck.CKNumber;
@@ -10,11 +14,32 @@ import br.com.metricminer2.persistence.PersistenceMechanism;
 import br.com.metricminer2.persistence.csv.CSVFile;
 
 public class GerenciadorLimiares {
+	static final String DESIGN_ROLE_UNDEFINED = "UNDEFINED";
+	static final String METRICA_LOC = "LOC";
+	static final String METRICA_CC = "CC";
+	static final String METRICA_EC = "EC";
+	static final String METRICA_NOP = "NOP";
 
-	public void gravarLimiarBenchMark(List<CKNumber> classes, String fileResultado) {
+	public void gerarDesignRoles(List<CKNumber> classes, String fileResultado) {
 
 		PersistenceMechanism pm = new CSVFile(fileResultado);
-		pm.write("DesignRole", "LOC", "CC", "Efferent", "NOP");
+		pm.write("Classe;DesignRole;NOM;LOCC;Concorda?;");
+
+		for (CKNumber classe : classes) {
+			long totalLoc = 0;
+			for (MethodMetrics method : classe.getMetricsByMethod().values()) {
+				totalLoc += method.getLinesOfCode();
+			}
+			pm.write(classe.getClassName() + ";" + classe.getDesignRole() + ";" + classe.getNom() + ";" + totalLoc
+					+ ";SIM;");
+		}
+
+	}
+
+	public void gerarLimiarQuartil(List<CKNumber> classes, String fileResultado, int quartil) {
+
+		PersistenceMechanism pm = new CSVFile(fileResultado);
+		pm.write("DesignRole;LOC;CC;Efferent;NOP;");
 
 		ArrayList<Integer> listaLOC = new ArrayList<>();
 		ArrayList<Integer> listaCC = new ArrayList<>();
@@ -35,277 +60,502 @@ public class GerenciadorLimiares {
 			listaEfferent = MedianaQuartis.ordernarOrdemCrescente(listaEfferent);
 			listaNOP = MedianaQuartis.ordernarOrdemCrescente(listaNOP);
 		}
-		pm.write("UNDEFINED", MedianaQuartis.percentil(listaLOC, 95), MedianaQuartis.percentil(listaCC, 95),
-				MedianaQuartis.percentil(listaEfferent, 95), MedianaQuartis.percentil(listaNOP, 95), "");
+		pm.write(DESIGN_ROLE_UNDEFINED + ";" + MedianaQuartis.percentil(listaLOC, quartil) + ";"
+				+ MedianaQuartis.percentil(listaCC, quartil) + ";" + MedianaQuartis.percentil(listaEfferent, quartil)
+				+ ";" + MedianaQuartis.percentil(listaNOP, quartil) + ";");
 
 	}
 
-	// public int obterValorLimiarGlobal(String projetoExemplo, int
-	// porcentagemLimiar) {
-	// List<DadosClasse> listaClasses = obterListaClassesProjetoExemplo(false,
-	// projetoExemplo);
-	// ArrayList<Integer> listaNumLinhasOrdenada = MedianaQuartis
-	// .ordernarOrdemCrescente(criarListaNumeroLinhasMetodosDoGrupo(listaClasses));
-	// return MedianaQuartis.percentil(listaNumLinhasOrdenada, porcentagemLimiar);
-	// }
-	//
-	// public int obterMedianaGlobal(String projetoExemplo, int porcentagemLimiar) {
-	// List<DadosClasse> listaClasses = obterListaClassesProjetoExemplo(false,
-	// projetoExemplo);
-	// ArrayList<Integer> listaNumLinhasOrdenada = MedianaQuartis
-	// .ordernarOrdemCrescente(criarListaNumeroLinhasMetodosDoGrupo(listaClasses));
-	// return MedianaQuartis.calcularMediana(listaNumLinhasOrdenada);
-	// }
+	public void gerarLimiarAlves(List<CKNumber> classes, String fileResultado) {
+		PersistenceMechanism pm = new CSVFile(fileResultado);
+		pm.write("DesignRole;LOC;CC;Efferent;NOP;");
 
-	// public LinkedList<DadosComponentesArquiteturais>
-	// criarTabelaCompArquiteturais(String projetoExemplo,
-	// int porcentagemLimiar) {
-	// LinkedList<List<DadosClasse>> grupos =
-	// criarGruposComponentesArquiteturais(projetoExemplo);
-	// LinkedList<DadosComponentesArquiteturais> tabelaComponentes = new
-	// LinkedList<>();
-	// for (List<DadosClasse> grupo : grupos) {
-	// DadosComponentesArquiteturais dadosCA = new DadosComponentesArquiteturais();
-	// ArrayList<Integer> listaNumLinhasOrdenada = MedianaQuartis
-	// .ordernarOrdemCrescente(criarListaNumeroLinhasMetodosDoGrupo(grupo));
-	// dadosCA.setMediana(MedianaQuartis.calcularMediana(listaNumLinhasOrdenada));
-	// //
-	// dadosCA.setPrimeiroQuartil(MedianaQuartis.primeiroQuartil(listaNumLinhasOrdenada));
-	// dadosCA.setTerceiroQuartil(MedianaQuartis.percentil(listaNumLinhasOrdenada,
-	// porcentagemLimiar));
-	// if (grupoEhRegra1(grupo)) {
-	// dadosCA.setExtendsClass(grupo.get(0).getClassesExtendsImplements().get(0));
-	// dadosCA.setImplementsAPIJava(null);
-	// dadosCA.setImplementsArquitecture(null);
-	// } else {
-	// if (grupoEhRegra2(grupo)) {
-	// dadosCA.setExtendsClass(null);
-	// dadosCA.setImplementsAPIJava(null);
-	// dadosCA.setImplementsArquitecture(obterClasseImplementadaEmComum(grupo.get(0),
-	// grupo.get(1)));
-	// } else {
-	// if (grupoEhRegra3(grupo)) {
-	// dadosCA.setExtendsClass(null);
-	// dadosCA.setImplementsAPIJava(obterClasseImplementadaEmComum(grupo.get(0),
-	// grupo.get(1)));
-	// dadosCA.setImplementsArquitecture(null);
-	// } else {
-	// // É o grupo das classes não classificadas
-	// dadosCA.setExtendsClass(null);
-	// dadosCA.setImplementsAPIJava(null);
-	// dadosCA.setImplementsArquitecture(null);
-	// }
-	// }
-	// }
-	// tabelaComponentes.add(dadosCA);
-	// }
-	// /*
-	// * for (DadosComponentesArquiteturais dca : tabelaComponentes) {
-	// * System.out.print("Classe extendinda: "+dca.getExtendsClass());
-	// * System.out.print(" -- Implements API: "+dca.getImplementsAPIJava());
-	// * System.out.print(" -- Implements Arquitetura: "+dca.
-	// * getImplementsArquitecture()); System.out.print(" -- Mediana: " +
-	// * dca.getMediana() + " -- 1º Quartil: " + dca.getPrimeiroQuartil() +
-	// * " -- 3º Quartil: " +dca.getTerceiroQuartil()); System.out.println();
-	// * System.out.println(); }
-	// */
-	// return tabelaComponentes;
-	// }
-	//
-	// private ArrayList<Integer>
-	// criarListaNumeroLinhasMetodosDoGrupo(List<DadosClasse> grupo) {
-	// ArrayList<Integer> retorno = new ArrayList<>();
-	// for (DadosClasse dadosClasse : grupo) {
-	// for (DadosMetodo metodo : dadosClasse.getMetodos()) {
-	// retorno.add(metodo.getLinesOfCode());
-	// }
-	// }
-	// return retorno;
-	// }
-	//
-	// public boolean grupoEhRegra3(List<DadosClasse> grupo) {
-	// if (grupo.size() > 1) {
-	// if (temClasseImplementada(grupo.get(0)) &&
-	// !implementaInterfaceDaArquitetura(grupo.get(0))
-	// && implementaMesmaClasse(grupo.get(0), grupo.get(1))) {
-	// return true;
-	// }
-	// }
-	// return false;
-	// }
-	//
-	// public boolean grupoEhRegra2(List<DadosClasse> grupo) {
-	// if (grupo.size() > 1) {
-	// if (temClasseImplementada(grupo.get(0)) &&
-	// implementaInterfaceDaArquitetura(grupo.get(0))
-	// && implementaMesmaClasse(grupo.get(0), grupo.get(1))) {
-	// return true;
-	// }
-	// }
-	// return false;
-	// }
-	//
-	// public boolean grupoEhRegra1(List<DadosClasse> grupo) {
-	// if (grupo.size() > 1) {
-	// if (grupo.get(0).getClassesExtendsImplements().get(0) != null
-	// && extendMesmaClasse(grupo.get(0), grupo.get(1))) {
-	// return true;
-	// }
-	// }
-	// return false;
-	// }
-	//
-	// public LinkedList<List<DadosClasse>>
-	// criarGruposComponentesArquiteturais(String projetoExemplo) {
-	// List<DadosClasse> listaClasses = obterListaClassesProjetoExemplo(true,
-	// projetoExemplo);
-	// LinkedList<List<DadosClasse>> grupos = new LinkedList<List<DadosClasse>>();
-	// for (DadosClasse classe : listaClasses) {
-	// classificarClassesGrupos(classe, grupos);
-	// }
-	// formarGrupoClassesNaoClassificadas(grupos);
-	// return grupos;
-	// }
-	//
-	// /**
-	// * TODO: Falta descrever
-	// *
-	// * @param adicionarArquitetura
-	// * @param projetoExemplo
-	// * @return
-	// */
-	// public static List<DadosClasse> obterListaClassesProjetoExemplo(boolean
-	// adicionarArquitetura, String projetoExemplo) {
-	// ArrayList<String> listaProjetoExemplo = new ArrayList<String>();
-	// listaProjetoExemplo.add(projetoExemplo);
-	// AnalisadorProjeto analisador = new AnalisadorProjeto();
-	// return analisador.getInfoMetodosPorProjetos(listaProjetoExemplo,
-	// adicionarArquitetura);
-	// }
-	//
-	// public void formarGrupoClassesNaoClassificadas(LinkedList<List<DadosClasse>>
-	// grupos) {
-	// List<DadosClasse> novoGrupo = new ArrayList<>();
-	// for (Iterator<List<DadosClasse>> iter = grupos.iterator(); iter.hasNext();) {
-	// List<DadosClasse> data = iter.next();
-	// if (data.size() == 1) {
-	// novoGrupo.add(data.get(0));
-	// iter.remove();
-	// }
-	// }
-	// if (novoGrupo.size() > 0) {
-	// grupos.add(novoGrupo);
-	// }
-	// }
-	//
-	// public void classificarClassesGrupos(DadosClasse classe,
-	// LinkedList<List<DadosClasse>> grupos) {
-	// boolean adicionou = false;
-	// for (List<DadosClasse> grupo : grupos) {
-	// if (adicionarClasseGrupo(classe, grupo)) {
-	// adicionou = true;
-	// }
-	// }
-	// if (!adicionou) {
-	// ArrayList<DadosClasse> novoGrupo = new ArrayList<>();
-	// novoGrupo.add(classe);
-	// grupos.add(novoGrupo);
-	// }
-	// }
-	//
-	// public boolean adicionarClasseGrupo(DadosClasse classe, List<DadosClasse>
-	// grupo) {
-	// // Regra 1
-	// if ((classe.getClassesExtendsImplements().get(0) != null) &&
-	// extendMesmaClasse(classe, grupo.get(0))) {
-	// grupo.add(classe);
-	// return true;
-	// } else {
-	// // Regra 2
-	// if (temClasseImplementada(classe) && implementaInterfaceDaArquitetura(classe)
-	// && implementaMesmaClasse(classe, grupo.get(0))) {
-	// grupo.add(classe);
-	// return true;
-	// } else {
-	// // Regra 3
-	// if (temClasseImplementada(classe) &&
-	// !implementaInterfaceDaArquitetura(classe)
-	// && implementaMesmaClasse(classe, grupo.get(0))) {
-	// grupo.add(classe);
-	// return true;
-	// }
-	// }
-	// }
-	// return false;
-	// }
-	//
-	// public boolean extendMesmaClasse(DadosClasse classe, DadosClasse grupo) {
-	// return
-	// classe.getClassesExtendsImplements().get(0).equals(grupo.getClassesExtendsImplements().get(0));
-	// }
-	//
-	// public boolean implementaMesmaClasse(DadosClasse classe, DadosClasse grupo) {
-	// if (!temClasseImplementada(grupo)) {
-	// return false;
-	// }
-	// for (int i = 1; i < classe.getClassesExtendsImplements().size(); i++) {
-	// for (int j = 1; j < grupo.getClassesExtendsImplements().size(); j++) {
-	// if
-	// (classe.getClassesExtendsImplements().get(i).equals(grupo.getClassesExtendsImplements().get(j)))
-	// {
-	// return true;
-	// }
-	// }
-	// }
-	// return false;
-	// }
-	//
-	// public boolean temClasseImplementada(DadosClasse classe) {
-	// if (classe.getClassesExtendsImplements().size() > 1) {
-	// return true;
-	// }
-	// return false;
-	// }
-	//
-	// public boolean implementaInterfaceDaArquitetura(DadosClasse classe) {
-	// ArrayList<String> interfacesAPI = ProviderModel.INSTANCE.getInterfacesAPI();
-	// for (int i = 1; i < classe.getClassesExtendsImplements().size(); i++) {
-	// for (int j = 0; j < interfacesAPI.size(); j++) {
-	// if (classe.getClassesExtendsImplements().get(i).equals(interfacesAPI.get(j)))
-	// {
-	// return false;
-	// }
-	// }
-	// }
-	// return true;
-	// }
-	//
-	// public String obterClasseImplementadaEmComum(DadosClasse classe, DadosClasse
-	// grupo) {
-	// for (int i = 1; i < classe.getClassesExtendsImplements().size(); i++) {
-	// for (int j = 1; j < grupo.getClassesExtendsImplements().size(); j++) {
-	// if
-	// (classe.getClassesExtendsImplements().get(i).equals(grupo.getClassesExtendsImplements().get(j)))
-	// {
-	// return classe.getClassesExtendsImplements().get(i);
-	// }
-	// }
-	// }
-	// return null;
-	// }
-	//
-	// public static String getClasseComponente(DadosComponentesArquiteturais
-	// componente) {
-	// if (componente.getExtendsClass() != null) {
-	// return componente.getExtendsClass();
-	// }
-	// if (componente.getImplementsAPIJava() != null) {
-	// return componente.getImplementsAPIJava();
-	// }
-	// if (componente.getImplementsArquitecture() != null) {
-	// return componente.getImplementsArquitecture();
-	// }
-	// return componenteNaoClassificado;
-	// }
+		HashMap<String, Long> linhasDeCodigoPorDesignRole = new HashMap<>();
+		long totalLoc = obterTotalLinhasCodigoPorDesignRole(classes, linhasDeCodigoPorDesignRole);
+
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaLOC = new HashMap<>();
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaCC = new HashMap<>();
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaEfferent = new HashMap<>();
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaNOP = new HashMap<>();
+
+		for (CKNumber classe : classes) {
+			for (MethodMetrics method : classe.getMetricsByMethod().values()) {
+				somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaLOC, method.getLinesOfCode(),
+						method.getLinesOfCode(), METRICA_LOC + DESIGN_ROLE_UNDEFINED);
+				somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaCC, method.getComplexity(), method.getLinesOfCode(),
+						METRICA_CC + DESIGN_ROLE_UNDEFINED);
+				somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaEfferent, method.getEfferentCoupling(),
+						method.getLinesOfCode(), METRICA_EC + DESIGN_ROLE_UNDEFINED);
+				somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaNOP, method.getNumberOfParameters(),
+						method.getLinesOfCode(), METRICA_NOP + DESIGN_ROLE_UNDEFINED);
+			}
+		}
+
+		Integer limiarLOC = obterLimiarMetricaPercentil(distribuicaoCodigoPorMetricaLOC, totalLoc, 90,
+				DESIGN_ROLE_UNDEFINED, METRICA_LOC);
+		Integer limiarCC = obterLimiarMetricaPercentil(distribuicaoCodigoPorMetricaCC, totalLoc, 90,
+				DESIGN_ROLE_UNDEFINED, METRICA_CC);
+		Integer limiarEfferent = obterLimiarMetricaPercentil(distribuicaoCodigoPorMetricaEfferent, totalLoc, 90,
+				DESIGN_ROLE_UNDEFINED, METRICA_EC);
+		Integer limiarNOP = obterLimiarMetricaPercentil(distribuicaoCodigoPorMetricaNOP, totalLoc, 90,
+				DESIGN_ROLE_UNDEFINED, METRICA_NOP);
+
+		pm.write(DESIGN_ROLE_UNDEFINED + ";" + limiarLOC + ";" + limiarCC + ";" + limiarEfferent + ";" + limiarNOP
+				+ ";");
+	}
+
+	public void gerarLimiarDoseaPercentil(List<CKNumber> classes, String fileResultado) {
+		PersistenceMechanism pm = new CSVFile(fileResultado);
+		pm.write("DesignRole;LOC;CC;Efferent;NOP;");
+
+		HashMap<String, Long> linhasDeCodigoPorDesignRole = new HashMap<>();
+		long totalLoc = obterTotalLinhasCodigoPorDesignRole(classes, linhasDeCodigoPorDesignRole);
+
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaLOC = new HashMap<>();
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaCC = new HashMap<>();
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaEfferent = new HashMap<>();
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaNOP = new HashMap<>();
+
+		for (CKNumber classe : classes) {
+			for (MethodMetrics method : classe.getMetricsByMethod().values()) {
+				somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaLOC, method.getLinesOfCode(),
+						method.getLinesOfCode(), METRICA_LOC + DESIGN_ROLE_UNDEFINED);
+				somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaCC, method.getComplexity(), method.getLinesOfCode(),
+						METRICA_CC + DESIGN_ROLE_UNDEFINED);
+				somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaEfferent, method.getEfferentCoupling(),
+						method.getLinesOfCode(), METRICA_EC + DESIGN_ROLE_UNDEFINED);
+				somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaNOP, method.getNumberOfParameters(),
+						method.getLinesOfCode(), METRICA_NOP + DESIGN_ROLE_UNDEFINED);
+			}
+		}
+
+		Integer limiarLOC = obterLimiarMetricaPercentilAcima(distribuicaoCodigoPorMetricaLOC, totalLoc, 90,
+				DESIGN_ROLE_UNDEFINED, METRICA_LOC);
+		Integer limiarCC = obterLimiarMetricaPercentilAcima(distribuicaoCodigoPorMetricaCC, totalLoc, 90,
+				DESIGN_ROLE_UNDEFINED, METRICA_CC);
+		Integer limiarEfferent = obterLimiarMetricaPercentilAcima(distribuicaoCodigoPorMetricaEfferent, totalLoc, 90,
+				DESIGN_ROLE_UNDEFINED, METRICA_EC);
+		Integer limiarNOP = obterLimiarMetricaPercentilAcima(distribuicaoCodigoPorMetricaNOP, totalLoc, 90,
+				DESIGN_ROLE_UNDEFINED, METRICA_NOP);
+
+		pm.write(DESIGN_ROLE_UNDEFINED + ";" + limiarLOC + ";" + limiarCC + ";" + limiarEfferent + ";" + limiarNOP
+				+ ";");
+	}
+	public void gerarLimiarDoseaDesignRolePercentil(List<CKNumber> classes, String fileResultado) {
+		PersistenceMechanism pm = new CSVFile(fileResultado);
+		pm.write("DesignRole;LOC;CC;Efferent;NOP;");
+
+		HashMap<String, Long> linhasDeCodigoPorDesignRole = new HashMap<>();
+		long totalLoc = obterTotalLinhasCodigoPorDesignRole(classes, linhasDeCodigoPorDesignRole);
+
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaLOC = new HashMap<>();
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaCC = new HashMap<>();
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaEfferent = new HashMap<>();
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaNOP = new HashMap<>();
+
+		for (CKNumber classe : classes) {
+			for (MethodMetrics method : classe.getMetricsByMethod().values()) {
+				if (!classe.getDesignRole().toUpperCase().equals(DESIGN_ROLE_UNDEFINED)) {
+					somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaLOC, method.getLinesOfCode(),
+							method.getLinesOfCode(), METRICA_LOC + classe.getDesignRole());
+					somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaCC, method.getComplexity(),
+							method.getLinesOfCode(), METRICA_CC + classe.getDesignRole());
+					somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaEfferent, method.getEfferentCoupling(),
+							method.getLinesOfCode(), METRICA_EC + classe.getDesignRole());
+					somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaNOP, method.getNumberOfParameters(),
+							method.getLinesOfCode(), METRICA_NOP + classe.getDesignRole());
+				}
+				somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaLOC, method.getLinesOfCode(),
+						method.getLinesOfCode(), METRICA_LOC + DESIGN_ROLE_UNDEFINED);
+				somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaCC, method.getComplexity(), method.getLinesOfCode(),
+						METRICA_CC + DESIGN_ROLE_UNDEFINED);
+				somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaEfferent, method.getEfferentCoupling(),
+						method.getLinesOfCode(), METRICA_EC + DESIGN_ROLE_UNDEFINED);
+				somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaNOP, method.getNumberOfParameters(),
+						method.getLinesOfCode(), METRICA_NOP + DESIGN_ROLE_UNDEFINED);
+			}
+		}
+
+		Integer limiarLOCUndefined = obterLimiarMetricaPercentilAcima(distribuicaoCodigoPorMetricaLOC, totalLoc, 90,
+				DESIGN_ROLE_UNDEFINED, METRICA_LOC);
+		Integer limiarCCUndefined = obterLimiarMetricaPercentilAcima(distribuicaoCodigoPorMetricaCC, totalLoc, 90,
+				DESIGN_ROLE_UNDEFINED, METRICA_CC);
+		Integer limiarEfferentUndefined = obterLimiarMetricaPercentilAcima(distribuicaoCodigoPorMetricaEfferent, totalLoc,
+				90, DESIGN_ROLE_UNDEFINED, METRICA_EC);
+		Integer limiarNOPUndefined = obterLimiarMetricaPercentilAcima(distribuicaoCodigoPorMetricaNOP, totalLoc, 90,
+				DESIGN_ROLE_UNDEFINED, METRICA_NOP);
+
+		pm.write(DESIGN_ROLE_UNDEFINED + ";" + limiarLOCUndefined + ";" + limiarCCUndefined + ";"
+				+ limiarEfferentUndefined + ";" + limiarNOPUndefined + ";");
+
+		for (String designRole : linhasDeCodigoPorDesignRole.keySet()) {
+			designRole = designRole.toUpperCase();
+			if (!designRole.contains(DESIGN_ROLE_UNDEFINED)) {
+				long totalLOCPorDesignRole = linhasDeCodigoPorDesignRole.get(designRole);
+				Integer limiarLOC = obterLimiarMetricaPercentilAcima(distribuicaoCodigoPorMetricaLOC, totalLOCPorDesignRole,
+						90, designRole, METRICA_LOC);
+				Integer limiarCC = obterLimiarMetricaPercentilAcima(distribuicaoCodigoPorMetricaCC, totalLOCPorDesignRole,
+						90, designRole, METRICA_CC);
+				Integer limiarEfferent = obterLimiarMetricaPercentilAcima(distribuicaoCodigoPorMetricaEfferent,
+						totalLOCPorDesignRole, 90, designRole, METRICA_EC);
+				Integer limiarNOP = obterLimiarMetricaPercentilAcima(distribuicaoCodigoPorMetricaNOP, totalLOCPorDesignRole,
+						90, designRole, METRICA_NOP);
+
+//				if (limiarLOC < limiarLOCUndefined) {
+//					float pesoLOC = (float) linhasDeCodigoPorDesignRole.get(designRole) / totalLoc;
+//					limiarLOC = Math.round((limiarLOC * pesoLOC) + (limiarLOCUndefined * (1-pesoLOC))); 
+//				}
+					
+							// limiarLOC = limiarLOC < limiarLOCUndefined ? limiarLOCUndefined : limiarLOC;
+							// limiarEfferent = limiarEfferent < limiarEfferentUndefined ?
+							// limiarEfferentUndefined : limiarEfferent;
+							// limiarCC = limiarCC < limiarCCUndefined ? limiarCCUndefined : limiarCC;
+							// limiarNOP = limiarNOP < limiarNOPUndefined ? limiarNOPUndefined : limiarNOP;
+
+							pm.write(designRole + ";" + limiarLOC + ";" + limiarCC + ";" + limiarEfferent + ";"
+									+ limiarNOP + ";");
+			}
+		}
+	}
+
+	public void gerarLimiarDoseaOutlier(List<CKNumber> classes, String fileResultado) {
+		PersistenceMechanism pm = new CSVFile(fileResultado);
+		pm.write("DesignRole;LOC;CC;Efferent;NOP;");
+
+		HashMap<String, Long> linhasDeCodigoPorDesignRole = new HashMap<>();
+		long totalLoc = obterTotalLinhasCodigoPorDesignRole(classes, linhasDeCodigoPorDesignRole);
+
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaLOC = new HashMap<>();
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaCC = new HashMap<>();
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaEfferent = new HashMap<>();
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaNOP = new HashMap<>();
+
+		for (CKNumber classe : classes) {
+			for (MethodMetrics method : classe.getMetricsByMethod().values()) {
+				somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaLOC, method.getLinesOfCode(),
+						method.getLinesOfCode(), METRICA_LOC + DESIGN_ROLE_UNDEFINED);
+				somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaCC, method.getComplexity(), method.getLinesOfCode(),
+						METRICA_CC + DESIGN_ROLE_UNDEFINED);
+				somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaEfferent, method.getEfferentCoupling(),
+						method.getLinesOfCode(), METRICA_EC + DESIGN_ROLE_UNDEFINED);
+				somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaNOP, method.getNumberOfParameters(),
+						method.getLinesOfCode(), METRICA_NOP + DESIGN_ROLE_UNDEFINED);
+			}
+		}
+
+		Limiares limiarLOC = obterLimiarMetricaOutlier(distribuicaoCodigoPorMetricaLOC, totalLoc, DESIGN_ROLE_UNDEFINED,
+				METRICA_LOC);
+		Limiares limiarCC = obterLimiarMetricaOutlier(distribuicaoCodigoPorMetricaCC, totalLoc, DESIGN_ROLE_UNDEFINED,
+				METRICA_CC);
+		Limiares limiarEfferent = obterLimiarMetricaOutlier(distribuicaoCodigoPorMetricaEfferent, totalLoc,
+				DESIGN_ROLE_UNDEFINED, METRICA_EC);
+		Limiares limiarNOP = obterLimiarMetricaOutlier(distribuicaoCodigoPorMetricaNOP, totalLoc, DESIGN_ROLE_UNDEFINED,
+				METRICA_NOP);
+
+		pm.write(DESIGN_ROLE_UNDEFINED + ";" + limiarLOC.getOutlier() + ";" + limiarCC.getOutlier() + ";"
+				+ limiarEfferent.getOutlier() + ";" + limiarNOP.getOutlier() + ";");
+	}
+
+	public void gerarLimiarDoseaDesignRoleOutlier(List<CKNumber> classes, String fileResultado) {
+		PersistenceMechanism pm = new CSVFile(fileResultado);
+		pm.write("DesignRole;LOC;CC;Efferent;NOP;");
+
+		HashMap<String, Long> linhasDeCodigoPorDesignRole = new HashMap<>();
+		long totalLoc = obterTotalLinhasCodigoPorDesignRole(classes, linhasDeCodigoPorDesignRole);
+
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaLOC = new HashMap<>();
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaCC = new HashMap<>();
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaEfferent = new HashMap<>();
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaNOP = new HashMap<>();
+
+		for (CKNumber classe : classes) {
+			for (MethodMetrics method : classe.getMetricsByMethod().values()) {
+				if (!classe.getDesignRole().toUpperCase().equals(DESIGN_ROLE_UNDEFINED)) {
+					somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaLOC, method.getLinesOfCode(),
+							method.getLinesOfCode(), METRICA_LOC + classe.getDesignRole());
+					somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaCC, method.getComplexity(),
+							method.getLinesOfCode(), METRICA_CC + classe.getDesignRole());
+					somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaEfferent, method.getEfferentCoupling(),
+							method.getLinesOfCode(), METRICA_EC + classe.getDesignRole());
+					somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaNOP, method.getNumberOfParameters(),
+							method.getLinesOfCode(), METRICA_NOP + classe.getDesignRole());
+				}
+				somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaLOC, method.getLinesOfCode(),
+						method.getLinesOfCode(), METRICA_LOC + DESIGN_ROLE_UNDEFINED);
+				somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaCC, method.getComplexity(), method.getLinesOfCode(),
+						METRICA_CC + DESIGN_ROLE_UNDEFINED);
+				somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaEfferent, method.getEfferentCoupling(),
+						method.getLinesOfCode(), METRICA_EC + DESIGN_ROLE_UNDEFINED);
+				somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaNOP, method.getNumberOfParameters(),
+						method.getLinesOfCode(), METRICA_NOP + DESIGN_ROLE_UNDEFINED);
+			}
+		}
+
+		Integer limiarLOCUndefined = obterLimiarMetricaPercentil(distribuicaoCodigoPorMetricaLOC, totalLoc, 90,
+				DESIGN_ROLE_UNDEFINED, METRICA_LOC);
+		Integer limiarCCUndefined = obterLimiarMetricaPercentil(distribuicaoCodigoPorMetricaCC, totalLoc, 90,
+				DESIGN_ROLE_UNDEFINED, METRICA_CC);
+		Integer limiarEfferentUndefined = obterLimiarMetricaPercentil(distribuicaoCodigoPorMetricaEfferent, totalLoc,
+				90, DESIGN_ROLE_UNDEFINED, METRICA_EC);
+		Integer limiarNOPUndefined = obterLimiarMetricaPercentil(distribuicaoCodigoPorMetricaNOP, totalLoc, 90,
+				DESIGN_ROLE_UNDEFINED, METRICA_NOP);
+
+		pm.write(DESIGN_ROLE_UNDEFINED + ";" + limiarLOCUndefined + ";" + limiarCCUndefined + ";"
+				+ limiarEfferentUndefined + ";" + limiarNOPUndefined + ";");
+
+		for (String designRole : linhasDeCodigoPorDesignRole.keySet()) {
+			designRole = designRole.toUpperCase();
+			if (!designRole.contains(DESIGN_ROLE_UNDEFINED)) {
+				long totalLOCPorDesignRole = linhasDeCodigoPorDesignRole.get(designRole);
+				Limiares limiarLOC = obterLimiarMetricaOutlier(distribuicaoCodigoPorMetricaLOC, totalLOCPorDesignRole,
+						designRole, METRICA_LOC);
+				Limiares limiarCC = obterLimiarMetricaOutlier(distribuicaoCodigoPorMetricaCC, totalLOCPorDesignRole,
+						designRole, METRICA_CC);
+				Limiares limiarEfferent = obterLimiarMetricaOutlier(distribuicaoCodigoPorMetricaEfferent,
+						totalLOCPorDesignRole, designRole, METRICA_EC);
+				Limiares limiarNOP = obterLimiarMetricaOutlier(distribuicaoCodigoPorMetricaNOP, totalLOCPorDesignRole,
+						designRole, METRICA_NOP);
+
+				pm.write(designRole + ";" + limiarLOC.getOutlier() + ";" + limiarCC.getOutlier() + ";"
+						+ limiarEfferent.getOutlier() + ";" + limiarNOP.getOutlier() + ";");
+			}
+		}
+	}
+
+	public void gerarLimiarAniche(List<CKNumber> classes, String fileResultado) {
+		PersistenceMechanism pm = new CSVFile(fileResultado);
+		pm.write("DesignRole;LOC;CC;Efferent;NOP;");
+
+		HashMap<String, Long> linhasDeCodigoPorArchitecturalRole = new HashMap<>();
+		obterTotalLinhasCodigoPorArchitecturalRole(classes, linhasDeCodigoPorArchitecturalRole);
+
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaLOC = new HashMap<>();
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaCC = new HashMap<>();
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaEfferent = new HashMap<>();
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaNOP = new HashMap<>();
+
+		for (CKNumber classe : classes) {
+			String architecturalRole = DESIGN_ROLE_UNDEFINED;
+			if (classe.isArchitecturalRole())
+				architecturalRole = classe.getDesignRole();
+
+			for (MethodMetrics method : classe.getMetricsByMethod().values()) {
+				somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaLOC, method.getLinesOfCode(),
+						method.getLinesOfCode(), METRICA_LOC + architecturalRole);
+				somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaCC, method.getComplexity(), method.getLinesOfCode(),
+						METRICA_CC + architecturalRole);
+				somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaEfferent, method.getEfferentCoupling(),
+						method.getLinesOfCode(), METRICA_EC + architecturalRole);
+				somaLOCPorValorMetrica(distribuicaoCodigoPorMetricaNOP, method.getNumberOfParameters(),
+						method.getLinesOfCode(), METRICA_NOP + architecturalRole);
+			}
+		}
+
+		for (String architecuturalRole : linhasDeCodigoPorArchitecturalRole.keySet()) {
+			architecuturalRole = architecuturalRole.toUpperCase();
+			long totalLOCPorArchitecturalRole = linhasDeCodigoPorArchitecturalRole.get(architecuturalRole);
+			Integer limiarLOC = obterLimiarMetricaPercentil(distribuicaoCodigoPorMetricaLOC,
+					totalLOCPorArchitecturalRole, 90, architecuturalRole, METRICA_LOC);
+			Integer limiarCC = obterLimiarMetricaPercentil(distribuicaoCodigoPorMetricaCC, totalLOCPorArchitecturalRole,
+					90, architecuturalRole, METRICA_CC);
+			Integer limiarEfferent = obterLimiarMetricaPercentil(distribuicaoCodigoPorMetricaEfferent,
+					totalLOCPorArchitecturalRole, 90, architecuturalRole, METRICA_EC);
+			Integer limiarNOP = obterLimiarMetricaPercentil(distribuicaoCodigoPorMetricaNOP,
+					totalLOCPorArchitecturalRole, 90, architecuturalRole, METRICA_NOP);
+			pm.write(architecuturalRole + ";" + limiarLOC + ";" + limiarCC + ";" + limiarEfferent + ";" + limiarNOP
+					+ ";");
+		}
+	}
+
+	private void somaLOCPorValorMetrica(HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetrica,
+			Integer valorMetrica, Integer linesOfCode, String designRole) {
+
+		HashMap<Integer, BigDecimal> distribuicaoValorMetrica = distribuicaoCodigoPorMetrica.get(designRole);
+
+		if (distribuicaoValorMetrica == null)
+			distribuicaoValorMetrica = new HashMap<>();
+		BigDecimal totalLOC = distribuicaoValorMetrica.get(valorMetrica);
+
+		if (totalLOC == null) {
+			distribuicaoValorMetrica.put(valorMetrica, new BigDecimal(linesOfCode));
+			distribuicaoCodigoPorMetrica.put(designRole, distribuicaoValorMetrica);
+		} else {
+			distribuicaoValorMetrica.put(valorMetrica,
+					totalLOC.add(new BigDecimal(linesOfCode), MathContext.DECIMAL128));
+			distribuicaoCodigoPorMetrica.put(designRole, distribuicaoValorMetrica);
+		}
+	}
+
+	private Integer obterLimiarMetricaPercentil(
+			HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetrica, long totalLOC,
+			Integer percentil, String designRole, String metrica) {
+		HashMap<Integer, BigDecimal> valoresMetricas = distribuicaoCodigoPorMetrica.get(metrica + designRole);
+
+		if (valoresMetricas != null) {
+			ArrayList<Integer> listaOrdenadaMetrica = new ArrayList<Integer>(valoresMetricas.keySet());
+			Collections.sort(listaOrdenadaMetrica);
+
+			BigDecimal somaPeso = null;
+			for (Integer valorMetrica : listaOrdenadaMetrica) {
+				BigDecimal locPorValor = valoresMetricas.get(valorMetrica);
+				BigDecimal peso = totalLOC > 0 ? locPorValor.divide(new BigDecimal(totalLOC), MathContext.DECIMAL128)
+						: new BigDecimal(0);
+				somaPeso = (somaPeso == null) ? peso : somaPeso.add(peso, MathContext.DECIMAL128);
+				BigDecimal percentilFracao = new BigDecimal(percentil).divide(new BigDecimal(100),
+						MathContext.DECIMAL128);
+				if (somaPeso.compareTo(percentilFracao) >= 0) {
+					return valorMetrica;
+				}
+			}
+		}
+		return 0;
+	}
+
+	private Integer obterLimiarMetricaPercentilAcima(
+			HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetrica, long totalLOC,
+			Integer percentil, String designRole, String metrica) {
+		HashMap<Integer, BigDecimal> valoresMetricas = distribuicaoCodigoPorMetrica.get(metrica + designRole);
+
+		if (valoresMetricas != null) {
+			ArrayList<Integer> listaOrdenadaMetrica = new ArrayList<Integer>(valoresMetricas.keySet());
+			Collections.sort(listaOrdenadaMetrica);
+
+			BigDecimal somaPeso = null;
+			//Integer valorMetricaPercentil90 = 0;
+			int indexLista = 0;
+			for (Integer valorMetrica : listaOrdenadaMetrica) {
+				BigDecimal locPorValor = valoresMetricas.get(valorMetrica);
+				BigDecimal peso = totalLOC > 0 ? locPorValor.divide(new BigDecimal(totalLOC), MathContext.DECIMAL128)
+						: new BigDecimal(0);
+				somaPeso = (somaPeso == null) ? peso : somaPeso.add(peso, MathContext.DECIMAL128);
+				BigDecimal percentilFracao = new BigDecimal(percentil).divide(new BigDecimal(100),
+						MathContext.DECIMAL128);
+				indexLista++;
+				if (somaPeso.compareTo(percentilFracao) >= 0) {
+					break;
+				}
+			}
+			// dessa forma pega sempre o valor seguinte quando o percentil é alcançado
+			if (indexLista < listaOrdenadaMetrica.size())
+				return listaOrdenadaMetrica.get(indexLista);
+			return listaOrdenadaMetrica.get(--indexLista);
+		}
+		return 0;
+	}
+
+	
+	private Limiares obterLimiarMetricaOutlier(
+			HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetrica, long totalLOC,
+			String designRole, String metrica) {
+
+		Limiares limiares = new Limiares(0, 0);
+
+		HashMap<Integer, BigDecimal> valoresMetricas = distribuicaoCodigoPorMetrica.get(metrica + designRole);
+
+		ArrayList<Integer> listaOrdenadaMetrica = new ArrayList<Integer>(valoresMetricas.keySet());
+		Collections.sort(listaOrdenadaMetrica);
+
+		BigDecimal percentilPrimeiroQuartil = new BigDecimal(25).divide(new BigDecimal(100), MathContext.DECIMAL128);
+		BigDecimal percentilTerceiroQuartil = new BigDecimal(75).divide(new BigDecimal(100), MathContext.DECIMAL128);
+		BigDecimal somaPeso = null;
+
+		for (Integer valorMetrica : listaOrdenadaMetrica) {
+			BigDecimal locPorValor = valoresMetricas.get(valorMetrica);
+			BigDecimal peso = totalLOC > 0 ? locPorValor.divide(new BigDecimal(totalLOC), MathContext.DECIMAL128)
+					: new BigDecimal(0);
+			somaPeso = (somaPeso == null) ? peso : somaPeso.add(peso, MathContext.DECIMAL128);
+			if ((somaPeso.compareTo(percentilPrimeiroQuartil) >= 0) && (limiares.getLimiarPrimeiroQuartil() == 0)) {
+				limiares.setLimiarPrimeiroQuartil(valorMetrica);
+				limiares.setLimiarTerceiroQuartil(valorMetrica);
+			} else if (somaPeso.compareTo(percentilTerceiroQuartil) >= 0) {
+				limiares.setLimiarTerceiroQuartil(valorMetrica);
+				break;
+			}
+		}
+
+		return limiares;
+	}
+
+	private long obterTotalLinhasCodigoPorDesignRole(List<CKNumber> classes,
+			HashMap<String, Long> linhasDeCodigoPorDesignRole) {
+		long total = 0;
+		if (linhasDeCodigoPorDesignRole == null)
+			linhasDeCodigoPorDesignRole = new HashMap<>();
+
+		for (CKNumber classe : classes) {
+			for (MethodMetrics method : classe.getMetricsByMethod().values()) {
+				total += method.getLinesOfCode();
+				Long somaLocPorDesignRole = linhasDeCodigoPorDesignRole.get(classe.getDesignRole());
+				if (somaLocPorDesignRole == null) {
+					linhasDeCodigoPorDesignRole.put(classe.getDesignRole(), new Long(method.getLinesOfCode()));
+				} else {
+					somaLocPorDesignRole += method.getLinesOfCode();
+					linhasDeCodigoPorDesignRole.put(classe.getDesignRole(), somaLocPorDesignRole);
+				}
+			}
+		}
+		return total;
+	}
+
+	private long obterTotalLinhasCodigoPorArchitecturalRole(List<CKNumber> classes,
+			HashMap<String, Long> linhasDeCodigoPorDesignRole) {
+		long total = 0;
+		if (linhasDeCodigoPorDesignRole == null)
+			linhasDeCodigoPorDesignRole = new HashMap<>();
+
+		for (CKNumber classe : classes) {
+			String architecturalRole = DESIGN_ROLE_UNDEFINED;
+			if (classe.isArchitecturalRole())
+				architecturalRole = classe.getDesignRole();
+
+			for (MethodMetrics method : classe.getMetricsByMethod().values()) {
+				total += method.getLinesOfCode();
+				Long somaLocPorDesignRole = linhasDeCodigoPorDesignRole.get(architecturalRole);
+				if (somaLocPorDesignRole == null) {
+					linhasDeCodigoPorDesignRole.put(architecturalRole, new Long(method.getLinesOfCode()));
+				} else {
+					somaLocPorDesignRole += method.getLinesOfCode();
+					linhasDeCodigoPorDesignRole.put(architecturalRole, somaLocPorDesignRole);
+				}
+			}
+		}
+		return total;
+	}
+
+	private class Limiares {
+		private int limiarPrimeiroQuartil;
+		private int limiarTerceiroQuartil;
+
+		public Limiares(int limiarPrimeiroQuartil, int limiarTerceiroQuartil) {
+			super();
+			this.limiarPrimeiroQuartil = limiarPrimeiroQuartil;
+			this.limiarTerceiroQuartil = limiarTerceiroQuartil;
+		}
+
+		public int getLimiarPrimeiroQuartil() {
+			return limiarPrimeiroQuartil;
+		}
+
+		public void setLimiarPrimeiroQuartil(int limiarPrimeiroQuartil) {
+			this.limiarPrimeiroQuartil = limiarPrimeiroQuartil;
+		}
+
+		public int getLimiarTerceiroQuartil() {
+			return limiarTerceiroQuartil;
+		}
+
+		public void setLimiarTerceiroQuartil(int limiarTerceiroQuartil) {
+			this.limiarTerceiroQuartil = limiarTerceiroQuartil;
+		}
+
+		public long getOutlier() {
+			long outlier = Math.round(
+					getLimiarTerceiroQuartil() + ((getLimiarTerceiroQuartil() - getLimiarPrimeiroQuartil()) * 1.5));
+			if (outlier <= 0)
+				return 0;
+
+			return outlier;
+		}
+	}
 
 }

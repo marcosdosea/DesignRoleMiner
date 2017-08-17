@@ -21,6 +21,7 @@ import com.github.mauricioaniche.ck.CKReport;
 public class DesignRole extends ASTVisitor implements Metric {
 
 	String designRole;
+	boolean ehArchitecturalRole = false;
 	int dit = 1;
 	static final HashMap<String, String> defaultDesignRoles = new LinkedHashMap<String, String>();
 	Set<String> listAnnotations = new HashSet<String>();
@@ -53,7 +54,8 @@ public class DesignRole extends ASTVisitor implements Metric {
 		defaultDesignRoles.put("controller", "Controller");
 		defaultDesignRoles.put("model", "Model");
 		defaultDesignRoles.put("service", "Service");
-
+		defaultDesignRoles.put("component", "Component");
+		
 		// android
 		defaultDesignRoles.put("adapter", "Adapter");
 		defaultDesignRoles.put("actionbar", "Actionbar");
@@ -101,6 +103,16 @@ public class DesignRole extends ASTVisitor implements Metric {
 		return super.visit(node);
 	}
 
+	private boolean verificaArchitecturalRole(String designRole) {
+		HashSet<String> architecturalRole = new HashSet<>();
+		architecturalRole.add("CONTROLLER");
+		architecturalRole.add("REPOSITORY");
+		architecturalRole.add("SERVICE");
+		architecturalRole.add("ENTITY");
+		architecturalRole.add("COMPONENT");
+		return architecturalRole.contains(designRole.toUpperCase());
+	}
+	
 	private void calculateAnnotation(ITypeBinding binding, int ditAnnotation) {
 		ITypeBinding father = binding.getSuperclass();
 
@@ -135,11 +147,6 @@ public class DesignRole extends ASTVisitor implements Metric {
 	private void calculate(ITypeBinding binding, String interfaces) {
 		ITypeBinding father = binding.getSuperclass();
 		
-		if (binding.getName().equals("BPMNEndNodeFigure")){
-			String name = binding.getName();
-			String bname = binding.getBinaryName();
-			String qname = binding.getQualifiedName();
-		}
 		if (father != null) {
 			String fatherName = father.getBinaryName();
 			if (father.isFromSource()) { // classe pai é interna
@@ -149,9 +156,9 @@ public class DesignRole extends ASTVisitor implements Metric {
 			} else {
 				String defaultDesignRole = "";
 				if ((dit == 1) && fatherName.endsWith("Object") && (interfaces.length() == 0)) {
+					designRole = "Undefined";
 					if (ehEntityDesignRole(binding))
 						designRole = "Entity";
-					designRole = "Undefined";
 				} else if ((dit == 1) && fatherName.endsWith("Object") && (interfaces.length() > 0)) {
 					defaultDesignRole = findDefaultDesignRole(interfaces);
 					designRole = defaultDesignRole.isEmpty() ? interfaces : defaultDesignRole;
@@ -172,28 +179,34 @@ public class DesignRole extends ASTVisitor implements Metric {
 
 	private boolean ehEntityDesignRole(ITypeBinding binding) {
 		IVariableBinding[] listDeclaredFields =  binding.getDeclaredFields();
-		boolean hasNonStaticFinalFields = false;
-		int countGetSet = 0;
+		boolean hasStaticFinalFields = false;
+		
 		if (listDeclaredFields.length == 0) { 
 			return false;
 		} else {
 			for (IVariableBinding field: listDeclaredFields) {
 				String declaracaoField = field.toString().toLowerCase();
-				if (!declaracaoField.contains(" final ") && !declaracaoField.contains(" static ")) {
-					hasNonStaticFinalFields = true;
+				if (declaracaoField.contains(" final ") || declaracaoField.contains(" static ")) {
+					hasStaticFinalFields = true;
 					break;
 				}
 			}
 		}
+		int countGetSet = 0;
+		int countOutros = 0;
+		int countConstrutores = 0;
 		IMethodBinding[] listDeclaredMethods = binding.getDeclaredMethods();
 		for (IMethodBinding method : listDeclaredMethods) {
-			if (!method.isConstructor() && !method.getName().toLowerCase().startsWith("get") && 
-					!method.getName().toLowerCase().startsWith("set") && !method.getName().toLowerCase().startsWith("to"))
-				return false;
-			else if (method.getName().toLowerCase().startsWith("get") || method.getName().toLowerCase().startsWith("set"))
+			countOutros++;
+			if (method.getName().toLowerCase().startsWith("get") || method.getName().toLowerCase().startsWith("set") 
+					|| method.getName().toLowerCase().startsWith("is") )
 				countGetSet++;
+			if (method.isConstructor())
+				countConstrutores++;
 		}
-		return countGetSet > 0 && hasNonStaticFinalFields;
+		
+		float porcentagemGetSet = (float) countGetSet / (countOutros-countConstrutores);
+		return (porcentagemGetSet >= 0.9) && !hasStaticFinalFields;
 	}
 
 	@Override
@@ -208,11 +221,13 @@ public class DesignRole extends ASTVisitor implements Metric {
 			for (String tokenConcern : defaultDesignRoles.keySet()) {
 				if (annotation.toLowerCase().equals(tokenConcern.toLowerCase())) {
 					designRole = defaultDesignRoles.get(tokenConcern);
+					ehArchitecturalRole = verificaArchitecturalRole(tokenConcern);
 				}
 			}
 		}
 		designRole = extractParameters(designRole);
 		result.setConcern(designRole);
+		result.setArchitecturalRole(ehArchitecturalRole);
 	}
 
 	private String extractParameters(String className) {
