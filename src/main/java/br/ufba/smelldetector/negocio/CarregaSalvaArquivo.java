@@ -27,14 +27,13 @@ public class CarregaSalvaArquivo {
 		} finally {
 			LEAProjetos = null;
 		}
-		carregarLimiares();
 		return projetos;
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<LimiarTecnica> carregarLimiares() {
+	public static List<LimiarTecnica> carregarLimiares(String pastaDestino) {
 		ArrayList<LimiarTecnica> limiarTecnicas = new ArrayList<>();
-		String diretorioLimiares = System.getProperty("user.dir") + "\\configuration\\br.ufs.smelldetector\\";
+		String diretorioLimiares = pastaDestino;
 		File file = new File(diretorioLimiares);
 		File afile[] = file.listFiles();
 		int i = 0;
@@ -50,31 +49,31 @@ public class CarregaSalvaArquivo {
 
 				if (scanner.hasNextLine()) {
 					String cabecalho = scanner.nextLine();
-					while (scanner.hasNext() && cabecalho.contains("LOC")) {
+					while (scanner.hasNext() && cabecalho.contains(LimiarMetrica.METRICA_LOC)) {
 						String designRole = scanner.next();
 
 						LimiarMetrica loc = new LimiarMetrica();
 						loc.setDesignRole(designRole);
 						loc.setLimiarMaximo(scanner.nextInt());
-						loc.setMetrica(LimiarMetrica.LOC);
+						loc.setMetrica(LimiarMetrica.METRICA_LOC);
 						limiares.put(loc.getKey(), loc);
 
 						LimiarMetrica cc = new LimiarMetrica();
 						cc.setDesignRole(designRole);
 						cc.setLimiarMaximo(scanner.nextInt());
-						cc.setMetrica(LimiarMetrica.CC);
+						cc.setMetrica(LimiarMetrica.METRICA_CC);
 						limiares.put(cc.getKey(), cc);
 
 						LimiarMetrica efferent = new LimiarMetrica();
 						efferent.setDesignRole(designRole);
 						efferent.setLimiarMaximo(scanner.nextInt());
-						efferent.setMetrica(LimiarMetrica.Efferent);
+						efferent.setMetrica(LimiarMetrica.METRICA_EC);
 						limiares.put(efferent.getKey(), efferent);
 
 						LimiarMetrica nop = new LimiarMetrica();
 						nop.setDesignRole(designRole);
 						nop.setLimiarMaximo(scanner.nextInt());
-						nop.setMetrica(LimiarMetrica.NOP);
+						nop.setMetrica(LimiarMetrica.METRICA_NOP);
 						limiares.put(nop.getKey(), nop);
 						if (scanner.hasNextLine())
 							scanner.nextLine();

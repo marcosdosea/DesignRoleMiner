@@ -19,8 +19,17 @@ public class DadosMetodoSmell implements Comparable<DadosMetodoSmell> {
 	private String codigoMetodo;
 	private HashSet<String> listaTecnicas;
 	private String smell;
-
+	private String classDesignRole;
 	
+		
+	public String getClassDesignRole() {
+		return classDesignRole;
+	}
+
+	public void setClassDesignRole(String classDesignRole) {
+		this.classDesignRole = classDesignRole;
+	}
+
 	public String getKey() {
 		return diretorioDaClasse+nomeClasse+nomeMetodo+smell;
 	}

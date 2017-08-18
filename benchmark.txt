@@ -14,3 +14,7 @@ D:\Projetos\_Benchmark\WebShop
 D:\Projetos\_Benchmark\foodi
 D:\Projetos\_Benchmark\DietMe
 D:\Projetos\_Benchmark\webloja
+D:\Projetos\_Benchmark\comsat
+D:\Projetos\_Benchmark\spider
+D:\Projetos\_Benchmark\Shop-for-JavaWeb
+D:\Projetos\_Benchmark\mes

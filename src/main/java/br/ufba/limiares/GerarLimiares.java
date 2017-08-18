@@ -24,13 +24,10 @@ public class GerarLimiares {
 		final String PASTA_RESULTADO = "C:\\eclipse\\configuration\\br.ufs.smelldetector\\";
 		GerenciadorLimiares gLimiares = new GerenciadorLimiares();
 		
-		// D:\Projetos\_Benchmark\phenotips
-		
-		
 		System.out.println("Gerando Planila de Design Roles...");
 		ArrayList<String> projetosAnalisar = lerProjetos("analisar.txt"); 
-		ArrayList<CKNumber> metricasProjetosAnalisar = getMetricasProjetos(projetosAnalisar);
-		gLimiares.gerarDesignRoles(metricasProjetosAnalisar, "C:\\DR\\DR-DEH.CSV");		
+		//ArrayList<CKNumber> metricasProjetosAnalisar = getMetricasProjetos(projetosAnalisar);
+		//gLimiares.gerarDesignRoles(metricasProjetosAnalisar, "C:\\DR\\DR-DEH.CSV");		
 		
 		System.out.println("Iniciando a coleta de métricas do projeto referencia...");
 		ArrayList<String> projetosReferencia = lerProjetos("referencia.txt"); 
@@ -38,13 +35,13 @@ public class GerarLimiares {
 		
 		System.out.println("Iniciando a coleta de métricas dos projetos WEB...");
 		ArrayList<String> projetosBenchmark = lerProjetos("benchmark.txt");
-		ArrayList<CKNumber> metricasProjetosBenchmark = getMetricasProjetos(projetosBenchmark);
+		//ArrayList<CKNumber> metricasProjetosBenchmark = getMetricasProjetos(projetosBenchmark);
 		
 		System.out.println("Gerando Limiares por Alves...");
-		gLimiares.gerarLimiarAlves(metricasProjetosBenchmark, PASTA_RESULTADO + "A.csv");
+		//gLimiares.gerarLimiarAlves(metricasProjetosBenchmark, PASTA_RESULTADO + "A.csv");
 		
 		System.out.println("Gerando Limiares por Aniche...");
-		gLimiares.gerarLimiarAniche(metricasProjetosBenchmark, PASTA_RESULTADO + "X.csv");
+		//gLimiares.gerarLimiarAniche(metricasProjetosBenchmark, PASTA_RESULTADO + "X.csv");
 
 		System.out.println("Gerando Limiares por Dosea Referencia...");
 		gLimiares.gerarLimiarDoseaPercentil(metricasProjetosReferencia, PASTA_RESULTADO + "R.csv");

@@ -8,6 +8,8 @@ import com.github.mauricioaniche.ck.CKNumber;
 import com.github.mauricioaniche.ck.MethodData;
 import com.github.mauricioaniche.ck.MethodMetrics;
 
+import br.com.metricminer2.persistence.PersistenceMechanism;
+import br.com.metricminer2.persistence.csv.CSVFile;
 import br.ufba.smelldetector.model.DadosMetodoSmell;
 import br.ufba.smelldetector.model.LimiarMetrica;
 import br.ufba.smelldetector.model.LimiarTecnica;
@@ -27,21 +29,21 @@ public class FiltrarMetodosSmell {
 				boolean consideraArchitecturalRoles = limiarTecnica.getTecnica().equals(TECNICA_ANICHE) ?true:false;
 				
 				HashMap<String, LimiarMetrica> mapLimiarMetrica = limiarTecnica.getMetricas();
-				LimiarMetrica limiarLOC = mapLimiarMetrica.get(LimiarMetrica.LOC + classe.getDesignRole().toUpperCase());
+				LimiarMetrica limiarLOC = mapLimiarMetrica.get(LimiarMetrica.METRICA_LOC + classe.getDesignRole().toUpperCase());
 				if ((consideraArchitecturalRoles && !classe.isArchitecturalRole()) || (limiarLOC == null))
-					limiarLOC = mapLimiarMetrica.get(LimiarMetrica.LOC + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
+					limiarLOC = mapLimiarMetrica.get(LimiarMetrica.METRICA_LOC + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 
-				LimiarMetrica limiarCC = mapLimiarMetrica.get(LimiarMetrica.CC + classe.getDesignRole().toUpperCase());
+				LimiarMetrica limiarCC = mapLimiarMetrica.get(LimiarMetrica.METRICA_CC + classe.getDesignRole().toUpperCase());
 				if ((consideraArchitecturalRoles && !classe.isArchitecturalRole()) || (limiarCC == null))
-					limiarCC = mapLimiarMetrica.get(LimiarMetrica.CC + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
+					limiarCC = mapLimiarMetrica.get(LimiarMetrica.METRICA_CC + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 
-				LimiarMetrica limiarEfferent = mapLimiarMetrica.get(LimiarMetrica.Efferent + classe.getDesignRole().toUpperCase());
+				LimiarMetrica limiarEfferent = mapLimiarMetrica.get(LimiarMetrica.METRICA_EC + classe.getDesignRole().toUpperCase());
 				if ((consideraArchitecturalRoles && !classe.isArchitecturalRole()) || (limiarEfferent == null))
-					limiarEfferent = mapLimiarMetrica.get(LimiarMetrica.Efferent + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
+					limiarEfferent = mapLimiarMetrica.get(LimiarMetrica.METRICA_EC + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 
-				LimiarMetrica limiarNOP = mapLimiarMetrica.get(LimiarMetrica.NOP + classe.getDesignRole().toUpperCase());
+				LimiarMetrica limiarNOP = mapLimiarMetrica.get(LimiarMetrica.METRICA_NOP + classe.getDesignRole().toUpperCase());
 				if ((consideraArchitecturalRoles && !classe.isArchitecturalRole()) || (limiarNOP == null))
-					limiarNOP = mapLimiarMetrica.get(LimiarMetrica.NOP + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
+					limiarNOP = mapLimiarMetrica.get(LimiarMetrica.METRICA_NOP + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 
 				for (MethodData metodo : classe.getMetricsByMethod().keySet()) {
 
@@ -50,7 +52,7 @@ public class FiltrarMetodosSmell {
 					if (metodoMetrics.getLinesOfCode() > limiarLOC.getLimiarMaximo()) {
 						String mensagem = "Methods in this system have on maximum " + limiarLOC.getLimiarMaximo()
 								+ " lines of code. " + "\nMake sure refactoring could be applied.";
-						String type = "Método Longo";
+						String type = "Metodo Longo";
 						addMetodoSmell(classe, metodo, metodoMetrics, type, mensagem, metodosSmell, limiarTecnica.getTecnica());
 					}
 					if (metodoMetrics.getComplexity() > limiarCC.getLimiarMaximo()) {
@@ -69,7 +71,7 @@ public class FiltrarMetodosSmell {
 					if (metodoMetrics.getNumberOfParameters() > limiarNOP.getLimiarMaximo()) {
 						String mensagem = "Methods in this type class have on maximum " + limiarNOP.getLimiarMaximo()
 								+ " number of parameters. " + "\nMake sure refactoring could be applied.";
-						String type = "Muitos Parâmetros";
+						String type = "Muitos Parametros";
 						addMetodoSmell(classe, metodo, metodoMetrics, type, mensagem, metodosSmell, limiarTecnica.getTecnica());
 					}
 				}
@@ -116,7 +118,26 @@ public class FiltrarMetodosSmell {
 		dadosMetodoSmell.setNumberOfParameters(metricas.getNumberOfParameters());
 		dadosMetodoSmell.addMensagem(mensagem);
 		dadosMetodoSmell.addTecnica(tecnica);
+		dadosMetodoSmell.setClassDesignRole(classe.getDesignRole());
+		
 		metodosSmell.put(dadosMetodoSmell.getKey(), dadosMetodoSmell);
+	}
+	
+	
+	public static void gravarMetodosSmell(HashMap<String, DadosMetodoSmell> metodosSmell, String arquivoDestino) {
+
+		PersistenceMechanism pm = new CSVFile(System.getProperty("user.dir") + "\\" + arquivoDestino);
+		pm.write("Tecnicas;Classe;Método;LOC;CC;Efferent;NOP;Problema de Design;Deveria ser REFATORADO por conta desse problema?; Se DISCORDAR, quais os motivos? ");
+		for (DadosMetodoSmell metodoSmell : metodosSmell.values()) {
+			pm.write(metodoSmell.getListaTecnicas().toString().replace('[', ' ').replace(']', ' ') + ";"
+					+ metodoSmell.getNomeClasse() + ";"  
+		            + metodoSmell.getNomeMetodo() + ";" +
+					+ metodoSmell.getLinesOfCode() + ";" + metodoSmell.getComplexity() + ";"
+					+ metodoSmell.getEfferent() + ";" + metodoSmell.getNumberOfParameters() + ";" 
+					+ metodoSmell.getSmell()  + ";"
+					+ "(1) Discordo Fortemente;;" );
+		}
+		System.out.println("Total de métodos longos: " + metodosSmell.size());
 	}
 
 }
