@@ -1,10 +1,7 @@
 package com.github.study;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.github.designroletool.MethodVisitorCK;
 
@@ -22,14 +19,17 @@ public class RQ2Study implements Study {
 	}
 
 	public void execute() {
-		//List<String> androidDR = Arrays.asList("ACTIVITY", "PERSISTENCE", "SERVICE", "ASYNCTASK", "VIEW");  SANER 2018
-		List<String> androidDR = Arrays.asList("ACTIVITY", "PERSISTENCE", "SERVICE", "ASYNCTASK", 
-				"VIEW", "ADAPTER", "BROADCASTRECEIVER", "ENTITY", "EXCEPTION","FRAGMENT", "TEST","UNDEFINED");
-		// List<String> eclipseDR = Arrays.asList("DIALOG", "VIEW", "PERSISTENCE"); SANER 2018
+		// List<String> androidDR = Arrays.asList("ACTIVITY", "PERSISTENCE", "SERVICE",
+		// "ASYNCTASK", "VIEW"); SANER 2018
+		List<String> androidDR = Arrays.asList("ACTIVITY", "PERSISTENCE", "SERVICE", "ASYNCTASK", "VIEW", "ADAPTER",
+				"BROADCASTRECEIVER", "ENTITY", "EXCEPTION", "FRAGMENT", "TEST", "UNDEFINED");
+		// List<String> eclipseDR = Arrays.asList("DIALOG", "VIEW", "PERSISTENCE");
+		// SANER 2018
 		List<String> eclipseDR = Arrays.asList("DIALOG", "VIEW", "PERSISTENCE", "ABSTRACTHANDLER",
-				"ABSTRACTPREFERENCEINITIALIZER", "ABSTRACTUIPLUGIN", "ACTION", "ADAPTER", "ENTITY",
-				"EXCEPTION", "FIELDEDITOR", "JOB", "LABELPROVIDER", "MODEL", "NLS", "PLUGIN", "SERVICE", "TEST", "UNDEFINED" );   
-		// List<String> webDR = Arrays.asList("ENTITY", "VIEW", "PERSISTENCE", "TEST"); SANER 2018
+				"ABSTRACTPREFERENCEINITIALIZER", "ABSTRACTUIPLUGIN", "ACTION", "ADAPTER", "ENTITY", "EXCEPTION",
+				"FIELDEDITOR", "JOB", "LABELPROVIDER", "MODEL", "NLS", "PLUGIN", "SERVICE", "TEST", "UNDEFINED");
+		// List<String> webDR = Arrays.asList("ENTITY", "VIEW", "PERSISTENCE", "TEST");
+		// SANER 2018
 		List<String> webDR = Arrays.asList("ENTITY", "VIEW", "PERSISTENCE", "TEST", "[COMPARATOR]", "[VALIDATOR]",
 				"ADAPTER", "ASYNCTASK", "COMPONENT", "CONTROLLER", "DIALOG", "DISPATCHERSERVLET", "EXCEPTION",
 				"HASHMAP", "HTTPSERVLET", "LINKEDHASHMAP", "SERVICE", "UNDEFINED");

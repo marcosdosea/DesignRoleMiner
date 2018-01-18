@@ -18,17 +18,23 @@ import br.com.metricminer2.scm.SCMRepository;
 
 public class MethodVisitorCK implements CommitVisitor {
 
-	List<String> listaConcerns = new ArrayList<String>();
+	List<String> listaDesignRoles = new ArrayList<String>();
 	String applicationName;
 	Map<String, String> tags = null;
+	Map<String, Map<String, Integer>> metricsByTagDesignRole = new HashMap<>();
 
-	public MethodVisitorCK(List<String> listaConcerns, String applicationName) {
-		this.listaConcerns = listaConcerns;
+	public MethodVisitorCK(List<String> listaDesignRoles, String applicationName) {
+		this.listaDesignRoles = listaDesignRoles;
 		this.applicationName = applicationName;
 	}
 
-	public MethodVisitorCK(List<String> listaConcerns, String applicationName, Map<String, String> tags) {
-		this.listaConcerns = listaConcerns;
+	public MethodVisitorCK(List<String> listaDesignRoles, String applicationName, Map<String, String> tags) {
+		this.listaDesignRoles = listaDesignRoles;
+		this.applicationName = applicationName;
+		this.tags = tags;
+	}
+
+	public MethodVisitorCK(String applicationName, Map<String, String> tags) {
 		this.applicationName = applicationName;
 		this.tags = tags;
 	}
@@ -45,25 +51,61 @@ public class MethodVisitorCK implements CommitVisitor {
 
 			CKReport report = ck.calculate(repo.getPath());
 
-			desconsiderarConcerns(commit, writer, report, 1);
+			desconsiderarDesignRoles(commit, writer, report, 1);
 
-			if (listaConcerns.size() == 0) {
-				writer.write("Class", "Design Role", "Method", "LOC", "CC", "Efferent", "NOP");
+			if (listaDesignRoles.size() == 0) {
+				if (tags == null) {
+					writer.write("Class", "Design Role", "Method", "LOC", "CC", "Efferent", "NOP");
 
-				for (CKNumber classMetrics : report.all()) {
-					Map<MethodData, MethodMetrics> metricsByMethod = classMetrics.getMetricsByMethod();
-					for (MethodData metodo : metricsByMethod.keySet()) {
-						MethodMetrics methodMetrics = metricsByMethod.get(metodo);
-						writer.write(classMetrics.getClassName(), "\"" + classMetrics.getDesignRole() + "\"",
-								metodo.getNomeMethod(), methodMetrics.getLinesOfCode(), methodMetrics.getComplexity(),
-								methodMetrics.getEfferentCoupling(), methodMetrics.getNumberOfParameters());
+					for (CKNumber classMetrics : report.all()) {
+						Map<MethodData, MethodMetrics> metricsByMethod = classMetrics.getMetricsByMethod();
+						for (MethodData metodo : metricsByMethod.keySet()) {
+							MethodMetrics methodMetrics = metricsByMethod.get(metodo);
+							writer.write(classMetrics.getClassName(), "\"" + classMetrics.getDesignRole() + "\"",
+									metodo.getNomeMethod(), methodMetrics.getLinesOfCode(),
+									methodMetrics.getComplexity(), methodMetrics.getEfferentCoupling(),
+									methodMetrics.getNumberOfParameters());
+						}
+					}
+				} else {
+					writer.write("Application", "Tag", "Class", "Design Role", "Method", "LOC", "CC", "Efferent",
+							"NOP");
+					String tag = tags.get(commit.getHash());
+					for (CKNumber classMetrics : report.all()) {
+						
+						Map<String, Integer> metricas = metricsByTagDesignRole.get("\"" +classMetrics.getDesignRole() + "\"" + "," + tag);
+						if (metricas == null) {
+							metricas = new HashMap<>();
+							metricas.put("LOC", 0);
+							metricas.put("CC", 0);
+						}
+						int loc = metricas.get("LOC");
+						int cc  = metricas.get("CC");
+						Map<MethodData, MethodMetrics> metricsByMethod = classMetrics.getMetricsByMethod();
+						for (MethodData metodo : metricsByMethod.keySet()) {
+							MethodMetrics methodMetrics = metricsByMethod.get(metodo);
+							loc += methodMetrics.getLinesOfCode();
+							cc  += methodMetrics.getComplexity();
+							writer.write(applicationName, tag, classMetrics.getClassName(),
+									"\"" + classMetrics.getDesignRole() + "\"", metodo.getNomeMethod(),
+									methodMetrics.getLinesOfCode(), methodMetrics.getComplexity(),
+									methodMetrics.getEfferentCoupling(), methodMetrics.getNumberOfParameters());
+						}
+						metricas.put("LOC", loc);
+						metricas.put("CC", cc);
+						metricsByTagDesignRole.put("\"" +classMetrics.getDesignRole() + "\"" + "," + tag, metricas);
+					}
+					writer.write("DesignRole", "Tag", "LOC", "CC");
+					for (String designRoleMetric : metricsByTagDesignRole.keySet()) {
+						Map<String, Integer> metricas = metricsByTagDesignRole.get(designRoleMetric);
+						writer.write(designRoleMetric, metricas.get("LOC"), metricas.get("CC"));
 					}
 				}
 			} else {
 				if (tags == null) {
 					writer.write("Application", "Class", "Design Role", "Method", "LOC", "CC", "Efferent", "NOP");
 					for (CKNumber classMetrics : report.all()) {
-						if (listaConcerns.contains(classMetrics.getDesignRole())) {
+						if (listaDesignRoles.contains(classMetrics.getDesignRole())) {
 							Map<MethodData, MethodMetrics> metricsByMethod = classMetrics.getMetricsByMethod();
 							for (MethodData metodo : metricsByMethod.keySet()) {
 								MethodMetrics methodMetrics = metricsByMethod.get(metodo);
@@ -75,10 +117,11 @@ public class MethodVisitorCK implements CommitVisitor {
 						}
 					}
 				} else {
-					writer.write("Application", "Tag", "Class", "Design Role", "Method", "LOC", "CC", "Efferent", "NOP");
+					writer.write("Application", "Tag", "Class", "Design Role", "Method", "LOC", "CC", "Efferent",
+							"NOP");
 					String tag = tags.get(commit.getHash());
 					for (CKNumber classMetrics : report.all()) {
-						if (listaConcerns.contains(classMetrics.getDesignRole())) {
+						if (listaDesignRoles.contains(classMetrics.getDesignRole())) {
 							Map<MethodData, MethodMetrics> metricsByMethod = classMetrics.getMetricsByMethod();
 							for (MethodData metodo : metricsByMethod.keySet()) {
 								MethodMetrics methodMetrics = metricsByMethod.get(metodo);
@@ -91,26 +134,28 @@ public class MethodVisitorCK implements CommitVisitor {
 					}
 				}
 			}
-		} finally {
+		} finally
+
+		{
 			repo.getScm().reset();
 		}
 	}
 
-	private void desconsiderarConcerns(Commit commit, PersistenceMechanism writer, CKReport report,
+	private void desconsiderarDesignRoles(Commit commit, PersistenceMechanism writer, CKReport report,
 			int quantidadeCorte) {
 
 		// primeiro conta quantas classes associadas ao conecern
-		Map<String, Integer> mapConcerns = new HashMap<String, Integer>();
+		Map<String, Integer> mapDesignRoles = new HashMap<String, Integer>();
 		for (CKNumber classMetrics : report.all()) {
-			Integer quantidade = mapConcerns.get(classMetrics.getDesignRole());
+			Integer quantidade = mapDesignRoles.get(classMetrics.getDesignRole());
 			if (quantidade != null)
-				mapConcerns.put(classMetrics.getDesignRole(), ++quantidade);
+				mapDesignRoles.put(classMetrics.getDesignRole(), ++quantidade);
 			else
-				mapConcerns.put(classMetrics.getDesignRole(), 1);
+				mapDesignRoles.put(classMetrics.getDesignRole(), 1);
 		}
 		// Verifica se conncer deve ser desconsiderado
 		for (CKNumber classMetrics : report.all()) {
-			Integer quantidade = mapConcerns.get(classMetrics.getDesignRole());
+			Integer quantidade = mapDesignRoles.get(classMetrics.getDesignRole());
 			if (quantidade <= quantidadeCorte)
 				classMetrics.setConcern("UNDEFINED");
 		}

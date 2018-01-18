@@ -10,6 +10,7 @@ import com.github.ck.CKNumber;
 import com.github.ck.CKReport;
 
 import br.com.metricminer2.domain.Commit;
+import br.com.metricminer2.domain.Modification;
 import br.com.metricminer2.persistence.PersistenceMechanism;
 import br.com.metricminer2.scm.CommitVisitor;
 import br.com.metricminer2.scm.SCMRepository;
@@ -32,6 +33,8 @@ public class ClassVisitorCK implements CommitVisitor {
 			repo.getScm().checkout(commit.getHash());
 			CK ck = new CK();
 
+			
+			
 			CKReport report = ck.calculate(repo.getPath());
 
 			writer.write("Commit", "Class", "Design Role", "SuperClass", "interfaces", "DIT", "NOM", "CBO", "LCOM", "NOC",

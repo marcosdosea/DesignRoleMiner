@@ -22,13 +22,13 @@ public class RQ3Study implements Study {
 	}
 
 	public void execute() {
-		List<String> androidSelectedDR = Arrays.asList("ACTIVITY", "PERSISTENCE");
-		List<String> eclipseSelectedDR = Arrays.asList("DIALOG", "VIEW");
-		List<String> webSelectedDR = Arrays.asList("ENTITY", "VIEW", "PERSISTENCE");
+		List<String> androidSelectedDR = new ArrayList<String>();
+		List<String> eclipseSelectedDR = new ArrayList<String>();
+		List<String> webSelectedDR = new ArrayList<String>();
 
-		//mineAndroidVersions(androidSelectedDR); // RQ3
+		mineAndroidVersions(androidSelectedDR); // RQ3
 		mineEclipseVersions(eclipseSelectedDR); // RQ3
-		//mineWebVersions(webSelectedDR); // RQ3
+		mineWebVersions(webSelectedDR); // RQ3
 	}
 
 	private void mineWebVersions(List<String> webSelectedDR) {
