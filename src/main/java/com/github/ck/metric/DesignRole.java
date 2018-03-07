@@ -147,6 +147,11 @@ public class DesignRole extends ASTVisitor implements Metric {
 	private void calculate(ITypeBinding binding, String interfaces) {
 		ITypeBinding father = binding.getSuperclass();
 		
+		
+		if (binding.getName().contains("WorkingArrangementsPerOrderController")) {
+			System.out.println("depurar");
+		}
+		
 		if (father != null) {
 			String fatherName = father.getBinaryName();
 			if (father.isFromSource()) { // classe pai é interna
@@ -169,8 +174,8 @@ public class DesignRole extends ASTVisitor implements Metric {
 					designRole = defaultDesignRole.isEmpty() ? binding.getName() : defaultDesignRole;
 				} else {
 					defaultDesignRole = findDefaultDesignRole(father.getBinaryName());
-					if (defaultDesignRole.isEmpty())
-						defaultDesignRole = findDefaultDesignRole(father.getName());
+					//if (defaultDesignRole.isEmpty())
+					//	defaultDesignRole = findDefaultDesignRole(father.getName());
 					designRole = defaultDesignRole.isEmpty() ? father.getName() : defaultDesignRole;
 				}
 			}
