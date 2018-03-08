@@ -1,4 +1,4 @@
-package com.github.designroletool;
+package com.github.designroleminer;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;

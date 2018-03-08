@@ -1,4 +1,4 @@
-package com.github.designroletool;
+package com.github.designroleminer;
 
 import java.util.ArrayList;
 import java.util.HashMap;

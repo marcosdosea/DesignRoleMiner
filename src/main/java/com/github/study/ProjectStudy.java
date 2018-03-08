@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.github.designroletool.ProjectVisitor;
+import com.github.designroleminer.ProjectVisitor;
 
 import br.com.metricminer2.MetricMiner2;
 import br.com.metricminer2.RepositoryMining;

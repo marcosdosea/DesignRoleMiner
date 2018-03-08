@@ -3,7 +3,7 @@ package com.github.study;
 import java.util.Arrays;
 import java.util.List;
 
-import com.github.designroletool.MethodVisitorCK;
+import com.github.designroleminer.MethodVisitorCK;
 
 import br.com.metricminer2.MetricMiner2;
 import br.com.metricminer2.RepositoryMining;

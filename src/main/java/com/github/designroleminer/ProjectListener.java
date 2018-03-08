@@ -1,4 +1,4 @@
-package com.github.designroletool;
+package com.github.designroleminer;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.MethodDeclaration;

@@ -1,7 +1,7 @@
 package com.github.study;
 
-import com.github.designroletool.ClassVisitorDR;
-import com.github.designroletool.MethodVisitorCK;
+import com.github.designroleminer.ClassVisitorDR;
+import com.github.designroleminer.MethodVisitorCK;
 
 import br.com.metricminer2.MetricMiner2;
 import br.com.metricminer2.RepositoryMining;
