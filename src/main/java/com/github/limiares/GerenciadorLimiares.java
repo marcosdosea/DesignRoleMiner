@@ -1,13 +1,18 @@
 package com.github.limiares;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 
+import com.github.ck.CK;
 import com.github.ck.CKNumber;
+import com.github.ck.CKReport;
 import com.github.ck.MethodMetrics;
 import com.github.smelldetector.model.LimiarMetrica;
 
@@ -15,6 +20,33 @@ import br.com.metricminer2.persistence.PersistenceMechanism;
 import br.com.metricminer2.persistence.csv.CSVFile;
 
 public class GerenciadorLimiares {
+
+	public ArrayList<CKNumber> getMetricasProjetos(ArrayList<String> projetos) {
+		ArrayList<CKNumber> listaClasses = new ArrayList<>();
+		for (String path : projetos) {
+			CKReport report = new CK().calculate(path);
+			listaClasses.addAll(report.all());
+		}
+		return listaClasses;
+	}
+
+	public ArrayList<String> lerProjetos(String nomeArquivo) {
+		ArrayList<String> projetos = new ArrayList<>();
+		String arquivo = System.getProperty("user.dir") + "\\" + nomeArquivo;
+		File file = new File(arquivo);
+		try {
+			if (file.exists()) {
+				Scanner scanner = new Scanner(file);
+				while (scanner.hasNext()) {
+					projetos.add(scanner.next());
+				}
+				scanner.close();
+			}
+		} catch (FileNotFoundException e) {
+			System.out.println("Arquivo não encontrados: " + arquivo);
+		}
+		return projetos;
+	}
 
 	public void gerarDesignRoles(List<CKNumber> classes, String fileResultado) {
 
@@ -178,8 +210,9 @@ public class GerenciadorLimiares {
 		LimiarMetrica limiarNOPUndefined = obterLimiarMetricaPercentilAcima(distribuicaoCodigoPorMetricaNOP, totalLoc,
 				90, LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_NOP);
 
-		pm.write(LimiarMetrica.DESIGN_ROLE_UNDEFINED + ";" + limiarLOCUndefined.getLimiarMaximo() + ";" + limiarCCUndefined.getLimiarMaximo() + ";"
-				+ limiarEfferentUndefined.getLimiarMaximo() + ";" + limiarNOPUndefined.getLimiarMaximo() + ";");
+		pm.write(LimiarMetrica.DESIGN_ROLE_UNDEFINED + ";" + limiarLOCUndefined.getLimiarMaximo() + ";"
+				+ limiarCCUndefined.getLimiarMaximo() + ";" + limiarEfferentUndefined.getLimiarMaximo() + ";"
+				+ limiarNOPUndefined.getLimiarMaximo() + ";");
 
 		for (String designRole : linhasDeCodigoPorDesignRole.keySet()) {
 			designRole = designRole.toUpperCase();
@@ -411,7 +444,7 @@ public class GerenciadorLimiares {
 			HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetrica, long totalLOC,
 			Integer percentil, String designRole, String metrica) {
 		HashMap<Integer, BigDecimal> valoresMetricas = distribuicaoCodigoPorMetrica.get(metrica + designRole);
-	
+
 		LimiarMetrica limiarMetrica = new LimiarMetrica();
 		limiarMetrica.setDesignRole(designRole);
 		limiarMetrica.setMetrica(metrica);

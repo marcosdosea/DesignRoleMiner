@@ -1,13 +1,20 @@
 package com.github.limiares;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
+
+import org.junit.Test;
 
 import com.github.ck.CKNumber;
 
-public class GerarLimiares {
+import junit.framework.Assert;
 
-	public static void main(String[] args) {
-		final String PASTA_RESULTADO = "C:\\eclipse\\configuration\\smelldetector\\";
+public class GerenciadorLimiaresTest {
+
+	@Test
+	public void testGerarLimiares() {
+		final String PASTA_RESULTADO = "C:\\DESIGNROLEMINER\\";
 		GerenciadorLimiares gLimiares = new GerenciadorLimiares();
 
 		System.out.println("Gerando Planila de Design Roles...");
@@ -40,6 +47,7 @@ public class GerarLimiares {
 		gLimiares.gerarLimiarDoseaDesignRolePercentil(metricasProjetosReferencia, PASTA_RESULTADO + "D.csv");
 
 		System.out.println("Limiares gravados na pasta " + PASTA_RESULTADO + " com sucesso!");
+		assertTrue(true);
 	}
 
 }
