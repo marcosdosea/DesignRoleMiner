@@ -18,20 +18,20 @@ public class MotivatingStudy implements Study {
 
 	public void execute() {
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/libreplan"))
-				.through(Commits.onlyInHead()).withThreads(5)
-				.process(new ClassVisitorDR(), new CSVFile("D:/Projetos/_Web/web-budget/libreplan-drs.csv")).mine();
+				.through(Commits.single("f2e700f3739ce38d008100c3d515fce3f0755369")).withThreads(5)          // Commit 09.11.2016
+				.process(new ClassVisitorDR(), new CSVFile("D:/Projetos/_Web/libreplan-drs.csv")).mine();
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/libreplan"))
-				.through(Commits.onlyInHead()).withThreads(5)
-				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Web/web-budget/libreplan-metrics.csv"))
+				.through(Commits.single("f2e700f3739ce38d008100c3d515fce3f0755369")).withThreads(5)
+				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Web/libreplan-metrics.csv"))
 				.mine();
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/web-budget"))
-				.through(Commits.onlyInHead()).withThreads(5)
-				.process(new ClassVisitorDR(), new CSVFile("D:/Projetos/_Web/web-budget/web-budget-drs.csv")).mine();
+				.through(Commits.single("fe9873b4c88c2ea28a1adf4c173e10561efd0788")).withThreads(5)       // Commit 20.10.2016
+				.process(new ClassVisitorDR(), new CSVFile("D:/Projetos/_Web/web-budget-drs.csv")).mine();
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/web-budget"))
-				.through(Commits.onlyInHead()).withThreads(5)
-				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Web/web-budget/web-budget-metrics.csv"))
+				.through(Commits.single("fe9873b4c88c2ea28a1adf4c173e10561efd0788")).withThreads(5)
+				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Web/web-budget-metrics.csv"))
 				.mine();
 
 	}

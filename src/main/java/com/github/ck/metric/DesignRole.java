@@ -54,7 +54,7 @@ public class DesignRole extends ASTVisitor implements Metric {
 		defaultDesignRoles.put("controller", "Controller");
 		defaultDesignRoles.put("model", "Model");
 		defaultDesignRoles.put("service", "Service");
-		defaultDesignRoles.put("component", "Component");
+		//defaultDesignRoles.put("component", "Component");   // muito geral
 		
 		// android
 		defaultDesignRoles.put("adapter", "Adapter");
