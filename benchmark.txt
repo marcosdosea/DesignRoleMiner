@@ -5,7 +5,6 @@ D:\Projetos\_Benchmark\OpenLegislation
 D:\Projetos\_Benchmark\openmrs-core
 D:\Projetos\_Benchmark\Activiti
 D:\Projetos\_Benchmark\BroadleafCommerce
-D:\Projetos\_Benchmark\bamboobsc
 D:\Projetos\_Benchmark\DataHubSystem
 D:\Projetos\_Benchmark\mica2
 D:\Projetos\_Benchmark\HospitalDashboard

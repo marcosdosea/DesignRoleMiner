@@ -12,9 +12,9 @@ public class LimiarMetrica {
 	
 	private String metrica;
 	private String designRole;
+	private int limiarMinimo;
 	private int limiarMedio;
 	private int limiarMaximo;
-	private int limiarMaximo2;
 	
 	public String getMetrica() {
 		return metrica;
@@ -40,11 +40,11 @@ public class LimiarMetrica {
 	public void setLimiarMaximo(int limiarMaximo) {
 		this.limiarMaximo = limiarMaximo;
 	}
-	public int getLimiarMaximo2() {
-		return limiarMaximo2;
+	public int getLimiarMinimo() {
+		return limiarMinimo;
 	}
-	public void setLimiarMaximo2(int limiarMaximo2) {
-		this.limiarMaximo2 = limiarMaximo2;
+	public void setLimiarMinimo(int limiarMinimo) {
+		this.limiarMinimo = limiarMinimo;
 	}
 	public String getKey() {
 		return getMetrica()+getDesignRole();

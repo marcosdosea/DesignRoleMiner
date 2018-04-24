@@ -10,7 +10,6 @@ import com.github.ck.CKNumber;
 import com.github.ck.CKReport;
 
 import br.com.metricminer2.domain.Commit;
-import br.com.metricminer2.domain.Modification;
 import br.com.metricminer2.persistence.PersistenceMechanism;
 import br.com.metricminer2.scm.CommitVisitor;
 import br.com.metricminer2.scm.SCMRepository;

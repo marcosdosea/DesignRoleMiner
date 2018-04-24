@@ -7,8 +7,6 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import com.github.limiares.MedianaQuartis;
-
 public class MedianaQuartisTest {
 
 	public ArrayList<Integer> getListaDesordenada(boolean ehImpar) {
