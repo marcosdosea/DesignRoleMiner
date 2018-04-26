@@ -20,14 +20,14 @@ public class GerenciadorLimiaresTest {
 		ArrayList<CKNumber> metricasProjetosReferencia = gLimiares.getMetricasProjetos(projetosReferencia);
 
 		System.out.println("Iniciando a coleta de métricas dos projetos WEB...");
-		//ArrayList<String> projetosBenchmark = gLimiares.lerProjetos("Benchmark.txt");
-		//ArrayList<CKNumber> metricasProjetosBenchmark = gLimiares.getMetricasProjetos(projetosBenchmark);
+		ArrayList<String> projetosBenchmark = gLimiares.lerProjetos("Benchmark.txt");
+		ArrayList<CKNumber> metricasProjetosBenchmark = gLimiares.getMetricasProjetos(projetosBenchmark);
 
 		System.out.println("Gerando Limiares por Alves usando benchmark...");
-		//gLimiares.gerarLimiarDoseaAlves(metricasProjetosBenchmark, PASTA_RESULTADO + "A.csv");
+		gLimiares.gerarLimiarAlves(metricasProjetosBenchmark, PASTA_RESULTADO + "A.csv");
 
 		System.out.println("Gerando Limiares por Vale usando benchmark...");
-		//gLimiares.gerarLimiarVale(metricasProjetosBenchmark, PASTA_RESULTADO + "V.csv");
+		gLimiares.gerarLimiarVale(metricasProjetosBenchmark, PASTA_RESULTADO + "V.csv");
 
 		System.out.println("Gerando Limiares por Aniche...");
 		//gLimiares.gerarLimiarAniche(metricasProjetosBenchmark, PASTA_RESULTADO + "X.csv");
