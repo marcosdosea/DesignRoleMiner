@@ -122,9 +122,6 @@ public class GerenciadorLimiares {
 		HashMap<String, Long> linhasDeCodigoPorDesignRole = new HashMap<>();
 		long totalLoc = obterTotalLinhasCodigoPorDesignRole(classes, linhasDeCodigoPorDesignRole);
 
-		HashMap<String, Long> metodosPorDesignRole = new HashMap<>();
-		long totalMetodos = obterTotalMetodosPorDesignRole(classes, metodosPorDesignRole);
-
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaLOC = new HashMap<>();
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaCC = new HashMap<>();
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaEfferent = new HashMap<>();
@@ -132,28 +129,25 @@ public class GerenciadorLimiares {
 
 		for (CKNumber classe : classes) {
 			for (MethodMetrics method : classe.getMetricsByMethod().values()) {
-				// método Alves
 				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaLOC, method.getLinesOfCode(), method.getLinesOfCode(),
 						LimiarMetrica.METRICA_LOC + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaCC, method.getComplexity(), method.getLinesOfCode(),
 						LimiarMetrica.METRICA_CC + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaEfferent, method.getEfferentCoupling(),
 						method.getLinesOfCode(), LimiarMetrica.METRICA_EC + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
-				// Método Vale
 				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaNOP, method.getNumberOfParameters(),
-						1, LimiarMetrica.METRICA_NOP + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
+						method.getLinesOfCode(), LimiarMetrica.METRICA_NOP + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 			}
 		}
 
-		// Alves Method
 		LimiarMetrica limiarLOC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaLOC, totalLoc, 5, 70, 90,
 				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_LOC);
 		LimiarMetrica limiarCC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCC, totalLoc, 5, 70, 90,
 				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_CC);
 		LimiarMetrica limiarEfferent = obterLimiaresMetrica(distribuicaoCodigoPorMetricaEfferent, totalLoc, 5, 70, 90,
 				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_EC);
-		// Vale's Method
-		LimiarMetrica limiarNOP = obterLimiaresMetrica(distribuicaoCodigoPorMetricaNOP, totalMetodos, 3, 90, 95,
+		// NOP Metric
+		LimiarMetrica limiarNOP = obterLimiaresMetrica(distribuicaoCodigoPorMetricaNOP, totalLoc, 3, 90, 95,
 				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_NOP);
 
 		pm.write(LimiarMetrica.DESIGN_ROLE_UNDEFINED + ";" + limiarLOC.getLimiarMaximo() + ";"
@@ -168,9 +162,6 @@ public class GerenciadorLimiares {
 		HashMap<String, Long> linhasDeCodigoPorDesignRole = new HashMap<>();
 		long totalLoc = obterTotalLinhasCodigoPorDesignRole(classes, linhasDeCodigoPorDesignRole);
 
-		HashMap<String, Long> metodosPorDesignRole = new HashMap<>();
-		long totalMetodos = obterTotalMetodosPorDesignRole(classes, metodosPorDesignRole);
-
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaLOC = new HashMap<>();
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaCC = new HashMap<>();
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaEfferent = new HashMap<>();
@@ -179,39 +170,33 @@ public class GerenciadorLimiares {
 		for (CKNumber classe : classes) {
 			for (MethodMetrics method : classe.getMetricsByMethod().values()) {
 				if (!classe.getDesignRole().toUpperCase().equals(LimiarMetrica.DESIGN_ROLE_UNDEFINED)) {
-					// Alves Method
 					agrupaPorValorMetrica(distribuicaoCodigoPorMetricaLOC, method.getLinesOfCode(),
 							method.getLinesOfCode(), LimiarMetrica.METRICA_LOC + classe.getDesignRole());
 					agrupaPorValorMetrica(distribuicaoCodigoPorMetricaCC, method.getComplexity(),
 							method.getLinesOfCode(), LimiarMetrica.METRICA_CC + classe.getDesignRole());
 					agrupaPorValorMetrica(distribuicaoCodigoPorMetricaEfferent, method.getEfferentCoupling(),
 							method.getLinesOfCode(), LimiarMetrica.METRICA_EC + classe.getDesignRole());
-					// Vale's Method
 					agrupaPorValorMetrica(distribuicaoCodigoPorMetricaNOP, method.getNumberOfParameters(),
-							1, LimiarMetrica.METRICA_NOP + classe.getDesignRole());
+							method.getLinesOfCode(), LimiarMetrica.METRICA_NOP + classe.getDesignRole());
 				}
-				// Alves Method
 				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaLOC, method.getLinesOfCode(), method.getLinesOfCode(),
 						LimiarMetrica.METRICA_LOC + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaCC, method.getComplexity(), method.getLinesOfCode(),
 						LimiarMetrica.METRICA_CC + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaEfferent, method.getEfferentCoupling(),
 						method.getLinesOfCode(), LimiarMetrica.METRICA_EC + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
-				// Vale's Method
 				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaNOP, method.getNumberOfParameters(),
-						1, LimiarMetrica.METRICA_NOP + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
+						method.getLinesOfCode(), LimiarMetrica.METRICA_NOP + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 			}
 		}
 
-		// Alves Method
 		LimiarMetrica limiarLOCUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaLOC, totalLoc, 5, 70, 90,
 				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_LOC);
 		LimiarMetrica limiarCCUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCC, totalLoc, 5, 70, 90,
 				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_CC);
 		LimiarMetrica limiarEfferentUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaEfferent,
 				totalLoc, 5, 70, 90, LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_EC);
-		// Vale's Method
-		LimiarMetrica limiarNOPUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaNOP, totalMetodos, 3, 90, 95,
+		LimiarMetrica limiarNOPUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaNOP, totalLoc, 3, 90, 95,
 				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_NOP);
 
 		pm.write(LimiarMetrica.DESIGN_ROLE_UNDEFINED + ";" + limiarLOCUndefined.getLimiarMaximo() + ";"
@@ -222,17 +207,14 @@ public class GerenciadorLimiares {
 			designRole = designRole.toUpperCase();
 			if (!designRole.contains(LimiarMetrica.DESIGN_ROLE_UNDEFINED)) {
 				long totalLOCPorDesignRole = linhasDeCodigoPorDesignRole.get(designRole);
-				long totalMetodosPorDesignRole = metodosPorDesignRole.get(designRole);
-				// Alves Method
 				LimiarMetrica limiarLOC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaLOC,
 						totalLOCPorDesignRole, 5, 70, 90, designRole, LimiarMetrica.METRICA_LOC);
 				LimiarMetrica limiarCC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCC,
 						totalLOCPorDesignRole, 5, 70, 90, designRole, LimiarMetrica.METRICA_CC);
 				LimiarMetrica limiarEfferent = obterLimiaresMetrica(distribuicaoCodigoPorMetricaEfferent,
 						totalLOCPorDesignRole, 5, 70, 90, designRole, LimiarMetrica.METRICA_EC);
-				// Vale's Method
 				LimiarMetrica limiarNOP = obterLimiaresMetrica(distribuicaoCodigoPorMetricaNOP,
-						totalMetodosPorDesignRole, 3, 90, 95, designRole, LimiarMetrica.METRICA_NOP);
+						totalLOCPorDesignRole, 3, 90, 95, designRole, LimiarMetrica.METRICA_NOP);
 
 				// para limiares muitos baixos assume o limiar médio da aplicacao
 				if (limiarLOC.getLimiarMaximo() < limiarLOCUndefined.getLimiarMaximo())

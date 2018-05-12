@@ -42,6 +42,7 @@ public class DesignRole extends ASTVisitor implements Metric {
 		defaultDesignRoles.put("database", "Persistence");
 		defaultDesignRoles.put("SQL", "Persistence");
 		defaultDesignRoles.put("stream", "Persistence");
+		
 		defaultDesignRoles.put("serializable", "Entity");
 		defaultDesignRoles.put("comparable", "Entity");
 		defaultDesignRoles.put("parcelable", "Entity");
