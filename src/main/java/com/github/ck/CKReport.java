@@ -1,11 +1,17 @@
 package com.github.ck;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CKReport {
+public class CKReport implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private Map<String, CKNumber> results;
 
 	public CKReport() {

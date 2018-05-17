@@ -1,11 +1,16 @@
 package com.github.ck;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 
-public class MethodData {
+public class MethodData implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8680058564070002960L;
 	private String nomeMethod;
     private List<SingleVariableDeclaration> parameters;
 	private int initialLine;

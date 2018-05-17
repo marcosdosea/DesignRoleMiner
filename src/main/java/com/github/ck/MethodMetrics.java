@@ -1,7 +1,13 @@
 package com.github.ck;
 
-public class MethodMetrics {
+import java.io.Serializable;
+
+public class MethodMetrics implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int linesOfCode;
 	private int complexity;
 	private int cohesion;

@@ -1,10 +1,14 @@
 package com.github.limiares;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +18,7 @@ import com.github.ck.CK;
 import com.github.ck.CKNumber;
 import com.github.ck.CKReport;
 import com.github.ck.MethodMetrics;
+import com.github.ck.Utils;
 import com.github.smelldetector.model.LimiarMetrica;
 
 import br.com.metricminer2.persistence.PersistenceMechanism;
@@ -24,11 +29,28 @@ public class GerenciadorLimiares {
 	public ArrayList<CKNumber> getMetricasProjetos(ArrayList<String> projetos) {
 		ArrayList<CKNumber> listaClasses = new ArrayList<>();
 		for (String path : projetos) {
-			System.out.println("Extracting metrics from project "+ path + "...");
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
+			String dataHora = sf.format(Calendar.getInstance().getTime());
+
+			System.out.println("[" + dataHora + "] Extracting metrics from project " + path + "...");
 			CKReport report = new CK().calculate(path);
+			
+			
+			System.out.println("Number of classes: " + report.all().size());
+			Collection<CKNumber> metricasClasses = report.all();
+			long totalMetodos = 0;
+			long totalLoc = 0;
+			for(CKNumber ckNumber: metricasClasses) {
+				totalMetodos += ckNumber.getNom();
+				totalLoc += Utils.countLineNumbers(Utils.readFile(new File(ckNumber.getFile())));
+			}
+			
+			System.out.println("Number of methods: " + totalMetodos);
+			System.out.println("Total Lines of Code: " + totalLoc);
 			
 			listaClasses.addAll(report.all());
 		}
+
 		return listaClasses;
 	}
 
@@ -105,7 +127,6 @@ public class GerenciadorLimiares {
 
 	}
 
-	
 	/**
 	 * Para cada valor encontrado da métrica soma o LOC dos métodos encontrados com
 	 * o mesmo valor. Em seguida, ordena-se essa distribuição pelo valor dessas
@@ -194,8 +215,8 @@ public class GerenciadorLimiares {
 				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_LOC);
 		LimiarMetrica limiarCCUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCC, totalLoc, 5, 70, 90,
 				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_CC);
-		LimiarMetrica limiarEfferentUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaEfferent,
-				totalLoc, 5, 70, 90, LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_EC);
+		LimiarMetrica limiarEfferentUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaEfferent, totalLoc, 5,
+				70, 90, LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_EC);
 		LimiarMetrica limiarNOPUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaNOP, totalLoc, 3, 90, 95,
 				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_NOP);
 
@@ -207,14 +228,14 @@ public class GerenciadorLimiares {
 			designRole = designRole.toUpperCase();
 			if (!designRole.contains(LimiarMetrica.DESIGN_ROLE_UNDEFINED)) {
 				long totalLOCPorDesignRole = linhasDeCodigoPorDesignRole.get(designRole);
-				LimiarMetrica limiarLOC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaLOC,
-						totalLOCPorDesignRole, 5, 70, 90, designRole, LimiarMetrica.METRICA_LOC);
-				LimiarMetrica limiarCC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCC,
-						totalLOCPorDesignRole, 5, 70, 90, designRole, LimiarMetrica.METRICA_CC);
+				LimiarMetrica limiarLOC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaLOC, totalLOCPorDesignRole,
+						5, 70, 90, designRole, LimiarMetrica.METRICA_LOC);
+				LimiarMetrica limiarCC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCC, totalLOCPorDesignRole, 5,
+						70, 90, designRole, LimiarMetrica.METRICA_CC);
 				LimiarMetrica limiarEfferent = obterLimiaresMetrica(distribuicaoCodigoPorMetricaEfferent,
 						totalLOCPorDesignRole, 5, 70, 90, designRole, LimiarMetrica.METRICA_EC);
-				LimiarMetrica limiarNOP = obterLimiaresMetrica(distribuicaoCodigoPorMetricaNOP,
-						totalLOCPorDesignRole, 3, 90, 95, designRole, LimiarMetrica.METRICA_NOP);
+				LimiarMetrica limiarNOP = obterLimiaresMetrica(distribuicaoCodigoPorMetricaNOP, totalLOCPorDesignRole,
+						3, 90, 95, designRole, LimiarMetrica.METRICA_NOP);
 
 				// para limiares muitos baixos assume o limiar médio da aplicacao
 				if (limiarLOC.getLimiarMaximo() < limiarLOCUndefined.getLimiarMaximo())
@@ -262,7 +283,7 @@ public class GerenciadorLimiares {
 				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_CC);
 		LimiarMetrica limiarEfferent = obterLimiaresMetrica(distribuicaoCodigoPorMetricaEfferent, totalLoc, 5, 70, 90,
 				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_EC);
-		LimiarMetrica limiarNOP = obterLimiaresMetrica(distribuicaoCodigoPorMetricaNOP, totalLoc, 5, 70, 90,
+		LimiarMetrica limiarNOP = obterLimiaresMetrica(distribuicaoCodigoPorMetricaNOP, totalLoc, 5, 90, 95,
 				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_NOP);
 
 		pm.write(LimiarMetrica.DESIGN_ROLE_UNDEFINED + ";" + limiarLOC.getLimiarMaximo() + ";"
@@ -288,10 +309,10 @@ public class GerenciadorLimiares {
 						LimiarMetrica.METRICA_LOC + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaCC, method.getComplexity(), 1,
 						LimiarMetrica.METRICA_CC + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
-				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaEfferent, method.getEfferentCoupling(),
-						1, LimiarMetrica.METRICA_EC + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
-				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaNOP, method.getNumberOfParameters(),
-						1, LimiarMetrica.METRICA_NOP + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
+				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaEfferent, method.getEfferentCoupling(), 1,
+						LimiarMetrica.METRICA_EC + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
+				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaNOP, method.getNumberOfParameters(), 1,
+						LimiarMetrica.METRICA_NOP + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 			}
 		}
 
@@ -299,8 +320,8 @@ public class GerenciadorLimiares {
 				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_LOC);
 		LimiarMetrica limiarCC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCC, totalMetodos, 3, 90, 95,
 				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_CC);
-		LimiarMetrica limiarEfferent = obterLimiaresMetrica(distribuicaoCodigoPorMetricaEfferent, totalMetodos, 3, 90, 95,
-				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_EC);
+		LimiarMetrica limiarEfferent = obterLimiaresMetrica(distribuicaoCodigoPorMetricaEfferent, totalMetodos, 3, 90,
+				95, LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_EC);
 		LimiarMetrica limiarNOP = obterLimiaresMetrica(distribuicaoCodigoPorMetricaNOP, totalMetodos, 3, 90, 95,
 				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_NOP);
 
@@ -309,7 +330,6 @@ public class GerenciadorLimiares {
 				+ limiarNOP.getLimiarMaximo() + ";");
 	}
 
-	
 	public void gerarLimiarAniche(List<CKNumber> classes, String fileResultado) {
 		PersistenceMechanism pm = new CSVFile(fileResultado);
 		pm.write("DesignRole;LOC;CC;Efferent;NOP;");
@@ -349,7 +369,7 @@ public class GerenciadorLimiares {
 			LimiarMetrica limiarEfferent = obterLimiaresMetrica(distribuicaoCodigoPorMetricaEfferent,
 					totalLOCPorArchitecturalRole, 5, 70, 90, architecuturalRole, LimiarMetrica.METRICA_EC);
 			LimiarMetrica limiarNOP = obterLimiaresMetrica(distribuicaoCodigoPorMetricaNOP,
-					totalLOCPorArchitecturalRole, 5, 70, 90, architecuturalRole, LimiarMetrica.METRICA_NOP);
+					totalLOCPorArchitecturalRole, 5, 90, 95, architecuturalRole, LimiarMetrica.METRICA_NOP);
 			pm.write(architecuturalRole + ";" + limiarLOC.getLimiarMaximo() + ";" + limiarCC.getLimiarMaximo() + ";"
 					+ limiarEfferent.getLimiarMaximo() + ";" + limiarNOP.getLimiarMaximo() + ";");
 		}
@@ -437,10 +457,8 @@ public class GerenciadorLimiares {
 		}
 		return total;
 	}
-	
-	
-	private long obterTotalMetodosPorDesignRole(List<CKNumber> classes,
-			HashMap<String, Long> metodosPorDesignRole) {
+
+	private long obterTotalMetodosPorDesignRole(List<CKNumber> classes, HashMap<String, Long> metodosPorDesignRole) {
 		long total = 0;
 		if (metodosPorDesignRole == null)
 			metodosPorDesignRole = new HashMap<>();
@@ -451,13 +469,12 @@ public class GerenciadorLimiares {
 			if (somaMetodosPorDesignRole == null) {
 				metodosPorDesignRole.put(classe.getDesignRole(), new Long(classe.getNom()));
 			} else {
-				somaMetodosPorDesignRole  += classe.getNom();
+				somaMetodosPorDesignRole += classe.getNom();
 				metodosPorDesignRole.put(classe.getDesignRole(), somaMetodosPorDesignRole);
 			}
 		}
 		return total;
 	}
-
 
 	private long obterTotalLinhasCodigoPorArchitecturalRole(List<CKNumber> classes,
 			HashMap<String, Long> linhasDeCodigoPorDesignRole) {
@@ -483,6 +500,5 @@ public class GerenciadorLimiares {
 		}
 		return total;
 	}
-
 
 }
