@@ -127,10 +127,11 @@ public class FiltrarMetodosSmell {
 	public static void gravarMetodosSmell(HashMap<String, DadosMetodoSmell> metodosSmell, String arquivoDestino) {
 
 		PersistenceMechanism pm = new CSVFile(System.getProperty("user.dir") + "\\" + arquivoDestino);
-		pm.write("Tecnicas;Classe;Método;LOC;CC;Efferent;NOP;Problema de Design;Deveria ser REFATORADO por conta desse problema?; Se DISCORDAR, quais os motivos? ");
+		pm.write("Tecnicas;Design Role;Classe;Método;LOC;CC;Efferent;NOP;Problema de Design;Deveria ser REFATORADO por conta desse problema?; Se DISCORDAR, quais os motivos? ");
 		for (DadosMetodoSmell metodoSmell : metodosSmell.values()) {
 			pm.write(metodoSmell.getListaTecnicas().toString().replace('[', ' ').replace(']', ' ') + ";"
-					+ metodoSmell.getNomeClasse() + ";"  
+					+ metodoSmell.getClassDesignRole() + ";"  
+		            + metodoSmell.getNomeClasse() + ";"  
 		            + metodoSmell.getNomeMetodo() + ";" +
 					+ metodoSmell.getLinesOfCode() + ";" + metodoSmell.getComplexity() + ";"
 					+ metodoSmell.getEfferent() + ";" + metodoSmell.getNumberOfParameters() + ";" 
