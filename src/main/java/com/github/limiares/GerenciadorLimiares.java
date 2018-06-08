@@ -1,6 +1,5 @@
 package com.github.limiares;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
@@ -238,14 +237,14 @@ public class GerenciadorLimiares {
 						3, 90, 95, designRole, LimiarMetrica.METRICA_NOP);
 
 				// para limiares muitos baixos assume o limiar médio da aplicacao
-				if (limiarLOC.getLimiarMaximo() < limiarLOCUndefined.getLimiarMaximo())
-					limiarLOC.setLimiarMaximo(limiarLOCUndefined.getLimiarMaximo());
-				if (limiarCC.getLimiarMaximo() < limiarCCUndefined.getLimiarMaximo())
-					limiarCC.setLimiarMaximo(limiarCCUndefined.getLimiarMaximo());
-				if (limiarEfferent.getLimiarMaximo() < limiarEfferentUndefined.getLimiarMaximo())
-					limiarEfferent.setLimiarMaximo(limiarEfferentUndefined.getLimiarMaximo());
-				if (limiarNOP.getLimiarMaximo() < limiarNOPUndefined.getLimiarMaximo())
-					limiarNOP.setLimiarMaximo(limiarNOPUndefined.getLimiarMaximo());
+				if (limiarLOC.getLimiarMaximo() < limiarLOCUndefined.getLimiarMinimo())
+					limiarLOC.setLimiarMaximo(limiarLOCUndefined.getLimiarMinimo());
+				if (limiarCC.getLimiarMaximo() < limiarCCUndefined.getLimiarMinimo())
+					limiarCC.setLimiarMaximo(limiarCCUndefined.getLimiarMinimo());
+				if (limiarEfferent.getLimiarMaximo() < limiarEfferentUndefined.getLimiarMinimo())
+					limiarEfferent.setLimiarMaximo(limiarEfferentUndefined.getLimiarMinimo());
+				if (limiarNOP.getLimiarMaximo() < limiarNOPUndefined.getLimiarMinimo())
+					limiarNOP.setLimiarMaximo(limiarNOPUndefined.getLimiarMinimo());
 				pm.write(designRole + ";" + limiarLOC.getLimiarMaximo() + ";" + limiarCC.getLimiarMaximo() + ";"
 						+ limiarEfferent.getLimiarMaximo() + ";" + limiarNOP.getLimiarMaximo() + ";");
 			}
