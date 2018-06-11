@@ -1,0 +1,15 @@
+D:\Projetos\_Benchmark2018\bamboobsc
+D:\Projetos\_Benchmark2018\bigbluebutton
+D:\Projetos\_Benchmark2018\cometd
+D:\Projetos\_Benchmark2018\easybuggy
+D:\Projetos\_Benchmark2018\esapi-java-legacy
+D:\Projetos\_Benchmark2018\heritrix3
+D:\Projetos\_Benchmark2018\libreplan
+D:\Projetos\_Benchmark2018\LoboEvolution
+D:\Projetos\_Benchmark2018\mct
+D:\Projetos\_Benchmark2018\mes
+D:\Projetos\_Benchmark2018\NGB
+D:\Projetos\_Benchmark2018\openmrs-core
+D:\Projetos\_Benchmark2018\traccar-web
+D:\Projetos\_Benchmark2018\web-budget
+D:\Projetos\_Benchmark2018\zkspreadsheet
