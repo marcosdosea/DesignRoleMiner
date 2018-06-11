@@ -237,14 +237,14 @@ public class GerenciadorLimiares {
 						3, 90, 95, designRole, LimiarMetrica.METRICA_NOP);
 
 				// para limiares muitos baixos assume o limiar médio da aplicacao
-				if (limiarLOC.getLimiarMaximo() < limiarLOCUndefined.getLimiarMinimo())
-					limiarLOC.setLimiarMaximo(limiarLOCUndefined.getLimiarMinimo());
-				if (limiarCC.getLimiarMaximo() < limiarCCUndefined.getLimiarMinimo())
-					limiarCC.setLimiarMaximo(limiarCCUndefined.getLimiarMinimo());
-				if (limiarEfferent.getLimiarMaximo() < limiarEfferentUndefined.getLimiarMinimo())
-					limiarEfferent.setLimiarMaximo(limiarEfferentUndefined.getLimiarMinimo());
-				if (limiarNOP.getLimiarMaximo() < limiarNOPUndefined.getLimiarMinimo())
-					limiarNOP.setLimiarMaximo(limiarNOPUndefined.getLimiarMinimo());
+				if (limiarLOC.getLimiarMaximo() < limiarLOCUndefined.getLimiarMedio())
+					limiarLOC.setLimiarMaximo(limiarLOCUndefined.getLimiarMedio());
+				if (limiarCC.getLimiarMaximo() < limiarCCUndefined.getLimiarMedio())
+					limiarCC.setLimiarMaximo(limiarCCUndefined.getLimiarMedio());
+				if (limiarEfferent.getLimiarMaximo() < limiarEfferentUndefined.getLimiarMedio())
+					limiarEfferent.setLimiarMaximo(limiarEfferentUndefined.getLimiarMedio());
+				if (limiarNOP.getLimiarMaximo() < limiarNOPUndefined.getLimiarMedio())
+					limiarNOP.setLimiarMaximo(limiarNOPUndefined.getLimiarMedio());
 				pm.write(designRole + ";" + limiarLOC.getLimiarMaximo() + ";" + limiarCC.getLimiarMaximo() + ";"
 						+ limiarEfferent.getLimiarMaximo() + ";" + limiarNOP.getLimiarMaximo() + ";");
 			}
