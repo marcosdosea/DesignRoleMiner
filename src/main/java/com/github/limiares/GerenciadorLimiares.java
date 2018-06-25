@@ -88,6 +88,27 @@ public class GerenciadorLimiares {
 
 	}
 
+	
+	/**
+	 * Generate sheet with architectural roles assigned to each class
+	 * 
+	 * @param classes
+	 * @param fileResultado
+	 */
+	public void gerarArchitecturalRoles(List<CKNumber> classes, String fileResultado) {
+
+		PersistenceMechanism pm = new CSVFile(fileResultado);
+		pm.write("Classe                              ;ArchitecturalRole                        ;");
+
+		for (CKNumber classe : classes) {
+			if (classe.isArchitecturalRole())
+				pm.write(classe.getClassName() + ";" + classe.getDesignRole() + ";");
+			else
+				pm.write(classe.getClassName() + ";UNINDENTIFIED;");
+		}
+
+	}
+	
 	/**
 	 * Generate thresholds do LOC, CC, Efferent and NOP metrics using quartil of
 	 * distribution of values
@@ -436,7 +457,7 @@ public class GerenciadorLimiares {
 		return limiarMetrica;
 	}
 
-	private long obterTotalLinhasCodigoPorDesignRole(List<CKNumber> classes,
+	public long obterTotalLinhasCodigoPorDesignRole(List<CKNumber> classes,
 			HashMap<String, Long> linhasDeCodigoPorDesignRole) {
 		long total = 0;
 		if (linhasDeCodigoPorDesignRole == null)

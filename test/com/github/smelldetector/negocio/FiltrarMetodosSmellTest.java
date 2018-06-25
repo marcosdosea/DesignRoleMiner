@@ -27,6 +27,9 @@ public class FiltrarMetodosSmellTest {
 			System.out.println("Gerando DR.csv com a lista classes e design roles atribuídos...");
 			gLimiares.gerarDesignRoles(metricasProjetosAnalisar, System.getProperty("user.dir") + "\\DR.CSV");
 
+			System.out.println("Gerando AR.csv com a lista classes e design roles atribuídos...");
+			gLimiares.gerarArchitecturalRoles(metricasProjetosAnalisar, System.getProperty("user.dir") + "\\AR.CSV");
+
 			System.out.println("Carregando valores limiares...");
 			List<LimiarTecnica> listaTecnicas = CarregaSalvaArquivo
 					.carregarLimiares(System.getProperty("user.dir") + "\\thresholds\\");

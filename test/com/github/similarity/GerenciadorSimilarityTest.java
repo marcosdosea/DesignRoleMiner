@@ -22,6 +22,23 @@ public class GerenciadorSimilarityTest {
 		gLimiares = new GerenciadorLimiares();
 	}
 	
+	//@Test
+	public void testCalculateSimilarityMenor() {
+		try {
+			ArrayList<String> listAndroid = new ArrayList<>();
+			listAndroid.add("D:\\Projetos\\_Android\\bitcoin-wallet");
+			ArrayList<CKNumber> bitcoin = gLimiares.getMetricasProjetos(listAndroid);
+			
+			listAndroid = new ArrayList<>();
+			listAndroid.add("D:\\Projetos\\_Android\\k-9");
+			ArrayList<CKNumber> k9 = gLimiares.getMetricasProjetos(listAndroid);
+			System.out.println("======>>>> Bitcoin x K9 : " + gSimilarity.calculateSimilarityPerDesignRole(bitcoin, k9));
+		} catch (Exception e) {
+			assertTrue(false);
+		}
+		assertTrue(true);
+	}
+	
 	@Test
 	public void testCalculateSimilarityBigBlueButton() {
 		try {
@@ -77,27 +94,27 @@ public class GerenciadorSimilarityTest {
 			System.out.println("******* Eclipse *****");
 			ArrayList<String> listEclipse = new ArrayList<>();
 			listEclipse.add("D:\\Projetos\\_Eclipse\\Activiti-Designer");
-			ArrayList<CKNumber> activiti = gLimiares.getMetricasProjetos(listAndroid);
+			ArrayList<CKNumber> activiti = gLimiares.getMetricasProjetos(listEclipse);
 			System.out.println("======>>>> BigblueButton x Activiti : " + gSimilarity.calculateSimilarityPerDesignRole(metricasBigBlueButton, activiti));
 			
 			listEclipse = new ArrayList<>();
 			listEclipse.add("D:\\Projetos\\_Eclipse\\angularjs-eclipse");
-			ArrayList<CKNumber> angularjs = gLimiares.getMetricasProjetos(listAndroid);
+			ArrayList<CKNumber> angularjs = gLimiares.getMetricasProjetos(listEclipse);
 			System.out.println("======>>>> BigblueButton x AngularJS : " + gSimilarity.calculateSimilarityPerDesignRole(metricasBigBlueButton, angularjs));
 			
 			listEclipse = new ArrayList<>();
 			listEclipse.add("D:\\Projetos\\_Eclipse\\arduino-eclipse-plugin");
-			ArrayList<CKNumber> arduino = gLimiares.getMetricasProjetos(listAndroid);
+			ArrayList<CKNumber> arduino = gLimiares.getMetricasProjetos(listEclipse);
 			System.out.println("======>>>> BigblueButton x Arduino : " + gSimilarity.calculateSimilarityPerDesignRole(metricasBigBlueButton, arduino));
 			
 			listEclipse = new ArrayList<>();
 			listEclipse.add("D:\\Projetos\\_Eclipse\\droolsjbpm-tools");
-			ArrayList<CKNumber> droolsjbpm = gLimiares.getMetricasProjetos(listAndroid);
+			ArrayList<CKNumber> droolsjbpm = gLimiares.getMetricasProjetos(listEclipse);
 			System.out.println("======>>>> BigblueButton x Droolsjbpm : " + gSimilarity.calculateSimilarityPerDesignRole(metricasBigBlueButton, droolsjbpm));
 			
 			listEclipse = new ArrayList<>();
 			listEclipse.add("D:\\Projetos\\_Eclipse\\sonarlint-eclipse");
-			ArrayList<CKNumber> sonarlint = gLimiares.getMetricasProjetos(listAndroid);
+			ArrayList<CKNumber> sonarlint = gLimiares.getMetricasProjetos(listEclipse);
 			System.out.println("======>>>> BigblueButton x Sonarlint : " + gSimilarity.calculateSimilarityPerDesignRole(metricasBigBlueButton, sonarlint));
 			
 			System.out.println("======>>>> Activiti x Activiti : " + gSimilarity.calculateSimilarityPerDesignRole(activiti, activiti));
@@ -122,6 +139,7 @@ public class GerenciadorSimilarityTest {
 			
 			assertTrue(true);
 		} catch (Exception e) {
+			e.printStackTrace();
 			assertTrue(false);
 		}
 
