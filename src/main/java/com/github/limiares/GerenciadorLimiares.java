@@ -35,7 +35,6 @@ public class GerenciadorLimiares {
 			CKReport report = new CK().calculate(path);
 			
 			
-			System.out.println("Number of classes: " + report.all().size());
 			Collection<CKNumber> metricasClasses = report.all();
 			long totalMetodos = 0;
 			long totalLoc = 0;
@@ -44,6 +43,7 @@ public class GerenciadorLimiares {
 				totalLoc += Utils.countLineNumbers(Utils.readFile(new File(ckNumber.getFile())));
 			}
 			
+			System.out.println("Number of classes: " + report.all().size());
 			System.out.println("Number of methods: " + totalMetodos);
 			System.out.println("Total Lines of Code: " + totalLoc);
 			
