@@ -6,7 +6,8 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import com.github.ck.CKNumber;
+import com.github.mauricioaniche.ck.CKNumber;
+import com.github.drminer.threshold.GerenciadorLimiares;
 
 public class GerenciadorLimiaresTest {
 

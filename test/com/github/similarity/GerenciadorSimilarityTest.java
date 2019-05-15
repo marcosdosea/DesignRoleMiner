@@ -7,8 +7,9 @@ import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.ck.CKNumber;
-import com.github.limiares.GerenciadorLimiares;
+import com.github.mauricioaniche.ck.CKNumber;
+import com.github.drminer.similarity.GerenciadorSimilarity;
+import com.github.drminer.threshold.GerenciadorLimiares;
 
 public class GerenciadorSimilarityTest {
 
