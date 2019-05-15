@@ -10,7 +10,7 @@ import org.repodriller.filter.range.Commits;
 import org.repodriller.persistence.csv.CSVFile;
 import org.repodriller.scm.GitRepository;
 
-import com.github.drminer.visitor.MethodVisitorCK;
+import com.github.drminer.visitor.MethodVisitorMetric;
 
 public class RQ2Study implements Study {
 
@@ -41,82 +41,82 @@ public class RQ2Study implements Study {
 	private void mineAndroidDesignRoles(List<String> drs) {
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Android/bitcoin-wallet"))
-				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorCK(drs, "bitcoin"),
+				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorMetric(drs, "bitcoin"),
 						new CSVFile("D:/Projetos/_Android/selected-drs-android.csv", true))
 				.mine();
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Android/ExoPlayer"))
-				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorCK(drs, "exoplayer"),
+				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorMetric(drs, "exoplayer"),
 						new CSVFile("D:/Projetos/_Android/selected-drs-android.csv", true))
 				.mine();
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Android/Talon-for-Twitter"))
-				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorCK(drs, "talon"),
+				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorMetric(drs, "talon"),
 						new CSVFile("D:/Projetos/_Android/selected-drs-android.csv", true))
 				.mine();
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Android/sms-backup-plus"))
-				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorCK(drs, "sms-backup"),
+				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorMetric(drs, "sms-backup"),
 						new CSVFile("D:/Projetos/_Android/selected-drs-android.csv", true))
 				.mine();
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Android/k-9")).through(Commits.onlyInHead())
-				.withThreads(5).process(new MethodVisitorCK(drs, "k9"),
+				.withThreads(5).process(new MethodVisitorMetric(drs, "k9"),
 						new CSVFile("D:/Projetos/_Android/selected-drs-android.csv", true))
 				.mine();
 	}
 
 	private void mineEclipseDesignRoles(List<String> eclipseDR) {
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Eclipse/Activiti-Designer"))
-				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorCK(eclipseDR, "Activiti"),
+				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorMetric(eclipseDR, "Activiti"),
 						new CSVFile("D:/Projetos/_Eclipse/selected-drs-eclipse.csv", true))
 				.mine();
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Eclipse/angularjs-eclipse"))
-				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorCK(eclipseDR, "AngularJS"),
+				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorMetric(eclipseDR, "AngularJS"),
 						new CSVFile("D:/Projetos/_Eclipse/selected-drs-eclipse.csv", true))
 				.mine();
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Eclipse/arduino-eclipse-plugin"))
-				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorCK(eclipseDR, "Arduino"),
+				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorMetric(eclipseDR, "Arduino"),
 						new CSVFile("D:/Projetos/_Eclipse/selected-drs-eclipse.csv", true))
 				.mine();
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Eclipse/droolsjbpm-tools"))
-				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorCK(eclipseDR, "DroolsJBPM"),
+				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorMetric(eclipseDR, "DroolsJBPM"),
 						new CSVFile("D:/Projetos/_Eclipse/selected-drs-eclipse.csv", true))
 				.mine();
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Eclipse/sonarlint-eclipse"))
-				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorCK(eclipseDR, "Sonarlint"),
+				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorMetric(eclipseDR, "Sonarlint"),
 						new CSVFile("D:/Projetos/_Eclipse/selected-drs-eclipse.csv", true))
 				.mine();
 	}
 
 	private void mineWebDesignRoles(List<String> webDR) {
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/bigbluebutton"))
-				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorCK(webDR, "bigbluebutton"),
+				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorMetric(webDR, "bigbluebutton"),
 						new CSVFile("D:/Projetos/_Web/selected-drs-web.csv", true))
 				.mine();
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/openmrs-core"))
-				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorCK(webDR, "openmrs"),
+				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorMetric(webDR, "openmrs"),
 						new CSVFile("D:/Projetos/_Web/selected-drs-web.csv", true))
 				.mine();
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/heritrix3"))
-				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorCK(webDR, "heritrix3"),
+				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorMetric(webDR, "heritrix3"),
 						new CSVFile("D:/Projetos/_Web/selected-drs-web.csv", true))
 				.mine();
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/qalingo-engine"))
-				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorCK(webDR, "qalingo"),
+				.through(Commits.onlyInHead()).withThreads(5).process(new MethodVisitorMetric(webDR, "qalingo"),
 						new CSVFile("D:/Projetos/_Web/selected-drs-web.csv", true))
 				.mine();
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/libreplan"))
 				.through(Commits.single("f2e700f3739ce38d008100c3d515fce3f0755369"))
-				.process(new MethodVisitorCK(webDR, "libreplan"),
+				.process(new MethodVisitorMetric(webDR, "libreplan"),
 						new CSVFile("D:/Projetos/_Web/selected-drs-web.csv", true))
 				.mine();
 	}

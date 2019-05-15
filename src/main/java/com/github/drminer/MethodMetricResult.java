@@ -1,8 +1,8 @@
-package com.github.mauricioaniche.ck;
+package com.github.drminer;
 
 import java.io.Serializable;
 
-public class MethodMetrics implements Serializable {
+public class MethodMetricResult implements Serializable {
 	
 	/**
 	 * 
@@ -14,7 +14,7 @@ public class MethodMetrics implements Serializable {
 	private int numberOfParameters;
 	private int efferentCoupling;
 	
-	public MethodMetrics() {
+	public MethodMetricResult() {
 		linesOfCode = 0;
 		complexity = 0;
 		cohesion = 0;

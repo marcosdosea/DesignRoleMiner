@@ -7,8 +7,8 @@ import org.repodriller.filter.range.Commits;
 import org.repodriller.persistence.csv.CSVFile;
 import org.repodriller.scm.GitRepository;
 
-import com.github.drminer.visitor.ClassVisitorDR;
-import com.github.drminer.visitor.MethodVisitorCK;
+import com.github.drminer.visitor.ClassVisitorDesignRole;
+import com.github.drminer.visitor.MethodVisitorMetric;
 
 public class WebBudgetStudy implements Study {
 
@@ -19,11 +19,11 @@ public class WebBudgetStudy implements Study {
 	public void execute() {
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/web-budget"))
 				.through(Commits.onlyInHead()).withThreads(1)
-				.process(new ClassVisitorDR(), new CSVFile("D:/Projetos/_Web/web-budget/web-budget-drs.csv")).mine();
+				.process(new ClassVisitorDesignRole(), new CSVFile("D:/Projetos/_Web/web-budget/web-budget-drs.csv")).mine();
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/web-budget"))
 				.through(Commits.onlyInHead()).withThreads(1)
-				.process(new MethodVisitorCK(), new CSVFile("D:/Projetos/_Web/web-budget/web-budget-metrics.csv"))
+				.process(new MethodVisitorMetric(), new CSVFile("D:/Projetos/_Web/web-budget/web-budget-metrics.csv"))
 				.mine();
 	}
 

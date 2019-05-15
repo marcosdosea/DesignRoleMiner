@@ -1,11 +1,13 @@
-package com.github.mauricioaniche.ck;
+package com.github.drminer;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CKNumber implements Serializable {
+import com.github.mauricioaniche.ck.MethodData;
+
+public class ClassMetricResult implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -29,9 +31,9 @@ public class CKNumber implements Serializable {
 	private int nom;
 
 	private Map<String, Integer> specific;
-	private Map<MethodData, MethodMetrics> metricsByMethod;
+	private Map<MethodData, MethodMetricResult> metricsByMethod;
 
-	public CKNumber(String file, String className, String type) {
+	public ClassMetricResult(String file, String className, String type) {
 		this.file = file;
 		this.className = className;
 		this.type = type;
@@ -59,7 +61,7 @@ public class CKNumber implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		CKNumber other = (CKNumber) obj;
+		ClassMetricResult other = (ClassMetricResult) obj;
 		if (file == null) {
 			if (other.file != null)
 				return false;
@@ -194,11 +196,11 @@ public class CKNumber implements Serializable {
 	}
 
 
-	public Map<MethodData, MethodMetrics> getMetricsByMethod() {
+	public Map<MethodData, MethodMetricResult> getMetricsByMethod() {
 		return metricsByMethod;
 	}
 
-	public void setMetricsByMethod(Map<MethodData, MethodMetrics> metricsByMethod) {
+	public void setMetricsByMethod(Map<MethodData, MethodMetricResult> metricsByMethod) {
 		this.metricsByMethod = metricsByMethod;
 	}
 
@@ -212,7 +214,7 @@ public class CKNumber implements Serializable {
 	}
 	@Override
 	public String toString() {
-		return "CKNumber [file=" + file + ", className=" + className + ", type=" + type + ", dit=" + dit + ", noc="
+		return "ClassMetricResult [file=" + file + ", className=" + className + ", type=" + type + ", dit=" + dit + ", noc="
 				+ noc + ", wmc=" + wmc + ", cbo=" + cbo + ", lcom=" + lcom + ", rfc=" + rfc + ", nom=" + nom
 				+ ", specific=" + specific + "]";
 	}

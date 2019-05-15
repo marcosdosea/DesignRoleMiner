@@ -10,36 +10,36 @@ import org.repodriller.persistence.PersistenceMechanism;
 import org.repodriller.scm.CommitVisitor;
 import org.repodriller.scm.SCMRepository;
 
+import com.github.drminer.ClassMetricResult;
+import com.github.drminer.MethodMetricResult;
+import com.github.drminer.MetricReport;
 import com.github.mauricioaniche.ck.CK;
-import com.github.mauricioaniche.ck.CKNumber;
-import com.github.mauricioaniche.ck.CKReport;
 import com.github.mauricioaniche.ck.MethodData;
-import com.github.mauricioaniche.ck.MethodMetrics;
 
-public class MethodVisitorCK implements CommitVisitor {
+public class MethodVisitorMetric implements CommitVisitor {
 
 	List<String> listaDesignRoles = new ArrayList<String>();
 	String applicationName;
 	Map<String, String> tags = null;
 	Map<String, Map<String, Integer>> metricsByTagDesignRole = new HashMap<>();
 
-	public MethodVisitorCK(List<String> listaDesignRoles, String applicationName) {
+	public MethodVisitorMetric(List<String> listaDesignRoles, String applicationName) {
 		this.listaDesignRoles = listaDesignRoles;
 		this.applicationName = applicationName;
 	}
 
-	public MethodVisitorCK(List<String> listaDesignRoles, String applicationName, Map<String, String> tags) {
+	public MethodVisitorMetric(List<String> listaDesignRoles, String applicationName, Map<String, String> tags) {
 		this.listaDesignRoles = listaDesignRoles;
 		this.applicationName = applicationName;
 		this.tags = tags;
 	}
 
-	public MethodVisitorCK(String applicationName, Map<String, String> tags) {
+	public MethodVisitorMetric(String applicationName, Map<String, String> tags) {
 		this.applicationName = applicationName;
 		this.tags = tags;
 	}
 
-	public MethodVisitorCK() {
+	public MethodVisitorMetric() {
 		super();
 	}
 
@@ -49,7 +49,7 @@ public class MethodVisitorCK implements CommitVisitor {
 			repo.getScm().checkout(commit.getHash());
 			CK ck = new CK();
 
-			CKReport report = ck.calculate(repo.getPath());
+			MetricReport report = ck.calculate(repo.getPath());
 
 			desconsiderarDesignRoles(commit, writer, report, 1);
 
@@ -57,10 +57,10 @@ public class MethodVisitorCK implements CommitVisitor {
 				if (tags == null) {
 					writer.write("Class", "Design Role", "Method", "LOC", "CC", "Efferent", "NOP");
 
-					for (CKNumber classMetrics : report.all()) {
-						Map<MethodData, MethodMetrics> metricsByMethod = classMetrics.getMetricsByMethod();
+					for (ClassMetricResult classMetrics : report.all()) {
+						Map<MethodData, MethodMetricResult> metricsByMethod = classMetrics.getMetricsByMethod();
 						for (MethodData metodo : metricsByMethod.keySet()) {
-							MethodMetrics methodMetrics = metricsByMethod.get(metodo);
+							MethodMetricResult methodMetrics = metricsByMethod.get(metodo);
 							writer.write(classMetrics.getClassName(), "\"" + classMetrics.getDesignRole() + "\"",
 									metodo.getNomeMethod(), methodMetrics.getLinesOfCode(),
 									methodMetrics.getComplexity(), methodMetrics.getEfferentCoupling(),
@@ -71,7 +71,7 @@ public class MethodVisitorCK implements CommitVisitor {
 					writer.write("Application", "Tag", "Class", "Design Role", "Method", "LOC", "CC", "Efferent",
 							"NOP");
 					String tag = tags.get(commit.getHash());
-					for (CKNumber classMetrics : report.all()) {
+					for (ClassMetricResult classMetrics : report.all()) {
 
 						Map<String, Integer> metricas = metricsByTagDesignRole
 								.get("\"" + classMetrics.getDesignRole() + "\"" + "," + tag);
@@ -82,9 +82,9 @@ public class MethodVisitorCK implements CommitVisitor {
 						}
 						int loc = metricas.get("LOC");
 						int cc = metricas.get("CC");
-						Map<MethodData, MethodMetrics> metricsByMethod = classMetrics.getMetricsByMethod();
+						Map<MethodData, MethodMetricResult> metricsByMethod = classMetrics.getMetricsByMethod();
 						for (MethodData metodo : metricsByMethod.keySet()) {
-							MethodMetrics methodMetrics = metricsByMethod.get(metodo);
+							MethodMetricResult methodMetrics = metricsByMethod.get(metodo);
 							loc += methodMetrics.getLinesOfCode();
 							cc += methodMetrics.getComplexity();
 							writer.write(applicationName, tag, classMetrics.getClassName(),
@@ -105,11 +105,11 @@ public class MethodVisitorCK implements CommitVisitor {
 			} else {
 				if (tags == null) {
 					writer.write("Application", "Class", "Design Role", "Method", "LOC", "CC", "Efferent", "NOP");
-					for (CKNumber classMetrics : report.all()) {
+					for (ClassMetricResult classMetrics : report.all()) {
 						if (listaDesignRoles.contains(classMetrics.getDesignRole())) {
-							Map<MethodData, MethodMetrics> metricsByMethod = classMetrics.getMetricsByMethod();
+							Map<MethodData, MethodMetricResult> metricsByMethod = classMetrics.getMetricsByMethod();
 							for (MethodData metodo : metricsByMethod.keySet()) {
-								MethodMetrics methodMetrics = metricsByMethod.get(metodo);
+								MethodMetricResult methodMetrics = metricsByMethod.get(metodo);
 								writer.write(applicationName, classMetrics.getClassName(),
 										"\"" + classMetrics.getDesignRole() + "\"", metodo.getNomeMethod(),
 										methodMetrics.getLinesOfCode(), methodMetrics.getComplexity(),
@@ -121,11 +121,11 @@ public class MethodVisitorCK implements CommitVisitor {
 					writer.write("Application", "Tag", "Class", "Design Role", "Method", "LOC", "CC", "Efferent",
 							"NOP");
 					String tag = tags.get(commit.getHash());
-					for (CKNumber classMetrics : report.all()) {
+					for (ClassMetricResult classMetrics : report.all()) {
 						if (listaDesignRoles.contains(classMetrics.getDesignRole())) {
-							Map<MethodData, MethodMetrics> metricsByMethod = classMetrics.getMetricsByMethod();
+							Map<MethodData, MethodMetricResult> metricsByMethod = classMetrics.getMetricsByMethod();
 							for (MethodData metodo : metricsByMethod.keySet()) {
-								MethodMetrics methodMetrics = metricsByMethod.get(metodo);
+								MethodMetricResult methodMetrics = metricsByMethod.get(metodo);
 								writer.write(applicationName, tag, classMetrics.getClassName(),
 										"\"" + classMetrics.getDesignRole() + "\"", metodo.getNomeMethod(),
 										methodMetrics.getLinesOfCode(), methodMetrics.getComplexity(),
@@ -142,12 +142,12 @@ public class MethodVisitorCK implements CommitVisitor {
 		}
 	}
 
-	private void desconsiderarDesignRoles(Commit commit, PersistenceMechanism writer, CKReport report,
+	private void desconsiderarDesignRoles(Commit commit, PersistenceMechanism writer, MetricReport report,
 			int quantidadeCorte) {
 
 		// primeiro conta quantas classes associadas ao conecern
 		Map<String, Integer> mapDesignRoles = new HashMap<String, Integer>();
-		for (CKNumber classMetrics : report.all()) {
+		for (ClassMetricResult classMetrics : report.all()) {
 			Integer quantidade = mapDesignRoles.get(classMetrics.getDesignRole());
 			if (quantidade != null)
 				mapDesignRoles.put(classMetrics.getDesignRole(), ++quantidade);
@@ -155,7 +155,7 @@ public class MethodVisitorCK implements CommitVisitor {
 				mapDesignRoles.put(classMetrics.getDesignRole(), 1);
 		}
 		// Verifica se conncer deve ser desconsiderado
-		for (CKNumber classMetrics : report.all()) {
+		for (ClassMetricResult classMetrics : report.all()) {
 			Integer quantidade = mapDesignRoles.get(classMetrics.getDesignRole());
 			if (quantidade <= quantidadeCorte)
 				classMetrics.setConcern("UNDEFINED");

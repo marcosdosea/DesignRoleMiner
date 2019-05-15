@@ -7,23 +7,23 @@ import java.util.List;
 import org.repodriller.persistence.PersistenceMechanism;
 import org.repodriller.persistence.csv.CSVFile;
 
+import com.github.drminer.ClassMetricResult;
+import com.github.drminer.MethodMetricResult;
 import com.github.drminer.smelldetector.model.DadosMetodoSmell;
 import com.github.drminer.smelldetector.model.LimiarMetrica;
 import com.github.drminer.smelldetector.model.LimiarTecnica;
-import com.github.mauricioaniche.ck.CKNumber;
 import com.github.mauricioaniche.ck.MethodData;
-import com.github.mauricioaniche.ck.MethodMetrics;
 
 public class FiltrarMetodosSmell {
 
 	static final String TECNICA_ANICHE = "X";
 
-	public static HashMap<String, DadosMetodoSmell> filtrar(ArrayList<CKNumber> classesAnalisar,
+	public static HashMap<String, DadosMetodoSmell> filtrar(ArrayList<ClassMetricResult> classesAnalisar,
 			List<LimiarTecnica> listaTecnicas, HashMap<String, DadosMetodoSmell> metodosSmell) {
 		if (metodosSmell == null)
 			metodosSmell = new HashMap<>();
 
-		for (CKNumber classe : classesAnalisar) {
+		for (ClassMetricResult classe : classesAnalisar) {
 			for (LimiarTecnica limiarTecnica : listaTecnicas) {
 
 				boolean consideraArchitecturalRoles = limiarTecnica.getTecnica().equals(TECNICA_ANICHE) ? true : false;
@@ -52,7 +52,7 @@ public class FiltrarMetodosSmell {
 
 				for (MethodData metodo : classe.getMetricsByMethod().keySet()) {
 
-					MethodMetrics metodoMetrics = classe.getMetricsByMethod().get(metodo);
+					MethodMetricResult metodoMetrics = classe.getMetricsByMethod().get(metodo);
 
 					if (metodoMetrics.getLinesOfCode() > limiarLOC.getLimiarMaximo()) {
 						String mensagem = "Methods in this system have on maximum " + limiarLOC.getLimiarMaximo()
@@ -89,7 +89,7 @@ public class FiltrarMetodosSmell {
 		return metodosSmell;
 	}
 
-	private static void addMetodoSmell(CKNumber classe, MethodData metodo, MethodMetrics metricas, String type,
+	private static void addMetodoSmell(ClassMetricResult classe, MethodData metodo, MethodMetricResult metricas, String type,
 			String mensagem, HashMap<String, DadosMetodoSmell> metodosSmell, String tecnica) {
 
 		DadosMetodoSmell dadosMetodoSmell = new DadosMetodoSmell();

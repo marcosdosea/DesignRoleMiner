@@ -10,19 +10,19 @@ import org.repodriller.persistence.PersistenceMechanism;
 import org.repodriller.scm.CommitVisitor;
 import org.repodriller.scm.SCMRepository;
 
+import com.github.drminer.ClassMetricResult;
+import com.github.drminer.MetricReport;
 import com.github.mauricioaniche.ck.CK;
-import com.github.mauricioaniche.ck.CKNumber;
-import com.github.mauricioaniche.ck.CKReport;
 
-public class ClassVisitorCK implements CommitVisitor {
+public class ClassVisitorMetric implements CommitVisitor {
 
 	List<String> listaConcerns = new ArrayList<String>();
 
-	public ClassVisitorCK(List<String> listaConcerns) {
+	public ClassVisitorMetric(List<String> listaConcerns) {
 		this.listaConcerns = listaConcerns;
 	}
 
-	public ClassVisitorCK() {
+	public ClassVisitorMetric() {
 		super();
 	}
 
@@ -32,7 +32,7 @@ public class ClassVisitorCK implements CommitVisitor {
 			repo.getScm().checkout(commit.getHash());
 			CK ck = new CK();
 
-			CKReport report = ck.calculate(repo.getPath());
+			MetricReport report = ck.calculate(repo.getPath());
 
 			writer.write("Commit", "Class", "Design Role", "SuperClass", "interfaces", "DIT", "NOM", "CBO", "LCOM",
 					"NOC", "RFC", "WMC");
@@ -40,7 +40,7 @@ public class ClassVisitorCK implements CommitVisitor {
 			// desconsiderarConcerns(commit, writer, report, 1);
 
 			if (listaConcerns.size() == 0) {
-				for (CKNumber classMetrics : report.all()) {
+				for (ClassMetricResult classMetrics : report.all()) {
 					String superClass = classMetrics.getSuperClassNameLevel1();
 					writer.write(commit.getHash(), classMetrics.getClassName(),
 							"\"" + classMetrics.getDesignRole() + "\"", "\"" + superClass + "\"",
@@ -49,7 +49,7 @@ public class ClassVisitorCK implements CommitVisitor {
 							classMetrics.getWmc());
 				}
 			} else {
-				for (CKNumber classMetrics : report.all()) {
+				for (ClassMetricResult classMetrics : report.all()) {
 					String superClass = classMetrics.getSuperClassNameLevel1();
 					if (listaConcerns.contains(classMetrics.getDesignRole())) {
 						writer.write(commit.getHash(), classMetrics.getClassName(),
@@ -65,12 +65,12 @@ public class ClassVisitorCK implements CommitVisitor {
 		}
 	}
 
-	private void desconsiderarConcerns(Commit commit, PersistenceMechanism writer, CKReport report,
+	private void desconsiderarConcerns(Commit commit, PersistenceMechanism writer, MetricReport report,
 			int quantidadeCorte) {
 
 		// primeiro conta quantas classes associadas ao conecern
 		Map<String, Integer> mapConcerns = new HashMap<String, Integer>();
-		for (CKNumber classMetrics : report.all()) {
+		for (ClassMetricResult classMetrics : report.all()) {
 			Integer quantidade = mapConcerns.get(classMetrics.getDesignRole());
 			if (quantidade != null)
 				mapConcerns.put(classMetrics.getDesignRole(), ++quantidade);
@@ -78,7 +78,7 @@ public class ClassVisitorCK implements CommitVisitor {
 				mapConcerns.put(classMetrics.getDesignRole(), 1);
 		}
 		// Verifica se conncer deve ser desconsiderado
-		for (CKNumber classMetrics : report.all()) {
+		for (ClassMetricResult classMetrics : report.all()) {
 			Integer quantidade = mapConcerns.get(classMetrics.getDesignRole());
 			if (quantidade <= quantidadeCorte)
 				classMetrics.setConcern("UNDEFINED");

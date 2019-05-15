@@ -11,11 +11,12 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 
+import com.github.drminer.MetricReport;
+import com.github.drminer.metric.DIT;
+import com.github.drminer.metric.DesignRole;
+import com.github.drminer.metric.MethodMetric;
 import com.github.mauricioaniche.ck.metric.CBO;
-import com.github.mauricioaniche.ck.metric.DIT;
-import com.github.mauricioaniche.ck.metric.DesignRole;
 import com.github.mauricioaniche.ck.metric.LCOM;
-import com.github.mauricioaniche.ck.metric.MethodMetric;
 import com.github.mauricioaniche.ck.metric.Metric;
 import com.github.mauricioaniche.ck.metric.NOC;
 import com.github.mauricioaniche.ck.metric.NOM;
@@ -48,7 +49,7 @@ public class CK {
 		return this;
 	}
 	
-	public CKReport calculate(String path) {
+	public MetricReport calculate(String path) {
 		String[] srcDirs = FileUtils.getAllDirs(path);
 		String[] javaFiles = FileUtils.getAllJavaFiles(path);
 		log.info("Found " + javaFiles.length + " java files");

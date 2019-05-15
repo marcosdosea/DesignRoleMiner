@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import com.github.mauricioaniche.ck.CKNumber;
+import com.github.drminer.ClassMetricResult;
 import com.github.drminer.threshold.GerenciadorLimiares;
 
 public class GerenciadorLimiaresTest {
@@ -18,7 +18,7 @@ public class GerenciadorLimiaresTest {
 
 		System.out.println("Iniciando a coleta de métricas do projeto referencia...");
 		ArrayList<String> projetosReferencia = gLimiares.lerProjetos("Reference.txt");
-		ArrayList<CKNumber> metricasProjetosReferencia = gLimiares.getMetricasProjetos(projetosReferencia);
+		ArrayList<ClassMetricResult> metricasProjetosReferencia = gLimiares.getMetricasProjetos(projetosReferencia);
 
 		System.out.println("Gerando Limiares por Dosea Referencia...");
 		gLimiares.gerarLimiarDoseaReference(metricasProjetosReferencia, PASTA_RESULTADO + "R.csv");
@@ -29,15 +29,15 @@ public class GerenciadorLimiaresTest {
 		System.out.println("Limiares gravados na pasta " + PASTA_RESULTADO + " com sucesso!");
 		assertTrue(true);
 	}
-	
-	//@Test
+
+	// @Test
 	public void testGerarLimiaresBenchmarkExterno() {
 		final String PASTA_RESULTADO = "thresholds\\";
 		GerenciadorLimiares gLimiares = new GerenciadorLimiares();
 
 		System.out.println("Iniciando a coleta de métricas dos projetos WEB...");
 		ArrayList<String> projetosBenchmark = gLimiares.lerProjetos("Benchmark.txt");
-		ArrayList<CKNumber> metricasProjetosBenchmark = gLimiares.getMetricasProjetos(projetosBenchmark);
+		ArrayList<ClassMetricResult> metricasProjetosBenchmark = gLimiares.getMetricasProjetos(projetosBenchmark);
 
 		System.out.println("Gerando Limiares por Alves usando benchmark...");
 		gLimiares.gerarLimiarAlves(metricasProjetosBenchmark, PASTA_RESULTADO + "A.csv");
@@ -52,5 +52,4 @@ public class GerenciadorLimiaresTest {
 		assertTrue(true);
 	}
 
-	
 }

@@ -4,8 +4,8 @@ import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 
-import com.github.mauricioaniche.ck.CKNumber;
-import com.github.mauricioaniche.ck.CKReport;
+import com.github.drminer.ClassMetricResult;
+import com.github.drminer.MetricReport;
 
 public class NOM extends ASTVisitor implements Metric {
 
@@ -19,12 +19,12 @@ public class NOM extends ASTVisitor implements Metric {
 	}
 
 	@Override
-	public void execute(CompilationUnit cu, CKNumber number, CKReport report) {
+	public void execute(CompilationUnit cu, ClassMetricResult number, MetricReport report) {
 		cu.accept(this);
 	}
 
 	@Override
-	public void setResult(CKNumber result) {
+	public void setResult(ClassMetricResult result) {
 		result.setNom(methods);
 	}
 }

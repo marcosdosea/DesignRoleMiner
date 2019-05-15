@@ -1,4 +1,4 @@
-package com.github.mauricioaniche.ck.metric;
+package com.github.drminer.metric;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,8 +15,9 @@ import org.eclipse.jdt.core.dom.NormalAnnotation;
 import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
-import com.github.mauricioaniche.ck.CKNumber;
-import com.github.mauricioaniche.ck.CKReport;
+import com.github.drminer.ClassMetricResult;
+import com.github.drminer.MetricReport;
+import com.github.mauricioaniche.ck.metric.Metric;
 
 public class DesignRole extends ASTVisitor implements Metric {
 
@@ -217,12 +218,12 @@ public class DesignRole extends ASTVisitor implements Metric {
 	}
 
 	@Override
-	public void execute(CompilationUnit cu, CKNumber number, CKReport report) {
+	public void execute(CompilationUnit cu, ClassMetricResult number, MetricReport report) {
 		cu.accept(this);
 	}
 
 	@Override
-	public void setResult(CKNumber result) {
+	public void setResult(ClassMetricResult result) {
 		// Avalia atribuir um concern default pelos tokens das anotações da
 		for (String annotation : listAnnotations) {
 			for (String tokenConcern : defaultDesignRoles.keySet()) {

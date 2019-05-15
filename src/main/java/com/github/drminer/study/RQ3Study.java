@@ -12,7 +12,7 @@ import org.repodriller.filter.range.Commits;
 import org.repodriller.persistence.csv.CSVFile;
 import org.repodriller.scm.GitRepository;
 
-import com.github.drminer.visitor.MethodVisitorCK;
+import com.github.drminer.visitor.MethodVisitorMetric;
 
 public class RQ3Study implements Study {
 
@@ -45,7 +45,7 @@ public class RQ3Study implements Study {
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/bigbluebutton"))
 				.through(Commits.list(bigbluebuttonWeb)).withThreads(1)
-				.process(new MethodVisitorCK(webSelectedDR, "Bigbluebutton", bigbluebuttonTags),
+				.process(new MethodVisitorMetric(webSelectedDR, "Bigbluebutton", bigbluebuttonTags),
 						new CSVFile("D:/Projetos/_Web/versions-web-bigbluebutton.csv"))
 				.mine();
 
@@ -63,7 +63,7 @@ public class RQ3Study implements Study {
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/openmrs-core"))
 				.through(Commits.list(openmrsWeb)).withThreads(1)
-				.process(new MethodVisitorCK(webSelectedDR, "openmrs", openmrsTags),
+				.process(new MethodVisitorMetric(webSelectedDR, "openmrs", openmrsTags),
 						new CSVFile("D:/Projetos/_Web/versions-web-openmrs.csv"))
 				.mine();
 
@@ -81,7 +81,7 @@ public class RQ3Study implements Study {
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/heritrix3"))
 				.through(Commits.list(heritrix3Web)).withThreads(1)
-				.process(new MethodVisitorCK(webSelectedDR, "Heritrix3", heritrix3Tags),
+				.process(new MethodVisitorMetric(webSelectedDR, "Heritrix3", heritrix3Tags),
 						new CSVFile("D:/Projetos/_Web/versions-web-heritrix3.csv"))
 				.mine();
 
@@ -99,7 +99,7 @@ public class RQ3Study implements Study {
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/qalingo-engine"))
 				.through(Commits.list(qalingoWeb)).withThreads(1)
-				.process(new MethodVisitorCK(webSelectedDR, "Qalingo", qalingoTags),
+				.process(new MethodVisitorMetric(webSelectedDR, "Qalingo", qalingoTags),
 						new CSVFile("D:/Projetos/_Web/versions-web-qalingo.csv"))
 				.mine();
 
@@ -117,7 +117,7 @@ public class RQ3Study implements Study {
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Web/libreplan"))
 				.through(Commits.list(libreplanWeb)).withThreads(1)
-				.process(new MethodVisitorCK(webSelectedDR, "libreplan", libreplanTags),
+				.process(new MethodVisitorMetric(webSelectedDR, "libreplan", libreplanTags),
 						new CSVFile("D:/Projetos/_Web/versions-web-libreplan.csv"))
 				.mine();
 	}
@@ -137,7 +137,7 @@ public class RQ3Study implements Study {
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Eclipse/Activiti-Designer"))
 				.through(Commits.list(activitiEclipse)).withThreads(5)
-				.process(new MethodVisitorCK(eclipseSelectedDR, "Activiti", activitiTags),
+				.process(new MethodVisitorMetric(eclipseSelectedDR, "Activiti", activitiTags),
 						new CSVFile("D:/Projetos/_Eclipse/versions-eclipse-Activiti.csv"))
 				.mine();
 
@@ -155,7 +155,7 @@ public class RQ3Study implements Study {
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Eclipse/angularjs-eclipse"))
 				.through(Commits.list(angularJSEclipse)).withThreads(5)
-				.process(new MethodVisitorCK(eclipseSelectedDR, "AngularJS", angularJSTags),
+				.process(new MethodVisitorMetric(eclipseSelectedDR, "AngularJS", angularJSTags),
 						new CSVFile("D:/Projetos/_Eclipse/versions-eclipse-angularjs.csv"))
 				.mine();
 
@@ -173,7 +173,7 @@ public class RQ3Study implements Study {
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Eclipse/arduino-eclipse-plugin"))
 				.through(Commits.list(arduinoEclipse)).withThreads(5)
-				.process(new MethodVisitorCK(eclipseSelectedDR, "Arduino", arduinoTags),
+				.process(new MethodVisitorMetric(eclipseSelectedDR, "Arduino", arduinoTags),
 						new CSVFile("D:/Projetos/_Eclipse/versions-eclipse-arduino.csv"))
 				.mine();
 
@@ -191,7 +191,7 @@ public class RQ3Study implements Study {
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Eclipse/droolsjbpm-tools"))
 				.through(Commits.list(droolsEclipse)).withThreads(5)
-				.process(new MethodVisitorCK(eclipseSelectedDR, "droolsJBPM", droolsTags),
+				.process(new MethodVisitorMetric(eclipseSelectedDR, "droolsJBPM", droolsTags),
 						new CSVFile("D:/Projetos/_Eclipse/versions-eclipse-droolsjbpm.csv"))
 				.mine();
 
@@ -209,7 +209,7 @@ public class RQ3Study implements Study {
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Eclipse/sonarlint-eclipse"))
 				.through(Commits.list(sonarlintEclipse)).withThreads(5)
-				.process(new MethodVisitorCK(eclipseSelectedDR, "Sonarlint", sonarlintTags),
+				.process(new MethodVisitorMetric(eclipseSelectedDR, "Sonarlint", sonarlintTags),
 						new CSVFile("D:/Projetos/_Eclipse/versions-eclipse-sonarlint.csv"))
 				.mine();
 	}
@@ -234,7 +234,7 @@ public class RQ3Study implements Study {
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Android/bitcoin-wallet"))
 				.through(Commits.list(bitcoinAndroid)).withThreads(5)
-				.process(new MethodVisitorCK(androidSelectedDR, "Bitcoin", bitcoinTags),
+				.process(new MethodVisitorMetric(androidSelectedDR, "Bitcoin", bitcoinTags),
 						new CSVFile("D:/Projetos/_Android/versions-android-bitcoin.csv"))
 				.mine();
 
@@ -252,7 +252,7 @@ public class RQ3Study implements Study {
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Android/ExoPlayer"))
 				.through(Commits.list(exoplayerAndroid)).withThreads(5)
-				.process(new MethodVisitorCK(androidSelectedDR, "Exoplayer", exoplayerTags),
+				.process(new MethodVisitorMetric(androidSelectedDR, "Exoplayer", exoplayerTags),
 						new CSVFile("D:/Projetos/_Android/versions-android-exoPlayer.csv"))
 				.mine();
 
@@ -270,7 +270,7 @@ public class RQ3Study implements Study {
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Android/Talon-for-Twitter"))
 				.through(Commits.list(talonAndroid)).withThreads(5)
-				.process(new MethodVisitorCK(androidSelectedDR, "Talon", talonTags),
+				.process(new MethodVisitorMetric(androidSelectedDR, "Talon", talonTags),
 						new CSVFile("D:/Projetos/_Android/versions-android-talon.csv"))
 				.mine();
 
@@ -288,7 +288,7 @@ public class RQ3Study implements Study {
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Android/sms-backup-plus"))
 				.through(Commits.list(smsAndroid)).withThreads(5)
-				.process(new MethodVisitorCK(androidSelectedDR, "SMSBackup", smsTags),
+				.process(new MethodVisitorMetric(androidSelectedDR, "SMSBackup", smsTags),
 						new CSVFile("D:/Projetos/_Android/versions-android-smsbackup.csv"))
 				.mine();
 
@@ -306,7 +306,7 @@ public class RQ3Study implements Study {
 
 		new RepositoryMining().in(GitRepository.singleProject("D:/Projetos/_Android/k-9"))
 				.through(Commits.list(k9Android)).withThreads(5)
-				.process(new MethodVisitorCK(androidSelectedDR, "K9", k9Tags),
+				.process(new MethodVisitorMetric(androidSelectedDR, "K9", k9Tags),
 						new CSVFile("D:/Projetos/_Android/versions-android-k9.csv"))
 				.mine();
 	}

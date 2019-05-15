@@ -1,11 +1,11 @@
-package com.github.mauricioaniche.ck;
+package com.github.drminer;
 
 import java.io.File;
 import java.io.FileInputStream;
 
 import org.apache.commons.io.IOUtils;
 
-public class Utils {
+public class FileLocUtil {
 	public static String readFile(File f) {
 		try {
 			FileInputStream input = new FileInputStream(f);

@@ -7,19 +7,21 @@ import org.apache.log4j.Logger;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.FileASTRequestor;
 
+import com.github.drminer.ClassMetricResult;
+import com.github.drminer.MetricReport;
 import com.github.mauricioaniche.ck.metric.ClassInfo;
 import com.github.mauricioaniche.ck.metric.Metric;
 
 public class MetricsExecutor extends FileASTRequestor {
 
-	private CKReport report;
+	private MetricReport report;
 	private Callable<List<Metric>> metrics;
 	
 	private static Logger log = Logger.getLogger(MetricsExecutor.class);
 	
 	public MetricsExecutor(Callable<List<Metric>> metrics) {
 		this.metrics = metrics;
-		this.report = new CKReport();
+		this.report = new MetricReport();
 	}
 
 
@@ -32,7 +34,7 @@ public class MetricsExecutor extends FileASTRequestor {
 			cu.accept(info);
 			if(info.getClassName()==null) return;
 			
-			CKNumber result = new CKNumber(sourceFilePath, info.getClassName(), info.getType());
+			ClassMetricResult result = new ClassMetricResult(sourceFilePath, info.getClassName(), info.getType());
 			for(Metric visitor : metrics.call()) {
 				visitor.execute(cu, result, report);
 				visitor.setResult(result);
@@ -45,7 +47,7 @@ public class MetricsExecutor extends FileASTRequestor {
 		}
 	}
 	
-	public CKReport getReport() {
+	public MetricReport getReport() {
 		return report;
 	}
 	

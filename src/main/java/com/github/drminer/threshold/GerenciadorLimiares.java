@@ -16,30 +16,30 @@ import java.util.Scanner;
 import org.repodriller.persistence.PersistenceMechanism;
 import org.repodriller.persistence.csv.CSVFile;
 
+import com.github.drminer.ClassMetricResult;
+import com.github.drminer.MethodMetricResult;
+import com.github.drminer.MetricReport;
+import com.github.drminer.FileLocUtil;
 import com.github.drminer.smelldetector.model.LimiarMetrica;
 import com.github.mauricioaniche.ck.CK;
-import com.github.mauricioaniche.ck.CKNumber;
-import com.github.mauricioaniche.ck.CKReport;
-import com.github.mauricioaniche.ck.MethodMetrics;
-import com.github.mauricioaniche.ck.Utils;
 
 public class GerenciadorLimiares {
 
-	public ArrayList<CKNumber> getMetricasProjetos(ArrayList<String> projetos) {
-		ArrayList<CKNumber> listaClasses = new ArrayList<>();
+	public ArrayList<ClassMetricResult> getMetricasProjetos(ArrayList<String> projetos) {
+		ArrayList<ClassMetricResult> listaClasses = new ArrayList<>();
 		for (String path : projetos) {
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
 			String dataHora = sf.format(Calendar.getInstance().getTime());
 
 			System.out.println("[" + dataHora + "] Extracting metrics from project " + path + "...");
-			CKReport report = new CK().calculate(path);
+			MetricReport report = new CK().calculate(path);
 
-			Collection<CKNumber> metricasClasses = report.all();
+			Collection<ClassMetricResult> metricasClasses = report.all();
 			long totalMetodos = 0;
 			long totalLoc = 0;
-			for (CKNumber ckNumber : metricasClasses) {
+			for (ClassMetricResult ckNumber : metricasClasses) {
 				totalMetodos += ckNumber.getNom();
-				totalLoc += Utils.countLineNumbers(Utils.readFile(new File(ckNumber.getFile())));
+				totalLoc += FileLocUtil.countLineNumbers(FileLocUtil.readFile(new File(ckNumber.getFile())));
 			}
 
 			System.out.println("Number of classes: " + report.all().size());
@@ -76,12 +76,12 @@ public class GerenciadorLimiares {
 	 * @param classes
 	 * @param fileResultado
 	 */
-	public void gerarDesignRoles(List<CKNumber> classes, String fileResultado) {
+	public void gerarDesignRoles(List<ClassMetricResult> classes, String fileResultado) {
 
 		PersistenceMechanism pm = new CSVFile(fileResultado);
 		pm.write("Classe                              ;DesignRole                        ;Concorda?;");
 
-		for (CKNumber classe : classes) {
+		for (ClassMetricResult classe : classes) {
 			pm.write(classe.getClassName() + ";" + classe.getDesignRole() + ";" + "SIM;");
 		}
 
@@ -93,12 +93,12 @@ public class GerenciadorLimiares {
 	 * @param classes
 	 * @param fileResultado
 	 */
-	public void gerarArchitecturalRoles(List<CKNumber> classes, String fileResultado) {
+	public void gerarArchitecturalRoles(List<ClassMetricResult> classes, String fileResultado) {
 
 		PersistenceMechanism pm = new CSVFile(fileResultado);
 		pm.write("Classe                              ;ArchitecturalRole                        ;");
 
-		for (CKNumber classe : classes) {
+		for (ClassMetricResult classe : classes) {
 			if (classe.isArchitecturalRole())
 				pm.write(classe.getClassName() + ";" + classe.getDesignRole() + ";");
 			else
@@ -115,7 +115,7 @@ public class GerenciadorLimiares {
 	 * @param fileResultado
 	 * @param quartil
 	 */
-	public void gerarLimiarQuartil(List<CKNumber> classes, String fileResultado, int quartil) {
+	public void gerarLimiarQuartil(List<ClassMetricResult> classes, String fileResultado, int quartil) {
 
 		PersistenceMechanism pm = new CSVFile(fileResultado);
 		pm.write("DesignRole;LOC;CC;Efferent;NOP;");
@@ -125,8 +125,8 @@ public class GerenciadorLimiares {
 		ArrayList<Integer> listaEfferent = new ArrayList<>();
 		ArrayList<Integer> listaNOP = new ArrayList<>();
 
-		for (CKNumber classe : classes) {
-			for (MethodMetrics method : classe.getMetricsByMethod().values()) {
+		for (ClassMetricResult classe : classes) {
+			for (MethodMetricResult method : classe.getMetricsByMethod().values()) {
 				listaLOC.add(method.getLinesOfCode());
 				listaCC.add(method.getComplexity());
 				listaEfferent.add(method.getEfferentCoupling());
@@ -154,7 +154,7 @@ public class GerenciadorLimiares {
 	 * @param classes
 	 * @param fileResultado
 	 */
-	public void gerarLimiarDoseaReference(List<CKNumber> classes, String fileResultado) {
+	public void gerarLimiarDoseaReference(List<ClassMetricResult> classes, String fileResultado) {
 		PersistenceMechanism pm = new CSVFile(fileResultado);
 		pm.write("DesignRole;LOC;CC;Efferent;NOP;");
 
@@ -166,8 +166,8 @@ public class GerenciadorLimiares {
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaEfferent = new HashMap<>();
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaNOP = new HashMap<>();
 
-		for (CKNumber classe : classes) {
-			for (MethodMetrics method : classe.getMetricsByMethod().values()) {
+		for (ClassMetricResult classe : classes) {
+			for (MethodMetricResult method : classe.getMetricsByMethod().values()) {
 				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaLOC, method.getLinesOfCode(), method.getLinesOfCode(),
 						LimiarMetrica.METRICA_LOC + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaCC, method.getComplexity(), method.getLinesOfCode(),
@@ -194,7 +194,7 @@ public class GerenciadorLimiares {
 				+ limiarNOP.getLimiarMaximo() + ";");
 	}
 
-	public void gerarLimiarDoseaReferenceDesignRole(List<CKNumber> classes, String fileResultado) {
+	public void gerarLimiarDoseaReferenceDesignRole(List<ClassMetricResult> classes, String fileResultado) {
 		PersistenceMechanism pm = new CSVFile(fileResultado);
 		pm.write("DesignRole;LOC;CC;Efferent;NOP;");
 
@@ -206,8 +206,8 @@ public class GerenciadorLimiares {
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaEfferent = new HashMap<>();
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaNOP = new HashMap<>();
 
-		for (CKNumber classe : classes) {
-			for (MethodMetrics method : classe.getMetricsByMethod().values()) {
+		for (ClassMetricResult classe : classes) {
+			for (MethodMetricResult method : classe.getMetricsByMethod().values()) {
 				if (!classe.getDesignRole().toUpperCase().equals(LimiarMetrica.DESIGN_ROLE_UNDEFINED)) {
 					agrupaPorValorMetrica(distribuicaoCodigoPorMetricaLOC, method.getLinesOfCode(),
 							method.getLinesOfCode(), LimiarMetrica.METRICA_LOC + classe.getDesignRole());
@@ -270,7 +270,7 @@ public class GerenciadorLimiares {
 		}
 	}
 
-	public void gerarLimiarAlves(List<CKNumber> classes, String fileResultado) {
+	public void gerarLimiarAlves(List<ClassMetricResult> classes, String fileResultado) {
 		PersistenceMechanism pm = new CSVFile(fileResultado);
 		pm.write("DesignRole;LOC;CC;Efferent;NOP;");
 
@@ -282,8 +282,8 @@ public class GerenciadorLimiares {
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaEfferent = new HashMap<>();
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaNOP = new HashMap<>();
 
-		for (CKNumber classe : classes) {
-			for (MethodMetrics method : classe.getMetricsByMethod().values()) {
+		for (ClassMetricResult classe : classes) {
+			for (MethodMetricResult method : classe.getMetricsByMethod().values()) {
 				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaLOC, method.getLinesOfCode(), method.getLinesOfCode(),
 						LimiarMetrica.METRICA_LOC + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaCC, method.getComplexity(), method.getLinesOfCode(),
@@ -309,7 +309,7 @@ public class GerenciadorLimiares {
 				+ limiarNOP.getLimiarMaximo() + ";");
 	}
 
-	public void gerarLimiarVale(List<CKNumber> classes, String fileResultado) {
+	public void gerarLimiarVale(List<ClassMetricResult> classes, String fileResultado) {
 		PersistenceMechanism pm = new CSVFile(fileResultado);
 		pm.write("DesignRole;LOC;CC;Efferent;NOP;");
 
@@ -321,8 +321,8 @@ public class GerenciadorLimiares {
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaEfferent = new HashMap<>();
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaNOP = new HashMap<>();
 
-		for (CKNumber classe : classes) {
-			for (MethodMetrics method : classe.getMetricsByMethod().values()) {
+		for (ClassMetricResult classe : classes) {
+			for (MethodMetricResult method : classe.getMetricsByMethod().values()) {
 				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaLOC, method.getLinesOfCode(), 1,
 						LimiarMetrica.METRICA_LOC + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaCC, method.getComplexity(), 1,
@@ -348,7 +348,7 @@ public class GerenciadorLimiares {
 				+ limiarNOP.getLimiarMaximo() + ";");
 	}
 
-	public void gerarLimiarAniche(List<CKNumber> classes, String fileResultado) {
+	public void gerarLimiarAniche(List<ClassMetricResult> classes, String fileResultado) {
 		PersistenceMechanism pm = new CSVFile(fileResultado);
 		pm.write("DesignRole;LOC;CC;Efferent;NOP;");
 
@@ -360,12 +360,12 @@ public class GerenciadorLimiares {
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaEfferent = new HashMap<>();
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaNOP = new HashMap<>();
 
-		for (CKNumber classe : classes) {
+		for (ClassMetricResult classe : classes) {
 			String architecturalRole = LimiarMetrica.DESIGN_ROLE_UNDEFINED;
 			if (classe.isArchitecturalRole())
 				architecturalRole = classe.getDesignRole();
 
-			for (MethodMetrics method : classe.getMetricsByMethod().values()) {
+			for (MethodMetricResult method : classe.getMetricsByMethod().values()) {
 				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaLOC, method.getLinesOfCode(), method.getLinesOfCode(),
 						LimiarMetrica.METRICA_LOC + architecturalRole);
 				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaCC, method.getComplexity(), method.getLinesOfCode(),
@@ -455,14 +455,14 @@ public class GerenciadorLimiares {
 		return limiarMetrica;
 	}
 
-	public long obterTotalLinhasCodigoPorDesignRole(List<CKNumber> classes,
+	public long obterTotalLinhasCodigoPorDesignRole(List<ClassMetricResult> classes,
 			HashMap<String, Long> linhasDeCodigoPorDesignRole) {
 		long total = 0;
 		if (linhasDeCodigoPorDesignRole == null)
 			linhasDeCodigoPorDesignRole = new HashMap<>();
 
-		for (CKNumber classe : classes) {
-			for (MethodMetrics method : classe.getMetricsByMethod().values()) {
+		for (ClassMetricResult classe : classes) {
+			for (MethodMetricResult method : classe.getMetricsByMethod().values()) {
 				total += method.getLinesOfCode();
 				Long somaLocPorDesignRole = linhasDeCodigoPorDesignRole.get(classe.getDesignRole());
 				if (somaLocPorDesignRole == null) {
@@ -476,12 +476,12 @@ public class GerenciadorLimiares {
 		return total;
 	}
 
-	private long obterTotalMetodosPorDesignRole(List<CKNumber> classes, HashMap<String, Long> metodosPorDesignRole) {
+	private long obterTotalMetodosPorDesignRole(List<ClassMetricResult> classes, HashMap<String, Long> metodosPorDesignRole) {
 		long total = 0;
 		if (metodosPorDesignRole == null)
 			metodosPorDesignRole = new HashMap<>();
 
-		for (CKNumber classe : classes) {
+		for (ClassMetricResult classe : classes) {
 			total += classe.getNom();
 			Long somaMetodosPorDesignRole = metodosPorDesignRole.get(classe.getDesignRole());
 			if (somaMetodosPorDesignRole == null) {
@@ -494,18 +494,18 @@ public class GerenciadorLimiares {
 		return total;
 	}
 
-	private long obterTotalLinhasCodigoPorArchitecturalRole(List<CKNumber> classes,
+	private long obterTotalLinhasCodigoPorArchitecturalRole(List<ClassMetricResult> classes,
 			HashMap<String, Long> linhasDeCodigoPorDesignRole) {
 		long total = 0;
 		if (linhasDeCodigoPorDesignRole == null)
 			linhasDeCodigoPorDesignRole = new HashMap<>();
 
-		for (CKNumber classe : classes) {
+		for (ClassMetricResult classe : classes) {
 			String architecturalRole = LimiarMetrica.DESIGN_ROLE_UNDEFINED;
 			if (classe.isArchitecturalRole())
 				architecturalRole = classe.getDesignRole();
 
-			for (MethodMetrics method : classe.getMetricsByMethod().values()) {
+			for (MethodMetricResult method : classe.getMetricsByMethod().values()) {
 				total += method.getLinesOfCode();
 				Long somaLocPorDesignRole = linhasDeCodigoPorDesignRole.get(architecturalRole);
 				if (somaLocPorDesignRole == null) {

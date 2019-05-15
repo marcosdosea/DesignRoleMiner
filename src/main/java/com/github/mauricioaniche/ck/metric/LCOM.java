@@ -12,8 +12,8 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
-import com.github.mauricioaniche.ck.CKNumber;
-import com.github.mauricioaniche.ck.CKReport;
+import com.github.drminer.ClassMetricResult;
+import com.github.drminer.MetricReport;
 
 public class LCOM extends ASTVisitor implements Metric {
 
@@ -56,12 +56,12 @@ public class LCOM extends ASTVisitor implements Metric {
 	}
 	
 	@Override
-	public void execute(CompilationUnit cu, CKNumber number, CKReport report) {
+	public void execute(CompilationUnit cu, ClassMetricResult number, MetricReport report) {
 		cu.accept(this);
 	}
 
 	@Override
-	public void setResult(CKNumber result) {
+	public void setResult(ClassMetricResult result) {
 		
 		/*
 		 * LCOM = |P| - |Q| if |P| - |Q| > 0

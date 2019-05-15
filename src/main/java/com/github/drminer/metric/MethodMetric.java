@@ -1,4 +1,4 @@
-package com.github.mauricioaniche.ck.metric;
+package com.github.drminer.metric;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,17 +33,18 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.jdt.core.dom.WhileStatement;
 
-import com.github.mauricioaniche.ck.CKNumber;
-import com.github.mauricioaniche.ck.CKReport;
+import com.github.drminer.ClassMetricResult;
+import com.github.drminer.MethodMetricResult;
+import com.github.drminer.MetricReport;
+import com.github.drminer.FileLocUtil;
 import com.github.mauricioaniche.ck.MethodData;
-import com.github.mauricioaniche.ck.MethodMetrics;
-import com.github.mauricioaniche.ck.Utils;
+import com.github.mauricioaniche.ck.metric.Metric;
 
 
 
 public class MethodMetric extends ASTVisitor implements Metric {
 
-	private Map<MethodData, MethodMetrics> metricsByMethod;
+	private Map<MethodData, MethodMetricResult> metricsByMethod;
     private Stack<MethodData> methodStack;
     private String currentPackage;
     private List<String> currentInterfaces;
@@ -55,7 +56,7 @@ public class MethodMetric extends ASTVisitor implements Metric {
     private CompilationUnit cu;
     
     public MethodMetric() {
-        metricsByMethod = new HashMap<MethodData, MethodMetrics>();
+        metricsByMethod = new HashMap<MethodData, MethodMetricResult>();
         methodStack = new Stack<MethodData>();
         usedTypes = new HashSet<String>();
         declaredTypes = new HashMap<>();
@@ -107,10 +108,10 @@ public class MethodMetric extends ASTVisitor implements Metric {
     	methodData.setInitialChar(node.getStartPosition());
     	methodData.setFinalChar(node.getLength()+node.getStartPosition());
     	if (!metricsByMethod.containsKey(methodData))
-    		metricsByMethod.put(methodData, new MethodMetrics());
+    		metricsByMethod.put(methodData, new MethodMetricResult());
     	
-    	MethodMetrics methodMetrics =  metricsByMethod.get(methodData);
-    	methodMetrics.setLinesOfCode(Utils.countLineNumbers(node.getBody().toString()));
+    	MethodMetricResult methodMetrics =  metricsByMethod.get(methodData);
+    	methodMetrics.setLinesOfCode(FileLocUtil.countLineNumbers(node.getBody().toString()));
     	methodMetrics.setNumberOfParameters(node.parameters().size());
     	methodStack.push(getMethodData());
     	increaseCc();
@@ -189,7 +190,7 @@ public class MethodMetric extends ASTVisitor implements Metric {
 
     
 	public void endVisit(MethodDeclaration node) {
-    	MethodMetrics methodMetrics =  metricsByMethod.get(getMethodData());
+    	MethodMetricResult methodMetrics =  metricsByMethod.get(getMethodData());
     	methodMetrics.setEfferentCoupling(usedTypes.size());
     	usedTypes.clear();
     	methodStack.pop();
@@ -277,13 +278,13 @@ public class MethodMetric extends ASTVisitor implements Metric {
     	MethodData methodData = getMethodData();
     	
     	if (!metricsByMethod.containsKey(methodData))
-    		metricsByMethod.put(methodData, new MethodMetrics());
+    		metricsByMethod.put(methodData, new MethodMetricResult());
     	
-    	MethodMetrics methodMetrics =  metricsByMethod.get(methodData);
+    	MethodMetricResult methodMetrics =  metricsByMethod.get(methodData);
     	methodMetrics.setComplexity(methodMetrics.getComplexity() + qtd);
     }
     
-    public Map<MethodData, MethodMetrics> getMetricsByMethod() {
+    public Map<MethodData, MethodMetricResult> getMetricsByMethod() {
         return metricsByMethod;
     }
     
@@ -296,13 +297,13 @@ public class MethodMetric extends ASTVisitor implements Metric {
 	}
 
 	@Override
-	public void execute(CompilationUnit cu, CKNumber result, CKReport report) {
+	public void execute(CompilationUnit cu, ClassMetricResult result, MetricReport report) {
 		this.cu = cu;
 		cu.accept(this);
 	}
 
 	@Override
-	public void setResult(CKNumber result) {
+	public void setResult(ClassMetricResult result) {
 		result.setMetricsByMethod(metricsByMethod);
 		result.setPackageName(currentPackage);
 		result.setInterfaces(currentInterfaces);

@@ -1,5 +1,8 @@
 package com.github.mauricioaniche.ck;
 
+import com.github.drminer.ClassMetricResult;
+import com.github.drminer.MetricReport;
+
 public class Runner {
 
 	public static void main(String[] args) {
@@ -10,10 +13,10 @@ public class Runner {
 		}
 		
 		String path = args[0];
-		CKReport report = new CK().calculate(path);
+		MetricReport report = new CK().calculate(path);
 		
 		System.out.println("class,type,cbo,wmc,dit,noc,rfc,lcom,nom");
-		for(CKNumber result : report.all()) {
+		for(ClassMetricResult result : report.all()) {
 			System.out.println(
 					result.getClassName() + "," +
 					result.getType() + "," +

@@ -22,8 +22,8 @@ import org.eclipse.jdt.core.dom.ThrowStatement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 
-import com.github.mauricioaniche.ck.CKNumber;
-import com.github.mauricioaniche.ck.CKReport;
+import com.github.drminer.ClassMetricResult;
+import com.github.drminer.MetricReport;
 
 public class CBO extends ASTVisitor implements Metric {
 
@@ -154,12 +154,12 @@ public class CBO extends ASTVisitor implements Metric {
 	}
 
 	@Override
-	public void execute(CompilationUnit cu, CKNumber number, CKReport report) {
+	public void execute(CompilationUnit cu, ClassMetricResult number, MetricReport report) {
 		cu.accept(this);
 	}
 
 	@Override
-	public void setResult(CKNumber result) {
+	public void setResult(ClassMetricResult result) {
 		result.setCbo(coupling.size());
 		
 	}

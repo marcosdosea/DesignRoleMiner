@@ -7,12 +7,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.github.drminer.ClassMetricResult;
 import com.github.drminer.threshold.GerenciadorLimiares;
-import com.github.mauricioaniche.ck.CKNumber;
 
-public class GerenciadorSimilarity {
+public class SimilaritySystems {
 
-	public float calculateDoseaSimilarity(ArrayList<CKNumber> projeto1, ArrayList<CKNumber> projeto2) {
+	public float calculate(ArrayList<ClassMetricResult> projeto1, ArrayList<ClassMetricResult> projeto2) {
 
 		GerenciadorLimiares gLimiares = new GerenciadorLimiares();
 
@@ -82,7 +82,7 @@ public class GerenciadorSimilarity {
 		return bd.floatValue();
 	}
 	
-//	public float calculateCossineSimilarity(ArrayList<CKNumber> projeto1, ArrayList<CKNumber> projeto2) {
+//	public float calculateCossineSimilarity(ArrayList<ClassMetricResult> projeto1, ArrayList<ClassMetricResult> projeto2) {
 //		
 //		Map<CharSequence, Integer> drProjeto1 = countDesignRoles(projeto1); 
 //		Map<CharSequence, Integer> drProjeto2 = countDesignRoles(projeto2); 
@@ -94,10 +94,10 @@ public class GerenciadorSimilarity {
 	
 	
 
-	private Map<CharSequence, Integer> countDesignRoles(ArrayList<CKNumber> projeto) {
+	private Map<CharSequence, Integer> countDesignRoles(ArrayList<ClassMetricResult> projeto) {
 		Map<CharSequence, Integer> drProjeto = new HashMap<>();
 
-		for (CKNumber ckNumber : projeto) {
+		for (ClassMetricResult ckNumber : projeto) {
 			Integer numero = drProjeto.get(ckNumber.getDesignRole());
 
 			if (numero != null)

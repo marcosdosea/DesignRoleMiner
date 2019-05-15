@@ -5,19 +5,19 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
-import com.github.mauricioaniche.ck.CKNumber;
-import com.github.mauricioaniche.ck.CKReport;
+import com.github.drminer.ClassMetricResult;
+import com.github.drminer.MetricReport;
 
 public class NOC extends ASTVisitor implements Metric {
 
-	private CKReport report;
+	private MetricReport report;
 
 	@Override
 	public boolean visit(TypeDeclaration node) {
 		ITypeBinding binding = node.resolveBinding();
 		ITypeBinding father = binding.getSuperclass();
 		if(father!=null) {
-			CKNumber fatherCk = report.getByClassName(father.getBinaryName());
+			ClassMetricResult fatherCk = report.getByClassName(father.getBinaryName());
 			if(fatherCk!=null) fatherCk.incNoc();
 		}
 
@@ -25,12 +25,12 @@ public class NOC extends ASTVisitor implements Metric {
 	}
 
 	@Override
-	public void execute(CompilationUnit cu, CKNumber number, CKReport report) {
+	public void execute(CompilationUnit cu, ClassMetricResult number, MetricReport report) {
 		this.report = report;
 		cu.accept(this);
 	}
 
 	@Override
-	public void setResult(CKNumber result) {
+	public void setResult(ClassMetricResult result) {
 	}
 }

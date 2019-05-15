@@ -10,7 +10,7 @@ import org.repodriller.scm.CommitVisitor;
 import org.repodriller.scm.RepositoryFile;
 import org.repodriller.scm.SCMRepository;
 
-import com.github.mauricioaniche.ck.Utils;
+import com.github.drminer.FileLocUtil;
 
 public class ProjectVisitor implements CommitVisitor {
 
@@ -29,8 +29,8 @@ public class ProjectVisitor implements CommitVisitor {
 				File soFile = file.getFile();
 
 				// new JDTRunner().visit(visitor, new
-				// ByteArrayInputStream(Utils.readFile(soFile).getBytes()));
-				int loc = Utils.countLineNumbers(Utils.readFile(soFile));
+				// ByteArrayInputStream(FileLocUtil.readFile(soFile).getBytes()));
+				int loc = FileLocUtil.countLineNumbers(FileLocUtil.readFile(soFile));
 				totalLoc += loc;
 				totalFiles++;
 			}
