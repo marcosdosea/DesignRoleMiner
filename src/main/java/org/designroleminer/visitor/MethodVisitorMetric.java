@@ -96,7 +96,7 @@ public class MethodVisitorMetric implements CommitVisitor {
 						metricas.put("CC", cc);
 						metricsByTagDesignRole.put("\"" + classMetrics.getDesignRole() + "\"" + "," + tag, metricas);
 					}
-					writer.write("DesignRoleTechinique", "Tag", "LOC", "CC");
+					writer.write("DesignRoleTechnique", "Tag", "LOC", "CC");
 					for (String designRoleMetric : metricsByTagDesignRole.keySet()) {
 						Map<String, Integer> metricas = metricsByTagDesignRole.get(designRoleMetric);
 						writer.write(designRoleMetric, metricas.get("LOC"), metricas.get("CC"));

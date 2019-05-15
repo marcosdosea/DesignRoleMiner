@@ -23,11 +23,11 @@ import org.repodriller.persistence.csv.CSVFile;
 
 import com.github.mauricioaniche.ck.CK;
 
-public class TechiniqueExecutor {
+public class TechniqueExecutor {
 
-	ITechinique techinique;
+	ITechnique techinique;
 	
-	public TechiniqueExecutor(ITechinique techinique) {
+	public TechniqueExecutor(ITechnique techinique) {
 		this.techinique = techinique;
 	}
 	
@@ -85,7 +85,7 @@ public class TechiniqueExecutor {
 	 * set strategy
 	 * @param techinique
 	 */
-	public void setTechinique(ITechinique techinique) {
+	public void setTechinique(ITechnique techinique) {
 		this.techinique = techinique;
 	}
 

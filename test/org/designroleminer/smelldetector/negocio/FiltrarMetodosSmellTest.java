@@ -11,16 +11,16 @@ import org.designroleminer.smelldetector.CarregaSalvaArquivo;
 import org.designroleminer.smelldetector.FilterSmells;
 import org.designroleminer.smelldetector.model.DadosMetodoSmell;
 import org.designroleminer.smelldetector.model.LimiarTecnica;
-import org.designroleminer.techinique.ArchitecturalRoleTechinique;
-import org.designroleminer.techinique.DesignRoleTechinique;
-import org.designroleminer.techinique.TechiniqueExecutor;
+import org.designroleminer.techinique.ArchitecturalRoleTechnique;
+import org.designroleminer.techinique.DesignRoleTechnique;
+import org.designroleminer.techinique.TechniqueExecutor;
 import org.junit.Test;
 
 public class FiltrarMetodosSmellTest {
 
 	@Test
 	public void testFiltrarSmells() {
-		TechiniqueExecutor executor = new TechiniqueExecutor(new DesignRoleTechinique());
+		TechniqueExecutor executor = new TechniqueExecutor(new DesignRoleTechnique());
 
 		try {
 			System.out.println("Iniciando a coleta de métricas do projeto a ser analisado...");
@@ -31,7 +31,7 @@ public class FiltrarMetodosSmellTest {
 			executor.execute(metricasProjetosAnalisar, System.getProperty("user.dir") + "\\DR.CSV");
 
 			System.out.println("Gerando AR.csv com a lista classes e design roles atribuídos...");
-			executor.setTechinique(new ArchitecturalRoleTechinique());
+			executor.setTechinique(new ArchitecturalRoleTechnique());
 			executor.execute(metricasProjetosAnalisar, System.getProperty("user.dir") + "\\AR.CSV");
 
 			System.out.println("Carregando valores limiares...");

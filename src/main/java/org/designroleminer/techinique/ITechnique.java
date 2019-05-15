@@ -11,7 +11,7 @@ import org.designroleminer.ClassMetricResult;
 import org.designroleminer.MethodMetricResult;
 import org.designroleminer.smelldetector.model.LimiarMetrica;
 
-public abstract class ITechinique {
+public abstract class ITechnique {
 
 	/**
 	 * Generate some result from collected metrics

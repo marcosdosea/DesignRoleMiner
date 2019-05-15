@@ -10,11 +10,11 @@ import org.designroleminer.smelldetector.model.LimiarMetrica;
 import org.repodriller.persistence.PersistenceMechanism;
 import org.repodriller.persistence.csv.CSVFile;
 
-public class PercentilTechinique extends ITechinique {
+public class PercentilTechnique extends ITechnique {
 
 	private int percentile;
 
-	public PercentilTechinique(int percentile) {
+	public PercentilTechnique(int percentile) {
 		this.percentile = percentile;
 	}
 
@@ -29,7 +29,7 @@ public class PercentilTechinique extends ITechinique {
 	@Override
 	public void generate(List<ClassMetricResult> classes, String fileResultado) {
 		PersistenceMechanism pm = new CSVFile(fileResultado);
-		pm.write("DesignRoleTechinique;LOC;CC;Efferent;NOP;");
+		pm.write("DesignRoleTechnique;LOC;CC;Efferent;NOP;");
 
 		ArrayList<Integer> listaLOC = new ArrayList<>();
 		ArrayList<Integer> listaCC = new ArrayList<>();

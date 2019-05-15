@@ -10,7 +10,7 @@ import org.designroleminer.smelldetector.model.LimiarMetrica;
 import org.repodriller.persistence.PersistenceMechanism;
 import org.repodriller.persistence.csv.CSVFile;
 
-public class AnicheTechinique extends ITechinique {
+public class AnicheTechnique extends ITechnique {
 
 	/**
 	 * Generate sheet with design role assigned to each class
@@ -21,7 +21,7 @@ public class AnicheTechinique extends ITechinique {
 	@Override
 	public void generate(List<ClassMetricResult> classes, String fileResultado) {
 		PersistenceMechanism pm = new CSVFile(fileResultado);
-		pm.write("DesignRoleTechinique;LOC;CC;Efferent;NOP;");
+		pm.write("DesignRoleTechnique;LOC;CC;Efferent;NOP;");
 
 		HashMap<String, Long> linhasDeCodigoPorArchitecturalRole = new HashMap<>();
 		obterTotalLinhasCodigoPorArchitecturalRole(classes, linhasDeCodigoPorArchitecturalRole);

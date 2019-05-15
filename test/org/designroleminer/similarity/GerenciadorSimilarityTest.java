@@ -6,20 +6,20 @@ import java.util.ArrayList;
 
 import org.designroleminer.ClassMetricResult;
 import org.designroleminer.similarity.SimilaritySystems;
-import org.designroleminer.techinique.TechiniqueExecutor;
-import org.designroleminer.techinique.DesignRoleTechinique;
+import org.designroleminer.techinique.TechniqueExecutor;
+import org.designroleminer.techinique.DesignRoleTechnique;
 import org.junit.Before;
 import org.junit.Test;
 
 public class GerenciadorSimilarityTest {
 
 	SimilaritySystems gSimilarity;
-	TechiniqueExecutor executorTechinique;
+	TechniqueExecutor executorTechinique;
 
 	@Before
 	public void initialize() {
 		gSimilarity = new SimilaritySystems();
-		executorTechinique = new TechiniqueExecutor(new DesignRoleTechinique());
+		executorTechinique = new TechniqueExecutor(new DesignRoleTechnique());
 
 	}
 

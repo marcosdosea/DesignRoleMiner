@@ -6,10 +6,10 @@ import org.designroleminer.ClassMetricResult;
 import org.repodriller.persistence.PersistenceMechanism;
 import org.repodriller.persistence.csv.CSVFile;
 
-public class ArchitecturalRoleTechinique extends ITechinique {
+public class DesignRoleTechnique extends ITechnique {
 
 	/**
-	 * Generate sheet with architectural roles assigned to each class
+	 * Generate sheet with design role assigned to each class
 	 * 
 	 * @param classes
 	 * @param fileResultado
@@ -17,13 +17,10 @@ public class ArchitecturalRoleTechinique extends ITechinique {
 	@Override
 	public void generate(List<ClassMetricResult> classes, String fileResultado) {
 		PersistenceMechanism pm = new CSVFile(fileResultado);
-		pm.write("Classe                              ;ArchitecturalRole                        ;");
+		pm.write("Classe                              ;DesignRoleTechnique                        ;Concorda?;");
 
 		for (ClassMetricResult classe : classes) {
-			if (classe.isArchitecturalRole())
-				pm.write(classe.getClassName() + ";" + classe.getDesignRole() + ";");
-			else
-				pm.write(classe.getClassName() + ";UNINDENTIFIED;");
+			pm.write(classe.getClassName() + ";" + classe.getDesignRole() + ";" + "SIM;");
 		}
 	}
 

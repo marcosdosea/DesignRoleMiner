@@ -8,15 +8,15 @@ import java.util.Map;
 import java.util.Set;
 
 import org.designroleminer.ClassMetricResult;
-import org.designroleminer.techinique.TechiniqueExecutor;
-import org.designroleminer.techinique.DesignRoleTechinique;
+import org.designroleminer.techinique.TechniqueExecutor;
+import org.designroleminer.techinique.DesignRoleTechnique;
 
 public class SimilaritySystems {
 
 	public float calculate(ArrayList<ClassMetricResult> projeto1, ArrayList<ClassMetricResult> projeto2) {
 
-		DesignRoleTechinique designRoleTechinique = new DesignRoleTechinique();
-		TechiniqueExecutor gLimiares = new TechiniqueExecutor(designRoleTechinique);
+		DesignRoleTechnique designRoleTechinique = new DesignRoleTechnique();
+		TechniqueExecutor gLimiares = new TechniqueExecutor(designRoleTechinique);
 
 
 		float similaridade = (float) 0;
