@@ -1,7 +1,7 @@
 package com.github.mauricioaniche.ck;
 
-import com.github.drminer.ClassMetricResult;
-import com.github.drminer.MetricReport;
+import org.designroleminer.ClassMetricResult;
+import org.designroleminer.MetricReport;
 
 public class Runner {
 

@@ -2,14 +2,13 @@ package com.github.mauricioaniche.ck.metric;
 
 import java.util.HashSet;
 
+import org.designroleminer.ClassMetricResult;
+import org.designroleminer.MetricReport;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MethodInvocation;
-
-import com.github.drminer.ClassMetricResult;
-import com.github.drminer.MetricReport;
 
 public class RFC extends ASTVisitor implements Metric {
 

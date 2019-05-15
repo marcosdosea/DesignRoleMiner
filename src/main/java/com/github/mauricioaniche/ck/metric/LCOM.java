@@ -5,15 +5,14 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.designroleminer.ClassMetricResult;
+import org.designroleminer.MetricReport;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
-
-import com.github.drminer.ClassMetricResult;
-import com.github.drminer.MetricReport;
 
 public class LCOM extends ASTVisitor implements Metric {
 

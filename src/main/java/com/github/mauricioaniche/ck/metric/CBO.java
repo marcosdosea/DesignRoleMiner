@@ -3,6 +3,8 @@ package com.github.mauricioaniche.ck.metric;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.designroleminer.ClassMetricResult;
+import org.designroleminer.MetricReport;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.ArrayCreation;
 import org.eclipse.jdt.core.dom.CastExpression;
@@ -21,9 +23,6 @@ import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.jdt.core.dom.ThrowStatement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
-
-import com.github.drminer.ClassMetricResult;
-import com.github.drminer.MetricReport;
 
 public class CBO extends ASTVisitor implements Metric {
 

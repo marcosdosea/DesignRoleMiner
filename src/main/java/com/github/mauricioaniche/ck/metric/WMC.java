@@ -1,6 +1,8 @@
 package com.github.mauricioaniche.ck.metric;
 
 import org.apache.commons.lang3.StringUtils;
+import org.designroleminer.ClassMetricResult;
+import org.designroleminer.MetricReport;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CatchClause;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -13,9 +15,6 @@ import org.eclipse.jdt.core.dom.Initializer;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.SwitchCase;
 import org.eclipse.jdt.core.dom.WhileStatement;
-
-import com.github.drminer.ClassMetricResult;
-import com.github.drminer.MetricReport;
 
 public class WMC extends ASTVisitor implements Metric {
 

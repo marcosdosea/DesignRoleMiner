@@ -7,14 +7,14 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.apache.log4j.Logger;
+import org.designroleminer.MetricReport;
+import org.designroleminer.metric.DIT;
+import org.designroleminer.metric.DesignRole;
+import org.designroleminer.metric.MethodMetric;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 
-import com.github.drminer.MetricReport;
-import com.github.drminer.metric.DIT;
-import com.github.drminer.metric.DesignRole;
-import com.github.drminer.metric.MethodMetric;
 import com.github.mauricioaniche.ck.metric.CBO;
 import com.github.mauricioaniche.ck.metric.LCOM;
 import com.github.mauricioaniche.ck.metric.Metric;

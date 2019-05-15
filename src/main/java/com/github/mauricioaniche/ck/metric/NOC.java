@@ -1,12 +1,11 @@
 package com.github.mauricioaniche.ck.metric;
 
+import org.designroleminer.ClassMetricResult;
+import org.designroleminer.MetricReport;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
-
-import com.github.drminer.ClassMetricResult;
-import com.github.drminer.MetricReport;
 
 public class NOC extends ASTVisitor implements Metric {
 

@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.apache.log4j.Logger;
+import org.designroleminer.ClassMetricResult;
+import org.designroleminer.MetricReport;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.FileASTRequestor;
 
-import com.github.drminer.ClassMetricResult;
-import com.github.drminer.MetricReport;
 import com.github.mauricioaniche.ck.metric.ClassInfo;
 import com.github.mauricioaniche.ck.metric.Metric;
 
