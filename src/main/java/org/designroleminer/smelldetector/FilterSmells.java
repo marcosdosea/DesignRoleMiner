@@ -14,7 +14,7 @@ import org.repodriller.persistence.csv.CSVFile;
 
 import com.github.mauricioaniche.ck.MethodData;
 
-public class FiltrarMetodosSmell {
+public class FilterSmells {
 
 	static final String TECNICA_ANICHE = "X";
 

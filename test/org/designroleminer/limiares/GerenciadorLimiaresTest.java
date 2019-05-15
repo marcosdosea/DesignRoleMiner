@@ -5,7 +5,12 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 
 import org.designroleminer.ClassMetricResult;
-import org.designroleminer.threshold.GerenciadorLimiares;
+import org.designroleminer.techinique.AlvesTechinique;
+import org.designroleminer.techinique.AnicheTechinique;
+import org.designroleminer.techinique.DesignRoleTechinique;
+import org.designroleminer.techinique.DoseaTechinique;
+import org.designroleminer.techinique.TechiniqueExecutor;
+import org.designroleminer.techinique.ValeTechinique;
 import org.junit.Test;
 
 public class GerenciadorLimiaresTest {
@@ -13,17 +18,19 @@ public class GerenciadorLimiaresTest {
 	@Test
 	public void testGerarLimiaresReference() {
 		final String PASTA_RESULTADO = "thresholds\\";
-		GerenciadorLimiares gLimiares = new GerenciadorLimiares();
+		TechiniqueExecutor gLimiares = new TechiniqueExecutor(new DesignRoleTechinique());
 
 		System.out.println("Iniciando a coleta de métricas do projeto referencia...");
 		ArrayList<String> projetosReferencia = gLimiares.lerProjetos("Reference.txt");
-		ArrayList<ClassMetricResult> metricasProjetosReferencia = gLimiares.getMetricasProjetos(projetosReferencia);
+		ArrayList<ClassMetricResult> metricasProjetosReferencia = gLimiares.getMetricsFromProjects(projetosReferencia);
 
-		System.out.println("Gerando Limiares por Dosea Referencia...");
-		gLimiares.gerarLimiarDoseaReference(metricasProjetosReferencia, PASTA_RESULTADO + "R.csv");
+		System.out.println("Gerando Limiares por Alves apontando para projetos Referencia...");
+		gLimiares.setTechinique(new AlvesTechinique());
+		gLimiares.execute(metricasProjetosReferencia, PASTA_RESULTADO + "R.csv");
 
 		System.out.println("Gerando Limiares por Dosea Referencia e Design Role...");
-		gLimiares.gerarLimiarDoseaReferenceDesignRole(metricasProjetosReferencia, PASTA_RESULTADO + "D.csv");
+		gLimiares.setTechinique(new DoseaTechinique());
+		gLimiares.execute(metricasProjetosReferencia, PASTA_RESULTADO + "D.csv");
 
 		System.out.println("Limiares gravados na pasta " + PASTA_RESULTADO + " com sucesso!");
 		assertTrue(true);
@@ -32,20 +39,23 @@ public class GerenciadorLimiaresTest {
 	// @Test
 	public void testGerarLimiaresBenchmarkExterno() {
 		final String PASTA_RESULTADO = "thresholds\\";
-		GerenciadorLimiares gLimiares = new GerenciadorLimiares();
+		TechiniqueExecutor gLimiares = new TechiniqueExecutor(new DesignRoleTechinique());
 
 		System.out.println("Iniciando a coleta de métricas dos projetos WEB...");
 		ArrayList<String> projetosBenchmark = gLimiares.lerProjetos("Benchmark.txt");
-		ArrayList<ClassMetricResult> metricasProjetosBenchmark = gLimiares.getMetricasProjetos(projetosBenchmark);
+		ArrayList<ClassMetricResult> metricasProjetosBenchmark = gLimiares.getMetricsFromProjects(projetosBenchmark);
 
 		System.out.println("Gerando Limiares por Alves usando benchmark...");
-		gLimiares.gerarLimiarAlves(metricasProjetosBenchmark, PASTA_RESULTADO + "A.csv");
+		gLimiares.setTechinique(new AlvesTechinique());
+		gLimiares.execute(metricasProjetosBenchmark, PASTA_RESULTADO + "A.csv");
 
 		System.out.println("Gerando Limiares por Vale usando benchmark...");
-		gLimiares.gerarLimiarVale(metricasProjetosBenchmark, PASTA_RESULTADO + "V.csv");
+		gLimiares.setTechinique(new ValeTechinique());
+		gLimiares.execute(metricasProjetosBenchmark, PASTA_RESULTADO + "V.csv");
 
 		System.out.println("Gerando Limiares por Aniche...");
-		gLimiares.gerarLimiarAniche(metricasProjetosBenchmark, PASTA_RESULTADO + "X.csv");
+		gLimiares.setTechinique(new AnicheTechinique());
+		gLimiares.execute(metricasProjetosBenchmark, PASTA_RESULTADO + "X.csv");
 
 		System.out.println("Limiares gravados na pasta " + PASTA_RESULTADO + " com sucesso!");
 		assertTrue(true);

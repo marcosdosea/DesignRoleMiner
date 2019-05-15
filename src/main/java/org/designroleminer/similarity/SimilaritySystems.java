@@ -8,19 +8,22 @@ import java.util.Map;
 import java.util.Set;
 
 import org.designroleminer.ClassMetricResult;
-import org.designroleminer.threshold.GerenciadorLimiares;
+import org.designroleminer.techinique.TechiniqueExecutor;
+import org.designroleminer.techinique.DesignRoleTechinique;
 
 public class SimilaritySystems {
 
 	public float calculate(ArrayList<ClassMetricResult> projeto1, ArrayList<ClassMetricResult> projeto2) {
 
-		GerenciadorLimiares gLimiares = new GerenciadorLimiares();
+		DesignRoleTechinique designRoleTechinique = new DesignRoleTechinique();
+		TechiniqueExecutor gLimiares = new TechiniqueExecutor(designRoleTechinique);
+
 
 		float similaridade = (float) 0;
 
 		HashMap<String, Long> linhasDeCodigoPorDesignRoleProjeto1 = new HashMap<String, Long>();
 		Map<CharSequence, Integer> drProjeto1 = countDesignRoles(projeto1); 
-		Long totalLocProjeto1 = gLimiares.obterTotalLinhasCodigoPorDesignRole(projeto1, linhasDeCodigoPorDesignRoleProjeto1);
+		Long totalLocProjeto1 = designRoleTechinique.obterTotalLinhasCodigoPorDesignRole(projeto1, linhasDeCodigoPorDesignRoleProjeto1);
 		
 		if (linhasDeCodigoPorDesignRoleProjeto1.get("TEST") != null)
 			totalLocProjeto1 -= linhasDeCodigoPorDesignRoleProjeto1.remove("TEST");
@@ -30,7 +33,7 @@ public class SimilaritySystems {
 		
 		HashMap<String, Long> linhasDeCodigoPorDesignRoleProjeto2 = new HashMap<>();
 		Map<CharSequence, Integer> drProjeto2 = countDesignRoles(projeto2); 
-		Long totalLocProjeto2 = gLimiares.obterTotalLinhasCodigoPorDesignRole(projeto2, linhasDeCodigoPorDesignRoleProjeto2);
+		Long totalLocProjeto2 = designRoleTechinique.obterTotalLinhasCodigoPorDesignRole(projeto2, linhasDeCodigoPorDesignRoleProjeto2);
 		if (linhasDeCodigoPorDesignRoleProjeto2.get("TEST") != null)
 			totalLocProjeto2 -= linhasDeCodigoPorDesignRoleProjeto2.remove("TEST");
 		if (linhasDeCodigoPorDesignRoleProjeto2.get("UNDEFINED") != null)

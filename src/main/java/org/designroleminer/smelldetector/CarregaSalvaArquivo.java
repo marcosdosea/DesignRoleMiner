@@ -1,7 +1,11 @@
 package org.designroleminer.smelldetector;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,20 +16,14 @@ import org.designroleminer.smelldetector.model.LimiarTecnica;
 
 public class CarregaSalvaArquivo {
 
-	private static LeitorEscritorArquivo LEAProjetos;
-
 	@SuppressWarnings("unchecked")
 	public static ArrayList<String> carregarProjetos() {
 		ArrayList<String> projetos = new ArrayList<>();
-		LEAProjetos = new LeitorEscritorArquivo(projetos, "Projetos.txt");
-
 		try {
-			projetos = (ArrayList<String>) LEAProjetos.readFromFile();
+			projetos = (ArrayList<String>) readFromFile(projetos, "Projetos.txt");
 			System.out.println("Dados dos alunos carregados com sucesso!");
 		} catch (Exception e1) {
 			System.out.println("Erro: Arquivo dos alunos não encontrado! \nEstamos criando um novo arquivo.");
-		} finally {
-			LEAProjetos = null;
 		}
 		return projetos;
 	}
@@ -93,14 +91,28 @@ public class CarregaSalvaArquivo {
 	// joga arrayList em arquivo txt
 
 	public static void salvaArquivo(ArrayList<String> projetos) {
-		LEAProjetos = new LeitorEscritorArquivo(projetos, "Projetos.txt");
 		try {
-			LEAProjetos.salvarContatos();
+			saveFile(projetos, "Projetos.txt");
 			System.out.println("Dados dos alunos salvos com sucesso!");
 		} catch (IOException e1) {
 			System.out.println("Erro ao salvar dados dos alunos!");
 			e1.printStackTrace();
 		}
+	}
+
+	public static Object readFromFile(Object dados, String file) throws IOException, ClassNotFoundException {
+		ObjectInputStream is = new ObjectInputStream(new FileInputStream(file));
+		Object savedBook = is.readObject();
+		is.close();
+		return savedBook;
+	}
+
+	public static void saveFile(Object dados, String file) throws IOException {
+		File destino = new File(file);
+		System.out.println(destino.getAbsolutePath());
+		ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(destino));
+		os.writeObject(dados);
+		os.close();
 	}
 
 }
