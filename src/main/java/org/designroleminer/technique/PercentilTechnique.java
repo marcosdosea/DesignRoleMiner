@@ -1,4 +1,4 @@
-package org.designroleminer.techinique;
+package org.designroleminer.technique;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,7 +10,7 @@ import org.designroleminer.smelldetector.model.LimiarMetrica;
 import org.repodriller.persistence.PersistenceMechanism;
 import org.repodriller.persistence.csv.CSVFile;
 
-public class PercentilTechnique extends ITechnique {
+public class PercentilTechnique extends AbstractTechnique {
 
 	private int percentile;
 

@@ -1,4 +1,4 @@
-package org.designroleminer.study;
+package example.study.designrole;
 
 import java.util.ArrayList;
 import java.util.HashMap;

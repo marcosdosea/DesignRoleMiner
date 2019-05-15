@@ -1,152 +1,114 @@
-package org.designroleminer.similarity;
-
-import static org.junit.Assert.assertTrue;
+package example.study.similarity;
 
 import java.util.ArrayList;
 
 import org.designroleminer.ClassMetricResult;
 import org.designroleminer.similarity.SimilaritySystems;
-import org.designroleminer.techinique.TechniqueExecutor;
-import org.designroleminer.techinique.DesignRoleTechnique;
-import org.junit.Before;
-import org.junit.Test;
+import org.designroleminer.technique.DesignRoleTechnique;
+import org.designroleminer.technique.TechniqueExecutor;
 
-public class GerenciadorSimilarityTest {
+public class VEM2019Study {
 
-	SimilaritySystems gSimilarity;
-	TechniqueExecutor executorTechinique;
+	private static SimilaritySystems gSimilarity = new SimilaritySystems();
+	private static TechniqueExecutor executor = new TechniqueExecutor(new DesignRoleTechnique());
+	
+	
+	public static void main(String[] args) {
+		System.out.println("Iniciando Cálculo Similaridade 1...");
+		ArrayList<String> listAndroid = new ArrayList<>();
+		listAndroid.add("D:\\Projetos\\_Android\\bitcoin-wallet");
+		ArrayList<ClassMetricResult> bitcoin = executor.getMetricsFromProjects(listAndroid);
 
-	@Before
-	public void initialize() {
-		gSimilarity = new SimilaritySystems();
-		executorTechinique = new TechniqueExecutor(new DesignRoleTechnique());
+		listAndroid = new ArrayList<>();
+		listAndroid.add("D:\\Projetos\\_Android\\k-9");
+		ArrayList<ClassMetricResult> k9 = executor.getMetricsFromProjects(listAndroid);
 
-	}
+		listAndroid = new ArrayList<>();
+		listAndroid.add("D:\\Projetos\\_Android\\ExoPlayer");
+		ArrayList<ClassMetricResult> exoplayer = executor.getMetricsFromProjects(listAndroid);
 
-	@Test
-	public void testCalculateSimilarityMenor() {
-		try {
-			ArrayList<String> listAndroid = new ArrayList<>();
-			listAndroid.add("D:\\Projetos\\_Android\\bitcoin-wallet");
-			ArrayList<ClassMetricResult> bitcoin = executorTechinique.getMetricsFromProjects(listAndroid);
+		listAndroid = new ArrayList<>();
+		listAndroid.add("D:\\Projetos\\_Android\\sms-backup-plus");
+		ArrayList<ClassMetricResult> sms = executor.getMetricsFromProjects(listAndroid);
 
-			listAndroid = new ArrayList<>();
-			listAndroid.add("D:\\Projetos\\_Android\\Talon-for-Twitter");
-			ArrayList<ClassMetricResult> k9 = executorTechinique.getMetricsFromProjects(listAndroid);
-			System.out.println("======>>>> Bitcoin x Talon : " + gSimilarity.calculate(bitcoin, k9));
+		listAndroid = new ArrayList<>();
+		listAndroid.add("D:\\Projetos\\_Android\\Talon-for-Twitter");
+		ArrayList<ClassMetricResult> talon = executor.getMetricsFromProjects(listAndroid);
 
-		} catch (Exception e) {
-			assertTrue(false);
-		}
-		assertTrue(true);
-	}
+		ArrayList<String> listEclipse = new ArrayList<>();
+		listEclipse.add("D:\\Projetos\\_Eclipse\\Activiti-Designer");
+		ArrayList<ClassMetricResult> activiti = executor.getMetricsFromProjects(listEclipse);
 
-	/// @Test
-	public void testCalculateSimilarityWeb() {
-		try {
-			System.out.println("Iniciando Cálculo Similaridade 1...");
-			ArrayList<String> listAndroid = new ArrayList<>();
-			listAndroid.add("D:\\Projetos\\_Android\\bitcoin-wallet");
-			ArrayList<ClassMetricResult> bitcoin = executorTechinique.getMetricsFromProjects(listAndroid);
+		listEclipse = new ArrayList<>();
+		listEclipse.add("D:\\Projetos\\_Eclipse\\angularjs-eclipse");
+		ArrayList<ClassMetricResult> angularjs = executor.getMetricsFromProjects(listEclipse);
 
-			listAndroid = new ArrayList<>();
-			listAndroid.add("D:\\Projetos\\_Android\\k-9");
-			ArrayList<ClassMetricResult> k9 = executorTechinique.getMetricsFromProjects(listAndroid);
+		listEclipse = new ArrayList<>();
+		listEclipse.add("D:\\Projetos\\_Eclipse\\arduino-eclipse-plugin");
+		ArrayList<ClassMetricResult> arduino = executor.getMetricsFromProjects(listEclipse);
 
-			listAndroid = new ArrayList<>();
-			listAndroid.add("D:\\Projetos\\_Android\\ExoPlayer");
-			ArrayList<ClassMetricResult> exoplayer = executorTechinique.getMetricsFromProjects(listAndroid);
+		listEclipse = new ArrayList<>();
+		listEclipse.add("D:\\Projetos\\_Eclipse\\droolsjbpm-tools");
+		ArrayList<ClassMetricResult> droolsjbpm = executor.getMetricsFromProjects(listEclipse);
 
-			listAndroid = new ArrayList<>();
-			listAndroid.add("D:\\Projetos\\_Android\\sms-backup-plus");
-			ArrayList<ClassMetricResult> sms = executorTechinique.getMetricsFromProjects(listAndroid);
+		listEclipse = new ArrayList<>();
+		listEclipse.add("D:\\Projetos\\_Eclipse\\sonarlint-eclipse");
+		ArrayList<ClassMetricResult> sonarlint = executor.getMetricsFromProjects(listEclipse);
 
-			listAndroid = new ArrayList<>();
-			listAndroid.add("D:\\Projetos\\_Android\\Talon-for-Twitter");
-			ArrayList<ClassMetricResult> talon = executorTechinique.getMetricsFromProjects(listAndroid);
+		ArrayList<String> web = new ArrayList<>();
+		web.add("D:\\Projetos\\_Web\\bigbluebutton");
+		ArrayList<ClassMetricResult> bigbluebutton = executor.getMetricsFromProjects(web);
+		compareSystems("Bigbluebutton", bigbluebutton, bitcoin, k9, exoplayer, sms, talon, activiti, angularjs, arduino,
+				droolsjbpm, sonarlint);
 
-			ArrayList<String> listEclipse = new ArrayList<>();
-			listEclipse.add("D:\\Projetos\\_Eclipse\\Activiti-Designer");
-			ArrayList<ClassMetricResult> activiti = executorTechinique.getMetricsFromProjects(listEclipse);
+		web = new ArrayList<>();
+		web.add("D:\\Projetos\\_Web\\openmrs-core");
+		ArrayList<ClassMetricResult> openmrs = executor.getMetricsFromProjects(web);
+		compareSystems("OpenMRS", openmrs, bitcoin, k9, exoplayer, sms, talon, activiti, angularjs, arduino, droolsjbpm,
+				sonarlint);
 
-			listEclipse = new ArrayList<>();
-			listEclipse.add("D:\\Projetos\\_Eclipse\\angularjs-eclipse");
-			ArrayList<ClassMetricResult> angularjs = executorTechinique.getMetricsFromProjects(listEclipse);
+		web = new ArrayList<>();
+		web.add("D:\\Projetos\\_Web\\heritrix3");
+		ArrayList<ClassMetricResult> heritrix3 = executor.getMetricsFromProjects(web);
+		compareSystems("heritrix3", heritrix3, bitcoin, k9, exoplayer, sms, talon, activiti, angularjs, arduino,
+				droolsjbpm, sonarlint);
 
-			listEclipse = new ArrayList<>();
-			listEclipse.add("D:\\Projetos\\_Eclipse\\arduino-eclipse-plugin");
-			ArrayList<ClassMetricResult> arduino = executorTechinique.getMetricsFromProjects(listEclipse);
+		web = new ArrayList<>();
+		web.add("D:\\Projetos\\_Web\\qalingo-engine");
+		ArrayList<ClassMetricResult> qalingo = executor.getMetricsFromProjects(web);
+		compareSystems("qalingo", qalingo, bitcoin, k9, exoplayer, sms, talon, activiti, angularjs, arduino, droolsjbpm,
+				sonarlint);
 
-			listEclipse = new ArrayList<>();
-			listEclipse.add("D:\\Projetos\\_Eclipse\\droolsjbpm-tools");
-			ArrayList<ClassMetricResult> droolsjbpm = executorTechinique.getMetricsFromProjects(listEclipse);
+		web = new ArrayList<>();
+		web.add("D:\\Projetos\\_Web\\libreplan");
+		ArrayList<ClassMetricResult> libreplan = executor.getMetricsFromProjects(web);
+		compareSystems("libreplan", libreplan, bitcoin, k9, exoplayer, sms, talon, activiti, angularjs, arduino,
+				droolsjbpm, sonarlint);
+		System.out.println("*********** WEB ************");
+		System.out.println(
+				"======>>>> BigBlueButton x BigBlueButton: " + gSimilarity.calculate(bigbluebutton, bigbluebutton));
+		System.out.println("======>>>> BigBlueButton x OpenMRS: " + gSimilarity.calculate(bigbluebutton, openmrs));
+		System.out.println("======>>>> BigBlueButton x Qalingo: " + gSimilarity.calculate(bigbluebutton, qalingo));
+		System.out.println("======>>>> BigBlueButton x Heritrix3: " + gSimilarity.calculate(bigbluebutton, heritrix3));
+		System.out.println("======>>>> BigBlueButton x Libreplan: " + gSimilarity.calculate(bigbluebutton, libreplan));
 
-			listEclipse = new ArrayList<>();
-			listEclipse.add("D:\\Projetos\\_Eclipse\\sonarlint-eclipse");
-			ArrayList<ClassMetricResult> sonarlint = executorTechinique.getMetricsFromProjects(listEclipse);
+		System.out.println("======>>>> OpenMRS x OpenMRS: " + gSimilarity.calculate(openmrs, openmrs));
+		System.out.println("======>>>> OpenMRS x Qalingo: " + gSimilarity.calculate(openmrs, qalingo));
+		System.out.println("======>>>> OpenMRS x Heritrix3: " + gSimilarity.calculate(openmrs, heritrix3));
+		System.out.println("======>>>> OpenMRS x Libreplan: " + gSimilarity.calculate(openmrs, libreplan));
 
-			ArrayList<String> web = new ArrayList<>();
-			web.add("D:\\Projetos\\_Web\\bigbluebutton");
-			ArrayList<ClassMetricResult> bigbluebutton = executorTechinique.getMetricsFromProjects(web);
-			compareSystems("Bigbluebutton", bigbluebutton, bitcoin, k9, exoplayer, sms, talon, activiti, angularjs,
-					arduino, droolsjbpm, sonarlint);
+		System.out.println("======>>>> Qalingo x Qalingo: " + gSimilarity.calculate(qalingo, qalingo));
+		System.out.println("======>>>> Qalingo x Heritrix3: " + gSimilarity.calculate(qalingo, heritrix3));
+		System.out.println("======>>>> Qalingo x Libreplan: " + gSimilarity.calculate(qalingo, libreplan));
 
-			web = new ArrayList<>();
-			web.add("D:\\Projetos\\_Web\\openmrs-core");
-			ArrayList<ClassMetricResult> openmrs = executorTechinique.getMetricsFromProjects(web);
-			compareSystems("OpenMRS", openmrs, bitcoin, k9, exoplayer, sms, talon, activiti, angularjs, arduino,
-					droolsjbpm, sonarlint);
+		System.out.println("======>>>> Heritrix3 x Heritrix3: " + gSimilarity.calculate(heritrix3, heritrix3));
+		System.out.println("======>>>> Heritrix3 x Libreplan: " + gSimilarity.calculate(heritrix3, libreplan));
 
-			web = new ArrayList<>();
-			web.add("D:\\Projetos\\_Web\\heritrix3");
-			ArrayList<ClassMetricResult> heritrix3 = executorTechinique.getMetricsFromProjects(web);
-			compareSystems("heritrix3", heritrix3, bitcoin, k9, exoplayer, sms, talon, activiti, angularjs, arduino,
-					droolsjbpm, sonarlint);
-
-			web = new ArrayList<>();
-			web.add("D:\\Projetos\\_Web\\qalingo-engine");
-			ArrayList<ClassMetricResult> qalingo = executorTechinique.getMetricsFromProjects(web);
-			compareSystems("qalingo", qalingo, bitcoin, k9, exoplayer, sms, talon, activiti, angularjs, arduino,
-					droolsjbpm, sonarlint);
-
-			web = new ArrayList<>();
-			web.add("D:\\Projetos\\_Web\\libreplan");
-			ArrayList<ClassMetricResult> libreplan = executorTechinique.getMetricsFromProjects(web);
-			compareSystems("libreplan", libreplan, bitcoin, k9, exoplayer, sms, talon, activiti, angularjs, arduino,
-					droolsjbpm, sonarlint);
-			System.out.println("*********** WEB ************");
-			System.out.println(
-					"======>>>> BigBlueButton x BigBlueButton: " + gSimilarity.calculate(bigbluebutton, bigbluebutton));
-			System.out.println("======>>>> BigBlueButton x OpenMRS: " + gSimilarity.calculate(bigbluebutton, openmrs));
-			System.out.println("======>>>> BigBlueButton x Qalingo: " + gSimilarity.calculate(bigbluebutton, qalingo));
-			System.out.println(
-					"======>>>> BigBlueButton x Heritrix3: " + gSimilarity.calculate(bigbluebutton, heritrix3));
-			System.out.println(
-					"======>>>> BigBlueButton x Libreplan: " + gSimilarity.calculate(bigbluebutton, libreplan));
-
-			System.out.println("======>>>> OpenMRS x OpenMRS: " + gSimilarity.calculate(openmrs, openmrs));
-			System.out.println("======>>>> OpenMRS x Qalingo: " + gSimilarity.calculate(openmrs, qalingo));
-			System.out.println("======>>>> OpenMRS x Heritrix3: " + gSimilarity.calculate(openmrs, heritrix3));
-			System.out.println("======>>>> OpenMRS x Libreplan: " + gSimilarity.calculate(openmrs, libreplan));
-
-			System.out.println("======>>>> Qalingo x Qalingo: " + gSimilarity.calculate(qalingo, qalingo));
-			System.out.println("======>>>> Qalingo x Heritrix3: " + gSimilarity.calculate(qalingo, heritrix3));
-			System.out.println("======>>>> Qalingo x Libreplan: " + gSimilarity.calculate(qalingo, libreplan));
-
-			System.out.println("======>>>> Heritrix3 x Heritrix3: " + gSimilarity.calculate(heritrix3, heritrix3));
-			System.out.println("======>>>> Heritrix3 x Libreplan: " + gSimilarity.calculate(heritrix3, libreplan));
-
-			System.out.println("======>>>> Libreplan x Libreplan: " + gSimilarity.calculate(libreplan, libreplan));
-
-			assertTrue(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-			assertTrue(false);
-		}
+		System.out.println("======>>>> Libreplan x Libreplan: " + gSimilarity.calculate(libreplan, libreplan));
 
 	}
 
-	private void compareSystems(String nameWebSystem, ArrayList<ClassMetricResult> webSystem,
+	private static void compareSystems(String nameWebSystem, ArrayList<ClassMetricResult> webSystem,
 			ArrayList<ClassMetricResult> bitcoin, ArrayList<ClassMetricResult> k9,
 			ArrayList<ClassMetricResult> exoplayer, ArrayList<ClassMetricResult> sms,
 			ArrayList<ClassMetricResult> talon, ArrayList<ClassMetricResult> activiti,

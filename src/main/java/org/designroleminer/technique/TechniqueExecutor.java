@@ -1,4 +1,4 @@
-package org.designroleminer.techinique;
+package org.designroleminer.technique;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,9 +25,9 @@ import com.github.mauricioaniche.ck.CK;
 
 public class TechniqueExecutor {
 
-	ITechnique techinique;
+	AbstractTechnique techinique;
 	
-	public TechniqueExecutor(ITechnique techinique) {
+	public TechniqueExecutor(AbstractTechnique techinique) {
 		this.techinique = techinique;
 	}
 	
@@ -85,7 +85,7 @@ public class TechniqueExecutor {
 	 * set strategy
 	 * @param techinique
 	 */
-	public void setTechinique(ITechnique techinique) {
+	public void setTechinique(AbstractTechnique techinique) {
 		this.techinique = techinique;
 	}
 

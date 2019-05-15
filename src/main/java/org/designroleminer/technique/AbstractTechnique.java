@@ -1,4 +1,4 @@
-package org.designroleminer.techinique;
+package org.designroleminer.technique;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -11,7 +11,7 @@ import org.designroleminer.ClassMetricResult;
 import org.designroleminer.MethodMetricResult;
 import org.designroleminer.smelldetector.model.LimiarMetrica;
 
-public abstract class ITechnique {
+public abstract class AbstractTechnique {
 
 	/**
 	 * Generate some result from collected metrics

@@ -1,4 +1,4 @@
-package org.designroleminer.study;
+package example.study.designrole;
 
 import java.util.Arrays;
 import java.util.List;

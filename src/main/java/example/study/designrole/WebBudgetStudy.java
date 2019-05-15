@@ -1,4 +1,4 @@
-package org.designroleminer.study;
+package example.study.designrole;
 
 import org.designroleminer.visitor.ClassVisitorDesignRole;
 import org.designroleminer.visitor.MethodVisitorMetric;

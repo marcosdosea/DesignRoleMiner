@@ -1,4 +1,4 @@
-package org.designroleminer.techinique;
+package org.designroleminer.technique;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.designroleminer.ClassMetricResult;
 import org.repodriller.persistence.PersistenceMechanism;
 import org.repodriller.persistence.csv.CSVFile;
 
-public class ArchitecturalRoleTechnique extends ITechnique {
+public class ArchitecturalRoleTechnique extends AbstractTechnique {
 
 	/**
 	 * Generate sheet with architectural roles assigned to each class

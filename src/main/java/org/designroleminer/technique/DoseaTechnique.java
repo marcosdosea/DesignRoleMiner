@@ -1,4 +1,4 @@
-package org.designroleminer.techinique;
+package org.designroleminer.technique;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -10,7 +10,7 @@ import org.designroleminer.smelldetector.model.LimiarMetrica;
 import org.repodriller.persistence.PersistenceMechanism;
 import org.repodriller.persistence.csv.CSVFile;
 
-public class DoseaTechnique extends ITechnique {
+public class DoseaTechnique extends AbstractTechnique {
 
 	/**
 	 * Generate sheet with design role assigned to each class
