@@ -8,10 +8,12 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.github.ck.CKNumber;
-import com.github.limiares.GerenciadorLimiares;
-import com.github.smelldetector.model.DadosMetodoSmell;
-import com.github.smelldetector.model.LimiarTecnica;
+import com.github.drminer.ck.CKNumber;
+import com.github.drminer.smelldetector.model.DadosMetodoSmell;
+import com.github.drminer.smelldetector.model.LimiarTecnica;
+import com.github.drminer.smelldetector.negocio.CarregaSalvaArquivo;
+import com.github.drminer.smelldetector.negocio.FiltrarMetodosSmell;
+import com.github.drminer.threshold.GerenciadorLimiares;
 
 public class FiltrarMetodosSmellTest {
 

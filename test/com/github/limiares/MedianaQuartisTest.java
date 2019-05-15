@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
+import com.github.drminer.threshold.MedianaQuartis;
+
 public class MedianaQuartisTest {
 
 	public ArrayList<Integer> getListaDesordenada(boolean ehImpar) {
