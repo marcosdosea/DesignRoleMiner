@@ -44,116 +44,28 @@ public class PercentilTechnique extends AbstractTechnique {
 				listaNOP.add(method.getNumberOfParameters());
 			}
 		}
-		if (listaLOC.size() > 0) {
-			listaLOC = MedianaQuartis.ordernarOrdemCrescente(listaLOC);
-			listaCC = MedianaQuartis.ordernarOrdemCrescente(listaCC);
-			listaEfferent = MedianaQuartis.ordernarOrdemCrescente(listaEfferent);
-			listaNOP = MedianaQuartis.ordernarOrdemCrescente(listaNOP);
+		
+		double limiarLOC = new BoxPlotOutlier(convert(listaLOC)).getValuePercentil(percentile);
+		double limiarCC = new BoxPlotOutlier(convert(listaCC)).getValuePercentil(percentile);
+		double limiarEfferent = new BoxPlotOutlier(convert(listaEfferent)).getValuePercentil(percentile);
+		double limiarNOP = new BoxPlotOutlier(convert(listaNOP)).getValuePercentil(percentile);
+		
+		pm.write(LimiarMetrica.DESIGN_ROLE_UNDEFINED + ";" + limiarLOC + ";"
+				+ limiarCC + ";"
+				+ limiarEfferent + ";"
+				+ limiarNOP + ";");
+	}
+	
+	
+	private double[] convert(ArrayList<Integer> myIntegerValues) {
+		double[] myList = new double[myIntegerValues.size()];
+		for (int i=0; i<myIntegerValues.size(); i++) {
+		   myList[i] = (double) myIntegerValues.get(i);
 		}
-		pm.write(LimiarMetrica.DESIGN_ROLE_UNDEFINED + ";" + MedianaQuartis.percentil(listaLOC, percentile) + ";"
-				+ MedianaQuartis.percentil(listaCC, percentile) + ";"
-				+ MedianaQuartis.percentil(listaEfferent, percentile) + ";"
-				+ MedianaQuartis.percentil(listaNOP, percentile) + ";");
+		return myList;
 	}
 
 }
 
-class MedianaQuartis {
 
-	public static ArrayList<Integer> ordernarOrdemCrescente(ArrayList<Integer> metodosDesordenados) {
-		ArrayList<Integer> metodosOrdenados = metodosDesordenados;
-		Collections.sort(metodosOrdenados);
-		return metodosOrdenados;
-	}
 
-	public static int calcularMediana(ArrayList<Integer> metodos) {
-		if (metodos.size() == 0) {
-			return 0;
-		}
-		int numeroElementosLista = metodos.size();
-		if (numeroElementosLista % 2 == 0) {
-			return (metodos.get(numeroElementosLista / 2) + metodos.get((numeroElementosLista / 2) - 1)) / 2;
-		} else {
-			return metodos.get((numeroElementosLista - 1) / 2);
-		}
-
-	}
-
-	public static int percentil(ArrayList<Integer> metodosOrdenados, int porcentagemLimiar) {
-		if (metodosOrdenados.size() == 0) {
-			return 0;
-		}
-		double posicaoReal = ((double) porcentagemLimiar / 100) * (metodosOrdenados.size());
-		int posicaoInteira = (int) posicaoReal;
-		if (posicaoReal != posicaoInteira) {
-			return metodosOrdenados.get(posicaoInteira);
-		} else {
-			return ((metodosOrdenados.get(posicaoInteira) + metodosOrdenados.get(posicaoInteira - 1)) / 2);
-		}
-	}
-
-	public static boolean eCompreendidoPrimeiroTerceiroQuartil(int numero, int primeiroQuartil, int terceiroQuartil) {
-		if (numero >= primeiroQuartil && numero <= terceiroQuartil) {
-			return true;
-		}
-		return false;
-	}
-
-	public static boolean eMaiorQueTerceiroQuartil(int numero, int terceiroQuartil) {
-		if (numero > terceiroQuartil) {
-			return true;
-		}
-		return false;
-	}
-}
-
-class Quartis {
-
-	private ArrayList<Integer> listaMetrica;
-
-	public Quartis(ArrayList<Integer> listaMetrica) {
-		super();
-		this.listaMetrica = listaMetrica;
-		Collections.sort(listaMetrica);
-	}
-
-	public static int calcularMediana(ArrayList<Integer> metodos) {
-		if (metodos.size() == 0) {
-			return 0;
-		}
-		int numeroElementosLista = metodos.size();
-		if (numeroElementosLista % 2 == 0) {
-			return (metodos.get(numeroElementosLista / 2) + metodos.get((numeroElementosLista / 2) - 1)) / 2;
-		} else {
-			return metodos.get((numeroElementosLista - 1) / 2);
-		}
-
-	}
-
-	public static int percentil(ArrayList<Integer> metodosOrdenados, int porcentagemLimiar) {
-		if (metodosOrdenados.size() == 0) {
-			return 0;
-		}
-		double posicaoReal = ((double) porcentagemLimiar / 100) * (metodosOrdenados.size());
-		int posicaoInteira = (int) posicaoReal;
-		if (posicaoReal != posicaoInteira) {
-			return metodosOrdenados.get(posicaoInteira);
-		} else {
-			return ((metodosOrdenados.get(posicaoInteira) + metodosOrdenados.get(posicaoInteira - 1)) / 2);
-		}
-	}
-
-	public static boolean eCompreendidoPrimeiroTerceiroQuartil(int numero, int primeiroQuartil, int terceiroQuartil) {
-		if (numero >= primeiroQuartil && numero <= terceiroQuartil) {
-			return true;
-		}
-		return false;
-	}
-
-	public static boolean eMaiorQueTerceiroQuartil(int numero, int terceiroQuartil) {
-		if (numero > terceiroQuartil) {
-			return true;
-		}
-		return false;
-	}
-}
