@@ -13,6 +13,8 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MarkerAnnotation;
+import org.eclipse.jdt.core.dom.Modifier;
+import org.eclipse.jdt.core.dom.Modifier.ModifierKeyword;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
 import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -137,6 +139,12 @@ public class DesignRole extends ASTVisitor implements Metric {
 		ITypeBinding binding = node.resolveBinding();
 		if (binding.isMember())
 			return false;
+		//if (binding.isInterface())
+		//	return false;
+		//if (binding.isEnum())
+		//	return false;
+		//if (binding.isClass() && node.modifiers().toString().contains("abstract"))
+		//	return false;
 
 		String interfacesConcern = node.superInterfaceTypes().size() > 0 ? node.superInterfaceTypes().toString() : "";
 
@@ -148,13 +156,6 @@ public class DesignRole extends ASTVisitor implements Metric {
 
 	private void calculate(ITypeBinding binding, String interfaces) {
 		ITypeBinding father = binding.getSuperclass();
-		
-		
-		if (binding.getName().contains("WorkingArrangementsPerOrderController")) {
-
-			System.out.println("depurar");
-		}
-		
 		if (father != null) {
 			String fatherName = father.getBinaryName();
 			if (father.isFromSource()) { // classe pai é interna
@@ -233,7 +234,8 @@ public class DesignRole extends ASTVisitor implements Metric {
 				}
 			}
 		}
-		designRole = extractParameters(designRole);
+		if (designRole != null)
+			designRole = extractParameters(designRole);
 		result.setConcern(designRole);
 		result.setArchitecturalRole(ehArchitecturalRole);
 	}

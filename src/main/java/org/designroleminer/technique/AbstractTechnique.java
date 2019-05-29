@@ -75,11 +75,11 @@ public abstract class AbstractTechnique {
 			BigDecimal pMedio = new BigDecimal(percentilMedio).divide(new BigDecimal(100), MathContext.DECIMAL128);
 			BigDecimal pMaximo = new BigDecimal(percentilMaximo).divide(new BigDecimal(100), MathContext.DECIMAL128);
 			BigDecimal somaPeso = null;
-			if (listaOrdenadaMetrica.size() > 0) {
-				limiarMetrica.setLimiarMinimo(listaOrdenadaMetrica.get(0));
-				limiarMetrica.setLimiarMedio(listaOrdenadaMetrica.get(0));
-				limiarMetrica.setLimiarMaximo(listaOrdenadaMetrica.get(0));
-			}
+
+			int indexMinimo = 0;
+			int indexMedio = 0;
+			int indexMaximo = 0;
+
 			int indexLista = 0;
 			for (Integer valorMetrica : listaOrdenadaMetrica) {
 				BigDecimal valorAgrupado = valoresMetricas.get(valorMetrica);
@@ -88,15 +88,26 @@ public abstract class AbstractTechnique {
 						: new BigDecimal(0);
 				somaPeso = (somaPeso == null) ? peso : somaPeso.add(peso, MathContext.DECIMAL128);
 				if (somaPeso.compareTo(pMinimo) <= 0)
-					limiarMetrica.setLimiarMinimo(listaOrdenadaMetrica.get(indexLista));
+					indexMinimo = indexLista;
 				if (somaPeso.compareTo(pMedio) <= 0)
-					limiarMetrica.setLimiarMedio(listaOrdenadaMetrica.get(indexLista));
+					indexMedio = indexLista;
 				if (somaPeso.compareTo(pMaximo) <= 0)
-					limiarMetrica.setLimiarMaximo(listaOrdenadaMetrica.get(indexLista));
+					indexMaximo = indexLista;
 				if (somaPeso.compareTo(pMaximo) >= 0)
 					break;
 				indexLista++;
 			}
+
+			int tamanhoLista = listaOrdenadaMetrica.size();
+			if (tamanhoLista > 0) {
+				indexMinimo = (indexMinimo < (tamanhoLista - 1)) ? indexMinimo + 1 : indexMinimo;
+				indexMedio  = (indexMedio  < (tamanhoLista - 1)) ? indexMedio + 1 : indexMedio;
+				indexMaximo = (indexMaximo  < (tamanhoLista - 1)) ? indexMaximo + 1 : indexMaximo;
+				limiarMetrica.setLimiarMinimo(listaOrdenadaMetrica.get(indexMinimo));
+				limiarMetrica.setLimiarMedio(listaOrdenadaMetrica.get(indexMedio));
+				limiarMetrica.setLimiarMaximo(listaOrdenadaMetrica.get(indexMaximo));
+			}
+
 		}
 		return limiarMetrica;
 	}

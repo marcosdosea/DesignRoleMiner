@@ -188,7 +188,9 @@ public class ClassMetricResult implements Serializable {
 	}
 	
 	public String getDesignRole() {
-		return designRole.toUpperCase();
+		if (designRole != null)
+			return designRole.toUpperCase();
+		return designRole;
 	}
 
 	public void setConcern(String designRole) {
@@ -214,7 +216,7 @@ public class ClassMetricResult implements Serializable {
 	}
 	@Override
 	public String toString() {
-		return "ClassMetricResult [file=" + file + ", className=" + className + ", type=" + type + ", dit=" + dit + ", noc="
+		return "ClassMetricResult [file=" + file + ", className=" + className + ", designRole=" + designRole + ", type=" + type + ", dit=" + dit + ", noc="
 				+ noc + ", wmc=" + wmc + ", cbo=" + cbo + ", lcom=" + lcom + ", rfc=" + rfc + ", nom=" + nom
 				+ ", specific=" + specific + "]";
 	}

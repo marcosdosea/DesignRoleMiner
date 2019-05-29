@@ -1,7 +1,6 @@
 package org.designroleminer.technique;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.designroleminer.ClassMetricResult;

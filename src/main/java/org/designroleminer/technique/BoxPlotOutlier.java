@@ -106,7 +106,9 @@ public class BoxPlotOutlier {
 		ArrayList<Double> listCalculated = new ArrayList<>();
 		for (int i = 0; i < endList1; i++) {
 			for (int j = startList2; j < listValues.length; j++) {
-				double calculated = ((listValues[j] - median) - (median - listValues[i]))
+				double calculated = 0;
+				if (listValues[j] != listValues[i])
+					calculated = ((listValues[j] - median) - (median - listValues[i]))
 						/ (listValues[j] - listValues[i]);
 				listCalculated.add(calculated);
 			}

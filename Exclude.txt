@@ -1,7 +1,0 @@
-D:\Projetos\_Benchmark2018\airpal
-D:\Projetos\_Benchmark2018\bag-database
-D:\Projetos\_Benchmark2018\zkspreadsheet
-D:\Projetos\_Benchmark2018\Asqatasun
-D:\Projetos\_Benchmark2018\webprotege
-D:\Projetos\_Benchmark2018\zanata-platform
-D:\Projetos\_Benchmark2018\hypergraphql
