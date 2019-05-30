@@ -12,11 +12,14 @@ import java.util.Scanner;
 import org.designroleminer.ClassMetricResult;
 import org.designroleminer.FileLocUtil;
 import org.designroleminer.MetricReport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.mauricioaniche.ck.CK;
 
 public class TechniqueExecutor {
 
+	static Logger logger = LoggerFactory.getLogger(TechniqueExecutor.class);
 	AbstractTechnique techinique;
 	
 	public TechniqueExecutor(AbstractTechnique techinique) {
@@ -33,7 +36,7 @@ public class TechniqueExecutor {
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
 			String dataHora = sf.format(Calendar.getInstance().getTime());
 
-			System.out.println("[" + dataHora + "] Extracting metrics from project " + path + "...");
+			logger.info("[" + dataHora + "] Extracting metrics from project " + path + "...");
 			MetricReport report = new CK().calculate(path);
 			
 
@@ -48,9 +51,9 @@ public class TechniqueExecutor {
 				}
 			}
 			
-			System.out.println("Number of classes: " + report.all().size());
-			System.out.println("Number of methods: " + totalMetodos);
-			System.out.println("Total Lines of Code: " + totalLoc);
+			logger.info("Number of classes: " + report.all().size());
+			logger.info("Number of methods: " + totalMetodos);
+			logger.info("Total Lines of Code: " + totalLoc);
 
 			//listaClasses.addAll(report.all());
 		}
