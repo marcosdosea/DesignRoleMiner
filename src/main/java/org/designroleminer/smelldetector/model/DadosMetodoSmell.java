@@ -1,6 +1,8 @@
 package org.designroleminer.smelldetector.model;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 public class DadosMetodoSmell implements Comparable<DadosMetodoSmell> {
 

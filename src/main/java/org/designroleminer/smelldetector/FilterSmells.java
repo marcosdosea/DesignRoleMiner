@@ -148,4 +148,25 @@ public class FilterSmells {
 		System.out.println("Total de métodos longos: " + metodosSmell.size());
 	}
 
+	
+	public static void gravarMetodosSmellRefactored(HashMap<String, DadosMetodoSmell> metodosSmell, String arquivoDestino) {
+
+		PersistenceMechanism pm = new CSVFile(System.getProperty("user.dir") + "\\" + arquivoDestino);
+		pm.write(
+				"Tecnicas;Design Role;Classe;Método;LOC;CC;Efferent;NOP;Refactoring Aplicados; Quantidade");
+		for (DadosMetodoSmell metodoSmell : metodosSmell.values()) {
+			//if (metodoSmell.getAppliedRefactorings())
+			pm.write(metodoSmell.getListaTecnicas().toString().replace('[', ' ').replace(']', ' ') + ";"
+					+ metodoSmell.getClassDesignRole() + ";" + metodoSmell.getNomeClasse() + ";"
+					+ metodoSmell.getNomeMetodo() + ";" + +metodoSmell.getLinesOfCode() + ";"
+					+ metodoSmell.getComplexity() + ";" + metodoSmell.getEfferent() + ";"
+					+ metodoSmell.getNumberOfParameters() + ";" + metodoSmell.getSmell() + ";"
+					+ "(1) Discordo Fortemente;;");
+		}
+		System.out.println("Total de métodos longos: " + metodosSmell.size());
+	}
+
+	
+	
+	
 }

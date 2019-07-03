@@ -133,6 +133,10 @@ public class ClassMetricResult implements Serializable {
 		return noc;
 	}
 
+	public void setNoc(int noc) {
+		this.noc = noc;
+	}
+	
 	public void setWmc(int cc) {
 		this.wmc = cc;
 	}
@@ -193,7 +197,7 @@ public class ClassMetricResult implements Serializable {
 		return designRole;
 	}
 
-	public void setConcern(String designRole) {
+	public void setDesignRole(String designRole) {
 		this.designRole = designRole;
 	}
 

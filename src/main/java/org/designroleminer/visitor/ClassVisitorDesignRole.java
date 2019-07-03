@@ -75,7 +75,7 @@ public class ClassVisitorDesignRole implements CommitVisitor {
 		for (ClassMetricResult classMetrics : report.all()) {
 			Integer quantidade = mapConcerns.get(classMetrics.getDesignRole());
 			if (quantidade <= quantidadeCorte)
-				classMetrics.setConcern("Undefined");
+				classMetrics.setDesignRole("Undefined");
 		}
 	}
 

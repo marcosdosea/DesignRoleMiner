@@ -236,7 +236,7 @@ public class DesignRole extends ASTVisitor implements Metric {
 		}
 		if (designRole != null)
 			designRole = extractParameters(designRole);
-		result.setConcern(designRole);
+		result.setDesignRole(designRole);
 		result.setArchitecturalRole(ehArchitecturalRole);
 	}
 
