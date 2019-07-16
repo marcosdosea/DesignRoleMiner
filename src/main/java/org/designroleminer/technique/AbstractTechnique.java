@@ -56,12 +56,13 @@ public abstract class AbstractTechnique {
 	 * @param percentilMaximo
 	 * @param designRole
 	 * @param metrica
+	 * @param percentilExato
 	 * @return
 	 */
 	protected LimiarMetrica obterLimiaresMetrica(
 			HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetrica, long totalValorAgrupado,
-			Integer percentilMinimo, Integer percentilMedio, Integer percentilMaximo, String designRole,
-			String metrica) {
+			Integer percentilMinimo, Integer percentilMedio, Integer percentilMaximo, String designRole, String metrica,
+			boolean usarIndexAcimapercentil) {
 		HashMap<Integer, BigDecimal> valoresMetricas = distribuicaoCodigoPorMetrica.get(metrica + designRole);
 
 		LimiarMetrica limiarMetrica = new LimiarMetrica();
@@ -100,9 +101,12 @@ public abstract class AbstractTechnique {
 
 			int tamanhoLista = listaOrdenadaMetrica.size();
 			if (tamanhoLista > 0) {
-				indexMinimo = (indexMinimo < (tamanhoLista - 1)) ? indexMinimo + 1 : indexMinimo;
-				indexMedio  = (indexMedio  < (tamanhoLista - 1)) ? indexMedio + 1 : indexMedio;
-				indexMaximo = (indexMaximo  < (tamanhoLista - 1)) ? indexMaximo + 1 : indexMaximo;
+				// Dosea's techniques rules
+				if (usarIndexAcimapercentil) {
+					indexMinimo = (indexMinimo < (tamanhoLista - 1)) ? indexMinimo + 1 : indexMinimo;
+					indexMedio = (indexMedio < (tamanhoLista - 1)) ? indexMedio + 1 : indexMedio;
+					indexMaximo = (indexMaximo < (tamanhoLista - 1)) ? indexMaximo + 1 : indexMaximo;
+				}
 				limiarMetrica.setLimiarMinimo(listaOrdenadaMetrica.get(indexMinimo));
 				limiarMetrica.setLimiarMedio(listaOrdenadaMetrica.get(indexMedio));
 				limiarMetrica.setLimiarMaximo(listaOrdenadaMetrica.get(indexMaximo));

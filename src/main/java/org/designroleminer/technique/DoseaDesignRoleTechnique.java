@@ -10,7 +10,7 @@ import org.designroleminer.smelldetector.model.LimiarMetrica;
 import org.repodriller.persistence.PersistenceMechanism;
 import org.repodriller.persistence.csv.CSVFile;
 
-public class DoseaTechnique extends AbstractTechnique {
+public class DoseaDesignRoleTechnique extends AbstractTechnique {
 
 	/**
 	 * Generate sheet with design role assigned to each class
@@ -55,13 +55,13 @@ public class DoseaTechnique extends AbstractTechnique {
 		}
 
 		LimiarMetrica limiarLOCUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaLOC, totalLoc, 5, 70, 90,
-				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_LOC);
+				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_LOC, true);
 		LimiarMetrica limiarCCUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCC, totalLoc, 5, 70, 90,
-				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_CC);
+				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_CC, true);
 		LimiarMetrica limiarEfferentUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaEfferent, totalLoc, 5,
-				70, 90, LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_EC);
+				70, 90, LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_EC, true);
 		LimiarMetrica limiarNOPUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaNOP, totalLoc, 3, 90, 95,
-				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_NOP);
+				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_NOP, true);
 
 		pm.write(LimiarMetrica.DESIGN_ROLE_UNDEFINED + ";" + limiarLOCUndefined.getLimiarMaximo() + ";"
 				+ limiarCCUndefined.getLimiarMaximo() + ";" + limiarEfferentUndefined.getLimiarMaximo() + ";"
@@ -72,13 +72,13 @@ public class DoseaTechnique extends AbstractTechnique {
 			if (!designRole.contains(LimiarMetrica.DESIGN_ROLE_UNDEFINED)) {
 				long totalLOCPorDesignRole = linhasDeCodigoPorDesignRole.get(designRole);
 				LimiarMetrica limiarLOC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaLOC, totalLOCPorDesignRole,
-						5, 70, 90, designRole, LimiarMetrica.METRICA_LOC);
+						5, 70, 90, designRole, LimiarMetrica.METRICA_LOC, true);
 				LimiarMetrica limiarCC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCC, totalLOCPorDesignRole, 5,
-						70, 90, designRole, LimiarMetrica.METRICA_CC);
+						70, 90, designRole, LimiarMetrica.METRICA_CC, true);
 				LimiarMetrica limiarEfferent = obterLimiaresMetrica(distribuicaoCodigoPorMetricaEfferent,
-						totalLOCPorDesignRole, 5, 70, 90, designRole, LimiarMetrica.METRICA_EC);
+						totalLOCPorDesignRole, 5, 70, 90, designRole, LimiarMetrica.METRICA_EC, true);
 				LimiarMetrica limiarNOP = obterLimiaresMetrica(distribuicaoCodigoPorMetricaNOP, totalLOCPorDesignRole,
-						3, 90, 95, designRole, LimiarMetrica.METRICA_NOP);
+						3, 90, 95, designRole, LimiarMetrica.METRICA_NOP, true);
 
 				// para limiares muitos baixos assume o limiar médio da aplicacao
 				if (limiarLOC.getLimiarMaximo() < limiarLOCUndefined.getLimiarMedio())
