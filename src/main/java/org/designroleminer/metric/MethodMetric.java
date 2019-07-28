@@ -52,6 +52,7 @@ public class MethodMetric extends ASTVisitor implements Metric {
 	private Set<String> usedTypes;
 	private int currentInitialChar;
 	private CompilationUnit cu;
+	private boolean isConstructor;
 
 	public MethodMetric() {
 		metricsByMethod = new HashMap<MethodData, MethodMetricResult>();
@@ -102,7 +103,7 @@ public class MethodMetric extends ASTVisitor implements Metric {
 		}
 
 		MethodData methodData = getMethodData();
-
+		methodData.setConstructor(node.isConstructor());
 		methodData.setInitialLine(cu.getLineNumber(node.getName().getStartPosition()));
 		methodData.setInitialChar(node.getStartPosition());
 		methodData.setFinalChar(node.getLength() + node.getStartPosition());

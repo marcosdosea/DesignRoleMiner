@@ -1,4 +1,4 @@
-package org.designroleminer.technique;
+package org.designroleminer.threshold;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -39,7 +39,7 @@ public class TechniqueExecutor {
 	}
 
 	public ArrayList<ClassMetricResult> getMetricsFromProjects(ArrayList<String> projetos, String pathResultado) {
-		
+
 		// extract and save metrics from projects
 		for (String path : projetos) {
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
@@ -84,14 +84,16 @@ public class TechniqueExecutor {
 					if (ckNumber.getDesignRole() != null) {
 						totalMetodos += ckNumber.getNom();
 						totalLoc += FileLocUtil.countLineNumbers(FileLocUtil.readFile(new File(ckNumber.getFile())));
-						//listaClasses.add(ckNumber);
+						// listaClasses.add(ckNumber);
 					}
 					for (MethodData method : ckNumber.getMetricsByMethod().keySet()) {
 						MethodMetricResult methodMetrics = ckNumber.getMetricsByMethod().get(method);
-						pmMethods.write(ckNumber.getDesignRole(), ckNumber.getClassName(), method.getNomeMethod(),
-								methodMetrics.getLinesOfCode(), methodMetrics.getComplexity(),
-								methodMetrics.getEfferentCoupling(), methodMetrics.getNumberOfParameters(),
-								methodMetrics.getCohesion(), method.getInitialChar(), ckNumber.getFile());
+						if (!method.isConstructor()) {
+							pmMethods.write(ckNumber.getDesignRole(), ckNumber.getClassName(), method.getNomeMethod(),
+									methodMetrics.getLinesOfCode(), methodMetrics.getComplexity(),
+									methodMetrics.getEfferentCoupling(), methodMetrics.getNumberOfParameters(),
+									methodMetrics.getCohesion(), method.getInitialChar(), ckNumber.getFile());
+						}
 					}
 					totalClasses++;
 				}
@@ -103,7 +105,7 @@ public class TechniqueExecutor {
 			logger.info("Total Lines of Code: " + totalLoc);
 		}
 
-		// Calculating metric thresholds 
+		// Calculating metric thresholds
 		ArrayList<ClassMetricResult> listaClasses = new ArrayList<ClassMetricResult>();
 		for (String path : projetos) {
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
@@ -113,9 +115,10 @@ public class TechniqueExecutor {
 
 			int lastIndex = path.lastIndexOf("\\");
 			String nameLastFolder = path.substring(lastIndex + 1);
-			String filePathMethods = path + "\\" + nameLastFolder + "-methods.csv";
-			String filePathClasses = path + "\\" + nameLastFolder + "-classes.csv";
-			String filePathProject = path + "\\" + nameLastFolder + "-project.csv";
+
+			String filePathMethods = pathResultado + nameLastFolder + "-methods.csv";
+			String filePathClasses = pathResultado + nameLastFolder + "-classes.csv";
+			String filePathProject = pathResultado + nameLastFolder + "-project.csv";
 
 			File fileMethods = new File(filePathMethods);
 			File fileClasses = new File(filePathClasses);
@@ -196,7 +199,7 @@ public class TechniqueExecutor {
 
 		}
 
-				return listaClasses;
+		return listaClasses;
 	}
 
 	public ArrayList<String> lerProjetos(String nomeArquivo) {

@@ -139,12 +139,12 @@ public class DesignRole extends ASTVisitor implements Metric {
 		ITypeBinding binding = node.resolveBinding();
 		if (binding.isMember())
 			return false;
-		//if (binding.isInterface())
-		//	return false;
-		//if (binding.isEnum())
-		//	return false;
-		//if (binding.isClass() && node.modifiers().toString().contains("abstract"))
-		//	return false;
+//		if (binding.isInterface())
+//			return false;
+//		if (binding.isEnum())
+//			return false;
+//		if (binding.isClass() && node.modifiers().toString().contains("abstract"))
+//			return false;
 
 		String interfacesConcern = node.superInterfaceTypes().size() > 0 ? node.superInterfaceTypes().toString() : "";
 
@@ -170,7 +170,7 @@ public class DesignRole extends ASTVisitor implements Metric {
 						designRole = "Entity";
 				} else if ((dit == 1) && fatherName.endsWith("Object") && (interfaces.length() > 0)) {
 					defaultDesignRole = findDefaultDesignRole(interfaces);
-					designRole = defaultDesignRole.isEmpty() ? interfaces : defaultDesignRole;
+					designRole = defaultDesignRole.isEmpty() ? interfaces.replace(",", "|") : defaultDesignRole;
 				} else if (fatherName.endsWith("Object")) {
 					defaultDesignRole = findDefaultDesignRole(extractParameters(binding.getName()));
 					if (defaultDesignRole.isEmpty())

@@ -1,4 +1,4 @@
-package org.designroleminer.technique;
+package org.designroleminer.threshold;
 
 import java.util.ArrayList;
 import java.util.List;

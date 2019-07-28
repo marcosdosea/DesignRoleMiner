@@ -16,8 +16,15 @@ public class MethodData implements Serializable {
 	private int initialLine;
 	private int initialChar;
 	private int finalChar;
+	private boolean isConstructor;
 	
-    public String getNomeMethod() {
+    public boolean isConstructor() {
+		return isConstructor;
+	}
+	public void setConstructor(boolean isConstructor) {
+		this.isConstructor = isConstructor;
+	}
+	public String getNomeMethod() {
 		return nomeMethod;
 	}
 	public void setNomeMethod(String nomeMethod) {

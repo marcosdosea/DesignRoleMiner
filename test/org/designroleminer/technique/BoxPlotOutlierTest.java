@@ -2,6 +2,7 @@ package org.designroleminer.technique;
 
 import static org.junit.Assert.assertEquals;
 
+import org.designroleminer.threshold.BoxPlotOutlier;
 import org.junit.Test;
 
 public class BoxPlotOutlierTest {
