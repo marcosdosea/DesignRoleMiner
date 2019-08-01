@@ -54,9 +54,6 @@ public class FilterSmells {
 
 					MethodMetricResult metodoMetrics = classe.getMetricsByMethod().get(metodo);
 
-					if (metodo.isConstructor())
-						continue;
-					
 					if (metodoMetrics.getLinesOfCode() > limiarLOC.getLimiarMaximo()) {
 						String mensagem = "Methods in this system have on maximum " + limiarLOC.getLimiarMaximo()
 								+ " lines of code. " + "\nMake sure refactoring could be applied.";

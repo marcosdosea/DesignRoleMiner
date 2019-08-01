@@ -40,72 +40,13 @@ public class TechniqueExecutor {
 
 	public ArrayList<ClassMetricResult> getMetricsFromProjects(ArrayList<String> projetos, String pathResultado) {
 
-		// extract and save metrics from projects
-		for (String path : projetos) {
-			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
-			String dataHora = sf.format(Calendar.getInstance().getTime());
+		ExtractSaveMetricsToFiles(projetos, pathResultado);
+		ArrayList<ClassMetricResult> listaClasses = LoadMetricsFromFiles(projetos, pathResultado);
 
-			logger.info("[" + dataHora + "] Extracting metrics from project " + path + "...");
+		return listaClasses;
+	}
 
-			int lastIndex = path.lastIndexOf("\\");
-			String nameLastFolder = path.substring(lastIndex + 1);
-			String filePathMethods = pathResultado + nameLastFolder + "-methods.csv";
-			String filePathClasses = pathResultado + nameLastFolder + "-classes.csv";
-			String filePathProject = pathResultado + nameLastFolder + "-project.csv";
-
-			File fileMethods = new File(filePathMethods);
-			File fileClasses = new File(filePathClasses);
-			File fileProject = new File(filePathProject);
-
-			long totalMetodos = 0;
-			long totalLoc = 0;
-			long totalClasses = 0;
-
-			if (!fileMethods.exists() && !fileClasses.exists() && !fileProject.exists()) {
-				MetricReport report = new CK().calculate(path);
-				Collection<ClassMetricResult> metricasClasses = report.all();
-
-				PersistenceMechanism pmMethods = new CSVFile(filePathMethods, false);
-				PersistenceMechanism pmClasses = new CSVFile(filePathClasses, false);
-				PersistenceMechanism pmProject = new CSVFile(filePathProject, false);
-
-				pmMethods.write("DesignRole", "Classe", "Método", "LOC", "CC", "Efferent", "NOP", "Cohesion",
-						"InitialChar", "File");
-				pmClasses.write("DesignRole", "Classe", "NOM", "DIT", "CBO", "LCom", "NOC", "NOM", "RFC", "WMC", "File",
-						"Type", "IsArchitecturalRole");
-				pmProject.write("Number of Classes", "LOC", "NOM");
-				for (ClassMetricResult ckNumber : metricasClasses) {
-					if (!ckNumber.getType().equals("class"))
-						continue;
-					pmClasses.write(ckNumber.getDesignRole(), ckNumber.getClassName(), ckNumber.getNom(),
-							ckNumber.getDit(), ckNumber.getCbo(), ckNumber.getLcom(), ckNumber.getNoc(),
-							ckNumber.getNom(), ckNumber.getRfc(), ckNumber.getWmc(), ckNumber.getFile(),
-							ckNumber.getType(), ckNumber.isArchitecturalRole());
-					if (ckNumber.getDesignRole() != null) {
-						totalMetodos += ckNumber.getNom();
-						totalLoc += FileLocUtil.countLineNumbers(FileLocUtil.readFile(new File(ckNumber.getFile())));
-						// listaClasses.add(ckNumber);
-					}
-					for (MethodData method : ckNumber.getMetricsByMethod().keySet()) {
-						MethodMetricResult methodMetrics = ckNumber.getMetricsByMethod().get(method);
-						if (!method.isConstructor()) {
-							pmMethods.write(ckNumber.getDesignRole(), ckNumber.getClassName(), method.getNomeMethod(),
-									methodMetrics.getLinesOfCode(), methodMetrics.getComplexity(),
-									methodMetrics.getEfferentCoupling(), methodMetrics.getNumberOfParameters(),
-									methodMetrics.getCohesion(), method.getInitialChar(), ckNumber.getFile());
-						}
-					}
-					totalClasses++;
-				}
-				pmProject.write(totalClasses, totalLoc, totalMetodos);
-			}
-
-			logger.info("Number of classes: " + totalClasses);
-			logger.info("Number of methods: " + totalMetodos);
-			logger.info("Total Lines of Code: " + totalLoc);
-		}
-
-		// Calculating metric thresholds
+	private ArrayList<ClassMetricResult> LoadMetricsFromFiles(ArrayList<String> projetos, String pathResultado) {
 		ArrayList<ClassMetricResult> listaClasses = new ArrayList<ClassMetricResult>();
 		for (String path : projetos) {
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
@@ -171,7 +112,7 @@ public class TechniqueExecutor {
 						String[] values = line.split(",");
 
 						MethodData methodData = new MethodData();
-						methodData.setNomeMethod(values[1]);
+						methodData.setNomeMethod(values[2]);
 						methodData.setInitialChar(Integer.parseInt(values[8]));
 
 						MethodMetricResult metrics = new MethodMetricResult();
@@ -198,8 +139,73 @@ public class TechniqueExecutor {
 			logger.info("Total Lines of Code: " + totalLoc);
 
 		}
-
 		return listaClasses;
+	}
+
+	private void ExtractSaveMetricsToFiles(ArrayList<String> projetos, String pathResultado) {
+		for (String path : projetos) {
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
+			String dataHora = sf.format(Calendar.getInstance().getTime());
+
+			logger.info("[" + dataHora + "] Extracting metrics from project " + path + "...");
+
+			int lastIndex = path.lastIndexOf("\\");
+			String nameLastFolder = path.substring(lastIndex + 1);
+			String filePathMethods = pathResultado + nameLastFolder + "-methods.csv";
+			String filePathClasses = pathResultado + nameLastFolder + "-classes.csv";
+			String filePathProject = pathResultado + nameLastFolder + "-project.csv";
+
+			File fileMethods = new File(filePathMethods);
+			File fileClasses = new File(filePathClasses);
+			File fileProject = new File(filePathProject);
+
+			long totalMetodos = 0;
+			long totalLoc = 0;
+			long totalClasses = 0;
+
+			if (!fileMethods.exists() && !fileClasses.exists() && !fileProject.exists()) {
+				MetricReport report = new CK().calculate(path);
+				Collection<ClassMetricResult> metricasClasses = report.all();
+
+				PersistenceMechanism pmMethods = new CSVFile(filePathMethods, false);
+				PersistenceMechanism pmClasses = new CSVFile(filePathClasses, false);
+				PersistenceMechanism pmProject = new CSVFile(filePathProject, false);
+
+				pmMethods.write("DesignRole", "Classe", "Método", "LOC", "CC", "Efferent", "NOP", "Cohesion",
+						"InitialChar", "File");
+				pmClasses.write("DesignRole", "Classe", "NOM", "DIT", "CBO", "LCom", "NOC", "NOM", "RFC", "WMC", "File",
+						"Type", "IsArchitecturalRole");
+				pmProject.write("Number of Classes", "LOC", "NOM");
+				for (ClassMetricResult ckNumber : metricasClasses) {
+					if (!ckNumber.getType().equals("class"))
+						continue;
+					pmClasses.write(ckNumber.getDesignRole(), ckNumber.getClassName(), ckNumber.getNom(),
+							ckNumber.getDit(), ckNumber.getCbo(), ckNumber.getLcom(), ckNumber.getNoc(),
+							ckNumber.getNom(), ckNumber.getRfc(), ckNumber.getWmc(), ckNumber.getFile(),
+							ckNumber.getType(), ckNumber.isArchitecturalRole());
+					if (ckNumber.getDesignRole() != null) {
+						totalMetodos += ckNumber.getNom();
+						totalLoc += FileLocUtil.countLineNumbers(FileLocUtil.readFile(new File(ckNumber.getFile())));
+						// listaClasses.add(ckNumber);
+					}
+					for (MethodData method : ckNumber.getMetricsByMethod().keySet()) {
+						MethodMetricResult methodMetrics = ckNumber.getMetricsByMethod().get(method);
+						if (!method.isConstructor()) {
+							pmMethods.write(ckNumber.getDesignRole(), ckNumber.getClassName(), method.getNomeMethod(),
+									methodMetrics.getLinesOfCode(), methodMetrics.getComplexity(),
+									methodMetrics.getEfferentCoupling(), methodMetrics.getNumberOfParameters(),
+									methodMetrics.getCohesion(), method.getInitialChar(), ckNumber.getFile());
+						}
+					}
+					totalClasses++;
+				}
+				pmProject.write(totalClasses, totalLoc, totalMetodos);
+			}
+
+			logger.info("Number of classes: " + totalClasses);
+			logger.info("Number of methods: " + totalMetodos);
+			logger.info("Total Lines of Code: " + totalLoc);
+		}
 	}
 
 	public ArrayList<String> lerProjetos(String nomeArquivo) {

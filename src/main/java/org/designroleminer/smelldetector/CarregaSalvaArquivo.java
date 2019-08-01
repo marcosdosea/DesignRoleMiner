@@ -40,7 +40,7 @@ public class CarregaSalvaArquivo {
 			try {
 				HashMap<String, LimiarMetrica> limiares = new HashMap<>();
 				LimiarTecnica limiarTecnica = new LimiarTecnica();
-				if (arquivoLimiar.getName().contains(".csv")) {
+				if (arquivoLimiar.getName().contains(".csv") && arquivoLimiar.getName().length() == 5) {
 					limiarTecnica
 							.setTecnica(arquivoLimiar.getName().substring(0, arquivoLimiar.getName().indexOf(".csv")));
 					limiarTecnica.setMetricas(limiares);
