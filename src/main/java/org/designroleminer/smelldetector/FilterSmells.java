@@ -2,6 +2,7 @@ package org.designroleminer.smelldetector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import org.designroleminer.ClassMetricResult;
@@ -19,9 +20,13 @@ public class FilterSmells {
 	static final String TECNICA_ANICHE = "X";
 
 	public static HashMap<String, DadosMetodoSmell> filtrar(ArrayList<ClassMetricResult> classesAnalisar,
-			List<LimiarTecnica> listaTecnicas, HashMap<String, DadosMetodoSmell> metodosSmell) {
+			List<LimiarTecnica> listaTecnicas, HashMap<String, DadosMetodoSmell> metodosSmell,
+			HashSet<MethodData> listaMethodsSmelly) {
 		if (metodosSmell == null)
 			metodosSmell = new HashMap<>();
+
+		if (listaMethodsSmelly == null)
+			listaMethodsSmelly = new HashSet<>();
 
 		for (ClassMetricResult classe : classesAnalisar) {
 			for (LimiarTecnica limiarTecnica : listaTecnicas) {
@@ -60,6 +65,7 @@ public class FilterSmells {
 						String type = "Metodo Longo";
 						addMetodoSmell(classe, metodo, metodoMetrics, type, mensagem, metodosSmell,
 								limiarTecnica.getTecnica());
+						listaMethodsSmelly.add(metodo);
 					}
 					if (metodoMetrics.getComplexity() > limiarCC.getLimiarMaximo()) {
 						String mensagem = "Methods in this type class have on maximum " + limiarCC.getLimiarMaximo()
@@ -67,6 +73,7 @@ public class FilterSmells {
 						String type = "Muitos Desvios";
 						addMetodoSmell(classe, metodo, metodoMetrics, type, mensagem, metodosSmell,
 								limiarTecnica.getTecnica());
+						listaMethodsSmelly.add(metodo);
 					}
 					if (metodoMetrics.getEfferentCoupling() > limiarEfferent.getLimiarMaximo()) {
 						String mensagem = "Methods in this type class have on maximum "
@@ -75,6 +82,7 @@ public class FilterSmells {
 						String type = "Alto Acoplamento Efferent";
 						addMetodoSmell(classe, metodo, metodoMetrics, type, mensagem, metodosSmell,
 								limiarTecnica.getTecnica());
+						listaMethodsSmelly.add(metodo);
 					}
 					if (metodoMetrics.getNumberOfParameters() > limiarNOP.getLimiarMaximo()) {
 						String mensagem = "Methods in this type class have on maximum " + limiarNOP.getLimiarMaximo()
@@ -82,6 +90,7 @@ public class FilterSmells {
 						String type = "Muitos Parametros";
 						addMetodoSmell(classe, metodo, metodoMetrics, type, mensagem, metodosSmell,
 								limiarTecnica.getTecnica());
+						listaMethodsSmelly.add(metodo);
 					}
 				}
 			}
@@ -89,8 +98,8 @@ public class FilterSmells {
 		return metodosSmell;
 	}
 
-	private static void addMetodoSmell(ClassMetricResult classe, MethodData metodo, MethodMetricResult metricas, String type,
-			String mensagem, HashMap<String, DadosMetodoSmell> metodosSmell, String tecnica) {
+	private static void addMetodoSmell(ClassMetricResult classe, MethodData metodo, MethodMetricResult metricas,
+			String type, String mensagem, HashMap<String, DadosMetodoSmell> metodosSmell, String tecnica) {
 
 		DadosMetodoSmell dadosMetodoSmell = new DadosMetodoSmell();
 		dadosMetodoSmell.setCharFinal(metodo.getFinalChar());
@@ -148,14 +157,13 @@ public class FilterSmells {
 		System.out.println("Total de métodos longos: " + metodosSmell.size());
 	}
 
-	
-	public static void gravarMetodosSmellRefactored(HashMap<String, DadosMetodoSmell> metodosSmell, String arquivoDestino) {
+	public static void gravarMetodosSmellRefactored(HashMap<String, DadosMetodoSmell> metodosSmell,
+			String arquivoDestino) {
 
 		PersistenceMechanism pm = new CSVFile(System.getProperty("user.dir") + "\\" + arquivoDestino);
-		pm.write(
-				"Tecnicas;Design Role;Classe;Método;LOC;CC;Efferent;NOP;Refactoring Aplicados; Quantidade");
+		pm.write("Tecnicas;Design Role;Classe;Método;LOC;CC;Efferent;NOP;Refactoring Aplicados; Quantidade");
 		for (DadosMetodoSmell metodoSmell : metodosSmell.values()) {
-			//if (metodoSmell.getAppliedRefactorings())
+			// if (metodoSmell.getAppliedRefactorings())
 			pm.write(metodoSmell.getListaTecnicas().toString().replace('[', ' ').replace(']', ' ') + ";"
 					+ metodoSmell.getClassDesignRole() + ";" + metodoSmell.getNomeClasse() + ";"
 					+ metodoSmell.getNomeMetodo() + ";" + +metodoSmell.getLinesOfCode() + ";"
@@ -166,7 +174,4 @@ public class FilterSmells {
 		System.out.println("Total de métodos longos: " + metodosSmell.size());
 	}
 
-	
-	
-	
 }
