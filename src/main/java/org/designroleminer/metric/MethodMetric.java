@@ -45,6 +45,7 @@ public class MethodMetric extends ASTVisitor implements Metric {
 	private Map<MethodData, MethodMetricResult> metricsByMethod;
 	private Stack<MethodData> methodStack;
 	private String currentPackage;
+	private String currentClasse;
 	private List<String> currentInterfaces;
 	private String currentMethod;
 	private List<SingleVariableDeclaration> currentParameters;
@@ -52,8 +53,7 @@ public class MethodMetric extends ASTVisitor implements Metric {
 	private Set<String> usedTypes;
 	private int currentInitialChar;
 	private CompilationUnit cu;
-	private boolean isConstructor;
-
+	
 	public MethodMetric() {
 		metricsByMethod = new HashMap<MethodData, MethodMetricResult>();
 		methodStack = new Stack<MethodData>();
@@ -70,6 +70,7 @@ public class MethodMetric extends ASTVisitor implements Metric {
 		if (node.isInterface() || (node.superInterfaceTypes() == null)) {
 			return false;
 		}
+		currentClasse = node.getName().getFullyQualifiedName();
 		currentInterfaces = node.superInterfaceTypes();
 		List<BodyDeclaration> declarations = node.bodyDeclarations();
 		for (BodyDeclaration declaration : declarations) {
@@ -104,6 +105,7 @@ public class MethodMetric extends ASTVisitor implements Metric {
 
 		MethodData methodData = getMethodData();
 		methodData.setConstructor(node.isConstructor());
+		methodData.setNomeClasse(currentClasse);
 		methodData.setInitialLine(cu.getLineNumber(node.getName().getStartPosition()));
 		methodData.setInitialChar(node.getStartPosition());
 		methodData.setFinalChar(node.getLength() + node.getStartPosition());
@@ -291,6 +293,7 @@ public class MethodMetric extends ASTVisitor implements Metric {
 
 	private MethodData getMethodData() {
 		MethodData methodData = new MethodData();
+		methodData.setNomeClasse(currentClasse);
 		methodData.setNomeMethod(currentMethod);
 		methodData.setParameters(currentParameters);
 		methodData.setInitialChar(currentInitialChar);

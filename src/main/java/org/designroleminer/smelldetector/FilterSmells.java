@@ -8,6 +8,7 @@ import java.util.List;
 import org.designroleminer.ClassMetricResult;
 import org.designroleminer.MethodMetricResult;
 import org.designroleminer.smelldetector.model.DadosMetodoSmell;
+import org.designroleminer.smelldetector.model.FilterSmellResult;
 import org.designroleminer.smelldetector.model.LimiarMetrica;
 import org.designroleminer.smelldetector.model.LimiarTecnica;
 import org.repodriller.persistence.PersistenceMechanism;
@@ -19,14 +20,11 @@ public class FilterSmells {
 
 	static final String TECNICA_ANICHE = "X";
 
-	public static HashMap<String, DadosMetodoSmell> filtrar(ArrayList<ClassMetricResult> classesAnalisar,
-			List<LimiarTecnica> listaTecnicas, HashMap<String, DadosMetodoSmell> metodosSmell,
-			HashSet<MethodData> listaMethodsSmelly) {
-		if (metodosSmell == null)
-			metodosSmell = new HashMap<>();
-
-		if (listaMethodsSmelly == null)
-			listaMethodsSmelly = new HashSet<>();
+	public static FilterSmellResult filtrar(ArrayList<ClassMetricResult> classesAnalisar,
+			List<LimiarTecnica> listaTecnicas) {
+		HashMap<String, DadosMetodoSmell> metodosSmell = new HashMap<>();
+		HashSet<MethodData> listaMethodsSmelly = new HashSet<>();
+		HashSet<MethodData> listaMethodsNotSmelly = new HashSet<>();
 
 		for (ClassMetricResult classe : classesAnalisar) {
 			for (LimiarTecnica limiarTecnica : listaTecnicas) {
@@ -57,45 +55,59 @@ public class FilterSmells {
 
 				for (MethodData metodo : classe.getMetricsByMethod().keySet()) {
 
-					MethodMetricResult metodoMetrics = classe.getMetricsByMethod().get(metodo);
+					MethodMetricResult methodMetrics = classe.getMetricsByMethod().get(metodo);
 
-					if (metodoMetrics.getLinesOfCode() > limiarLOC.getLimiarMaximo()) {
-						String mensagem = "Methods in this system have on maximum " + limiarLOC.getLimiarMaximo()
-								+ " lines of code. " + "\nMake sure refactoring could be applied.";
-						String type = "Metodo Longo";
-						addMetodoSmell(classe, metodo, metodoMetrics, type, mensagem, metodosSmell,
-								limiarTecnica.getTecnica());
-						listaMethodsSmelly.add(metodo);
-					}
-					if (metodoMetrics.getComplexity() > limiarCC.getLimiarMaximo()) {
-						String mensagem = "Methods in this type class have on maximum " + limiarCC.getLimiarMaximo()
-								+ " cyclomatic complexity. " + "\nMake sure refactoring could be applied.";
-						String type = "Muitos Desvios";
-						addMetodoSmell(classe, metodo, metodoMetrics, type, mensagem, metodosSmell,
-								limiarTecnica.getTecnica());
-						listaMethodsSmelly.add(metodo);
-					}
-					if (metodoMetrics.getEfferentCoupling() > limiarEfferent.getLimiarMaximo()) {
-						String mensagem = "Methods in this type class have on maximum "
-								+ limiarEfferent.getLimiarMaximo() + " efferent coupling. "
-								+ "\nMake sure refactoring could be applied.";
-						String type = "Alto Acoplamento Efferent";
-						addMetodoSmell(classe, metodo, metodoMetrics, type, mensagem, metodosSmell,
-								limiarTecnica.getTecnica());
-						listaMethodsSmelly.add(metodo);
-					}
-					if (metodoMetrics.getNumberOfParameters() > limiarNOP.getLimiarMaximo()) {
-						String mensagem = "Methods in this type class have on maximum " + limiarNOP.getLimiarMaximo()
-								+ " number of parameters. " + "\nMake sure refactoring could be applied.";
-						String type = "Muitos Parametros";
-						addMetodoSmell(classe, metodo, metodoMetrics, type, mensagem, metodosSmell,
-								limiarTecnica.getTecnica());
-						listaMethodsSmelly.add(metodo);
+					//metodo.setNomeClasse(classe.getClassName());
+					listaMethodsNotSmelly.add(metodo);
+					if (methodMetrics != null) {
+						if (methodMetrics.getLinesOfCode() > limiarLOC.getLimiarMaximo()) {
+							String mensagem = "Methods in this system have on maximum " + limiarLOC.getLimiarMaximo()
+									+ " lines of code. " + "\nMake sure refactoring could be applied.";
+							String type = "Metodo Longo";
+							addMetodoSmell(classe, metodo, methodMetrics, type, mensagem, metodosSmell,
+									limiarTecnica.getTecnica());
+							listaMethodsSmelly.add(metodo);
+						}
+						if (methodMetrics.getComplexity() > limiarCC.getLimiarMaximo()) {
+							String mensagem = "Methods in this type class have on maximum " + limiarCC.getLimiarMaximo()
+									+ " cyclomatic complexity. " + "\nMake sure refactoring could be applied.";
+							String type = "Muitos Desvios";
+							addMetodoSmell(classe, metodo, methodMetrics, type, mensagem, metodosSmell,
+									limiarTecnica.getTecnica());
+							listaMethodsSmelly.add(metodo);
+						}
+						if (methodMetrics.getEfferentCoupling() > limiarEfferent.getLimiarMaximo()) {
+							String mensagem = "Methods in this type class have on maximum "
+									+ limiarEfferent.getLimiarMaximo() + " efferent coupling. "
+									+ "\nMake sure refactoring could be applied.";
+							String type = "Alto Acoplamento Efferent";
+							addMetodoSmell(classe, metodo, methodMetrics, type, mensagem, metodosSmell,
+									limiarTecnica.getTecnica());
+							listaMethodsSmelly.add(metodo);
+						}
+						if (methodMetrics.getNumberOfParameters() > limiarNOP.getLimiarMaximo()) {
+							String mensagem = "Methods in this type class have on maximum "
+									+ limiarNOP.getLimiarMaximo() + " number of parameters. "
+									+ "\nMake sure refactoring could be applied.";
+							String type = "Muitos Parametros";
+							addMetodoSmell(classe, metodo, methodMetrics, type, mensagem, metodosSmell,
+									limiarTecnica.getTecnica());
+							listaMethodsSmelly.add(metodo);
+						}
 					}
 				}
 			}
 		}
-		return metodosSmell;
+
+		for (MethodData metodoSmell : listaMethodsSmelly) {
+			listaMethodsNotSmelly.remove(metodoSmell);
+		}
+
+		FilterSmellResult result = new FilterSmellResult();
+		result.setListaMethodsNotSmelly(listaMethodsNotSmelly);
+		result.setListaMethodsSmelly(listaMethodsSmelly);
+		result.setMetodosSmell(metodosSmell);
+		return result;
 	}
 
 	private static void addMetodoSmell(ClassMetricResult classe, MethodData metodo, MethodMetricResult metricas,

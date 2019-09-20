@@ -112,6 +112,7 @@ public class TechniqueExecutor {
 						String[] values = line.split(",");
 
 						MethodData methodData = new MethodData();
+						methodData.setNomeClasse(values[1]);
 						methodData.setNomeMethod(values[2]);
 						methodData.setInitialChar(Integer.parseInt(values[8]));
 
@@ -155,10 +156,16 @@ public class TechniqueExecutor {
 			String filePathClasses = pathResultado + nameLastFolder + "-classes.csv";
 			String filePathProject = pathResultado + nameLastFolder + "-project.csv";
 
+			File dir = new File(pathResultado);
+			if (!dir.exists())
+				dir.mkdir();
+			
 			File fileMethods = new File(filePathMethods);
 			File fileClasses = new File(filePathClasses);
 			File fileProject = new File(filePathProject);
 
+			
+			
 			long totalMetodos = 0;
 			long totalLoc = 0;
 			long totalClasses = 0;
