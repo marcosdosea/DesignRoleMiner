@@ -2,11 +2,11 @@ package org.designroleminer.smelldetector.model;
 
 import java.util.HashSet;
 
-public class DadosMetodoSmell implements Comparable<DadosMetodoSmell> {
+public class DadosMetodo {
 
+	private String commit;
 	private String diretorioDaClasse;
 	private String nomeClasse;
-	private int totalMetodosClasse;
 	private String nomeMetodo;
 	private int linhaInicial;
 	private int linesOfCode;
@@ -15,69 +15,26 @@ public class DadosMetodoSmell implements Comparable<DadosMetodoSmell> {
 	private int efferent;
 	private int charInicial;
 	private int charFinal;
-	private HashSet<String> listaMensagens;
-	private String codigoMetodo;
-	private HashSet<String> listaTecnicas;
-	private String smell;
 	private String classDesignRole;
+	private HashSet<String> listaTecnicas;
+	private HashSet<String> listaMensagens;
+	private String smell;
 	
-		
+	
+	public String getCommit() {
+		return commit;
+	}
+
+	public void setCommit(String commit) {
+		this.commit = commit;
+	}
+
 	public String getClassDesignRole() {
 		return classDesignRole;
 	}
 
 	public void setClassDesignRole(String classDesignRole) {
 		this.classDesignRole = classDesignRole;
-	}
-
-	public String getKey() {
-		return diretorioDaClasse+nomeClasse+nomeMetodo+smell;
-	}
-	
-	public HashSet<String> getListaTecnicas() {
-		return listaTecnicas;
-	}
-
-	public void addTecnica(String tecnica) {
-		if (listaTecnicas == null)
-			listaTecnicas = new HashSet<>();
-		listaTecnicas.add(tecnica);
-	}
-	
-	public String getSmell() {
-		return smell;
-	}
-
-	public String setSmell(String smell) {
-		return this.smell = smell;
-	}
-
-	
-	
-	public HashSet<String> getListaMensagens() {
-		return listaMensagens;
-	}
-
-	public void addMensagem(String mensagem) {
-		if (listaMensagens == null) 
-			listaMensagens = new HashSet<>();
-		listaMensagens.add(mensagem);
-	}
-
-	public int getTotalMetodosClasse() {
-		return totalMetodosClasse;
-	}
-
-	public void setTotalMetodosClasse(int totalMetodosClasse) {
-		this.totalMetodosClasse = totalMetodosClasse;
-	}
-
-	public String getCodigoMetodo() {
-		return codigoMetodo;
-	}
-
-	public void setCodigoMetodo(String codigoMetodo) {
-		this.codigoMetodo = codigoMetodo;
 	}
 
 	public String getDiretorioDaClasse() {
@@ -159,30 +116,59 @@ public class DadosMetodoSmell implements Comparable<DadosMetodoSmell> {
 	public void setEfferent(int efferent) {
 		this.efferent = efferent;
 	}
+	
+	public HashSet<String> getListaTecnicas() {
+		return listaTecnicas;
+	}
+
+	public void addTecnica(String tecnica) {
+		if (listaTecnicas == null)
+			listaTecnicas = new HashSet<>();
+		listaTecnicas.add(tecnica);
+	}
+
+	public void addMensagem(String mensagem) {
+		if (listaMensagens == null)
+			listaMensagens = new HashSet<>();
+		listaMensagens.add(mensagem);
+	}
+
+	public HashSet<String> getListaMensagens() {
+		return listaMensagens;
+	}
+
+	public String getSmell() {
+		return smell;
+	}
+
+	public String setSmell(String smell) {
+		return this.smell = smell;
+	}
 
 	@Override
 	public boolean equals(Object arg0) {
 		if (arg0 == null)
 			return false;
-		DadosMetodoSmell metodo = (DadosMetodoSmell) arg0;
-		if (metodo.getDiretorioDaClasse().equals(getDiretorioDaClasse())
-				&& (metodo.getNomeClasse().equals(getNomeClasse())) && (metodo.getSmell().equals(getSmell())))
-			return true;
-		return false;
+		DadosMetodo metodo = (DadosMetodo) arg0;
+		if (smell != null) {
+			return metodo.getDiretorioDaClasse().equals(getDiretorioDaClasse()) 
+					&& metodo.getNomeClasse().equals(getNomeClasse()) 
+					&& metodo.getNomeMetodo().equals(getNomeMetodo())
+					&& metodo.getCommit().equals(getCommit())
+					&& metodo.getSmell().equals(getSmell());
+		}
+		return metodo.getDiretorioDaClasse().equals(getDiretorioDaClasse())
+				&& metodo.getNomeClasse().equals(getNomeClasse()) 
+				&& metodo.getNomeMetodo().equals(getNomeMetodo())
+				&& metodo.getCommit().equals(getCommit());
 	}
 
 	@Override
 	public int hashCode() {
-		return getDiretorioDaClasse().hashCode() + getNomeClasse().hashCode() + getNomeMetodo().hashCode();
+		if (smell != null )
+			return getDiretorioDaClasse().hashCode() + getNomeClasse().hashCode() 
+					+ getNomeMetodo().hashCode() + getCommit().hashCode() + getSmell().hashCode();
+		return getDiretorioDaClasse().hashCode() + getNomeClasse().hashCode() 
+				+ getNomeMetodo().hashCode() + getCommit().hashCode();
 	}
-	
-	@Override
-	public int compareTo(DadosMetodoSmell o) {
-		if (o == null)
-			return -1;
-		return o.getDiretorioDaClasse().compareTo(getDiretorioDaClasse()) + 
-			o.getNomeClasse().compareTo(getNomeClasse()) + 
-			o.getSmell().compareTo(getSmell());
-	}
-
 }

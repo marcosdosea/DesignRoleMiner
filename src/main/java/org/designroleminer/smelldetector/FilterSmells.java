@@ -7,10 +7,11 @@ import java.util.List;
 
 import org.designroleminer.ClassMetricResult;
 import org.designroleminer.MethodMetricResult;
-import org.designroleminer.smelldetector.model.DadosMetodoSmell;
+import org.designroleminer.smelldetector.model.DadosMetodo;
 import org.designroleminer.smelldetector.model.FilterSmellResult;
 import org.designroleminer.smelldetector.model.LimiarMetrica;
 import org.designroleminer.smelldetector.model.LimiarTecnica;
+import org.hamcrest.core.Is;
 import org.repodriller.persistence.PersistenceMechanism;
 import org.repodriller.persistence.csv.CSVFile;
 
@@ -21,10 +22,10 @@ public class FilterSmells {
 	static final String TECNICA_ANICHE = "X";
 
 	public static FilterSmellResult filtrar(ArrayList<ClassMetricResult> classesAnalisar,
-			List<LimiarTecnica> listaTecnicas) {
-		HashMap<String, DadosMetodoSmell> metodosSmell = new HashMap<>();
-		HashSet<MethodData> listaMethodsSmelly = new HashSet<>();
-		HashSet<MethodData> listaMethodsNotSmelly = new HashSet<>();
+			List<LimiarTecnica> listaTecnicas, String commitAnalisado) {
+
+		HashSet<DadosMetodo> listaMethodsSmelly = new HashSet<>();
+		HashSet<DadosMetodo> listaMethodsNotSmelly = new HashSet<>();
 
 		for (ClassMetricResult classe : classesAnalisar) {
 			for (LimiarTecnica limiarTecnica : listaTecnicas) {
@@ -53,135 +54,113 @@ public class FilterSmells {
 				if ((consideraArchitecturalRoles && !classe.isArchitecturalRole()) || (limiarNOP == null))
 					limiarNOP = mapLimiarMetrica.get(LimiarMetrica.METRICA_NOP + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 
-				for (MethodData metodo : classe.getMetricsByMethod().keySet()) {
+				for (MethodData methodData : classe.getMetricsByMethod().keySet()) {
 
-					MethodMetricResult methodMetrics = classe.getMetricsByMethod().get(metodo);
+					MethodMetricResult methodMetrics = classe.getMetricsByMethod().get(methodData);
 
-					//metodo.setNomeClasse(classe.getClassName());
-					listaMethodsNotSmelly.add(metodo);
+					DadosMetodo metodo = new DadosMetodo();
+					metodo.setCommit(commitAnalisado);
+					metodo.setCharFinal(methodData.getFinalChar());
+					metodo.setCharInicial(methodData.getInitialChar());
+					metodo.setDiretorioDaClasse(classe.getFile());
+					metodo.setLinhaInicial(methodData.getInitialLine());
+					metodo.setNomeClasse(classe.getClassName());
+					metodo.setNomeMetodo(methodData.getNomeMethod());
+					metodo.setLinesOfCode(methodMetrics.getLinesOfCode());
+					metodo.setEfferent(methodMetrics.getEfferentCoupling());
+					metodo.setComplexity(methodMetrics.getComplexity());
+					metodo.setNumberOfParameters(methodMetrics.getNumberOfParameters());
+					metodo.setClassDesignRole(classe.getDesignRole());
+
+					boolean isSmelly = false;
 					if (methodMetrics != null) {
 						if (methodMetrics.getLinesOfCode() > limiarLOC.getLimiarMaximo()) {
 							String mensagem = "Methods in this system have on maximum " + limiarLOC.getLimiarMaximo()
 									+ " lines of code. " + "\nMake sure refactoring could be applied.";
 							String type = "Metodo Longo";
-							addMetodoSmell(classe, metodo, methodMetrics, type, mensagem, metodosSmell,
-									limiarTecnica.getTecnica());
-							listaMethodsSmelly.add(metodo);
+							addMetodoSmell(metodo, type, mensagem, listaMethodsSmelly, limiarTecnica.getTecnica());
+							isSmelly = true;
 						}
 						if (methodMetrics.getComplexity() > limiarCC.getLimiarMaximo()) {
 							String mensagem = "Methods in this type class have on maximum " + limiarCC.getLimiarMaximo()
 									+ " cyclomatic complexity. " + "\nMake sure refactoring could be applied.";
 							String type = "Muitos Desvios";
-							addMetodoSmell(classe, metodo, methodMetrics, type, mensagem, metodosSmell,
-									limiarTecnica.getTecnica());
-							listaMethodsSmelly.add(metodo);
+							addMetodoSmell(metodo, type, mensagem, listaMethodsSmelly, limiarTecnica.getTecnica());
+							isSmelly = true;
 						}
 						if (methodMetrics.getEfferentCoupling() > limiarEfferent.getLimiarMaximo()) {
 							String mensagem = "Methods in this type class have on maximum "
 									+ limiarEfferent.getLimiarMaximo() + " efferent coupling. "
 									+ "\nMake sure refactoring could be applied.";
 							String type = "Alto Acoplamento Efferent";
-							addMetodoSmell(classe, metodo, methodMetrics, type, mensagem, metodosSmell,
-									limiarTecnica.getTecnica());
-							listaMethodsSmelly.add(metodo);
+							addMetodoSmell(metodo, type, mensagem, listaMethodsSmelly, limiarTecnica.getTecnica());
+							isSmelly = true;
 						}
 						if (methodMetrics.getNumberOfParameters() > limiarNOP.getLimiarMaximo()) {
 							String mensagem = "Methods in this type class have on maximum "
 									+ limiarNOP.getLimiarMaximo() + " number of parameters. "
 									+ "\nMake sure refactoring could be applied.";
 							String type = "Muitos Parametros";
-							addMetodoSmell(classe, metodo, methodMetrics, type, mensagem, metodosSmell,
-									limiarTecnica.getTecnica());
-							listaMethodsSmelly.add(metodo);
+							addMetodoSmell(metodo, type, mensagem, listaMethodsSmelly, limiarTecnica.getTecnica());
+							isSmelly = true;
 						}
 					}
+					if (!isSmelly)
+						listaMethodsNotSmelly.add(metodo);
 				}
 			}
-		}
-
-		for (MethodData metodoSmell : listaMethodsSmelly) {
-			listaMethodsNotSmelly.remove(metodoSmell);
 		}
 
 		FilterSmellResult result = new FilterSmellResult();
-		result.setListaMethodsNotSmelly(listaMethodsNotSmelly);
-		result.setListaMethodsSmelly(listaMethodsSmelly);
-		result.setMetodosSmell(metodosSmell);
+
+		result.setMetodosNotSmelly(listaMethodsNotSmelly);
+		result.setMetodosSmell(listaMethodsSmelly);
 		return result;
 	}
 
-	private static void addMetodoSmell(ClassMetricResult classe, MethodData metodo, MethodMetricResult metricas,
-			String type, String mensagem, HashMap<String, DadosMetodoSmell> metodosSmell, String tecnica) {
+	private static void addMetodoSmell(DadosMetodo metodo, String typeSmell, String mensagemSmell,
+			HashSet<DadosMetodo> metodosSmell, String tecnica) {
 
-		DadosMetodoSmell dadosMetodoSmell = new DadosMetodoSmell();
-		dadosMetodoSmell.setCharFinal(metodo.getFinalChar());
-		dadosMetodoSmell.setCharInicial(metodo.getInitialChar());
-		dadosMetodoSmell.setDiretorioDaClasse(classe.getFile());
-		dadosMetodoSmell.setLinhaInicial(metodo.getInitialLine());
-		dadosMetodoSmell.setNomeClasse(classe.getClassName());
-		dadosMetodoSmell.setNomeMetodo(metodo.getNomeMethod());
-		dadosMetodoSmell.setTotalMetodosClasse(classe.getNom());
-		dadosMetodoSmell.setSmell(type);
-
-		DadosMetodoSmell metodoSmellExistente = metodosSmell.get(dadosMetodoSmell.getKey());
-		if (metodoSmellExistente != null)
-			dadosMetodoSmell = metodoSmellExistente;
-		else {
-			String codigoMetodo = null;
-			for (DadosMetodoSmell metodoSmell : metodosSmell.values()) {
-				if (metodoSmell.getDiretorioDaClasse().equals(classe.getFile())
-						&& (metodoSmell.getLinhaInicial() == metodo.getInitialLine())) {
-					dadosMetodoSmell.setCodigoMetodo(metodoSmell.getCodigoMetodo());
-					codigoMetodo = metodoSmell.getCodigoMetodo();
+		metodo.setSmell(typeSmell);
+		if (metodosSmell.contains(metodo)) {
+			for (DadosMetodo metodoSmell : metodosSmell) {
+				if (metodoSmell.equals(metodo)) {
+					metodoSmell.addMensagem(mensagemSmell);
+					metodoSmell.addTecnica(tecnica);
 					break;
 				}
 			}
-			if (codigoMetodo == null) {
-				codigoMetodo = String.format("%02d", metodosSmell.size() + 1);
-				dadosMetodoSmell.setCodigoMetodo("M" + codigoMetodo);
-			}
+		} else {
+			DadosMetodo novoMetodo = new DadosMetodo();
+			novoMetodo.setCommit(metodo.getCommit());
+			novoMetodo.setCharFinal(metodo.getCharFinal());
+			novoMetodo.setCharInicial(metodo.getCharInicial());
+			novoMetodo.setDiretorioDaClasse(metodo.getDiretorioDaClasse());
+			novoMetodo.setLinhaInicial(metodo.getLinhaInicial());
+			novoMetodo.setNomeClasse(metodo.getNomeClasse());
+			novoMetodo.setNomeMetodo(metodo.getNomeMetodo());
+			novoMetodo.setLinesOfCode(metodo.getLinesOfCode());
+			novoMetodo.setEfferent(metodo.getEfferent());
+			novoMetodo.setComplexity(metodo.getComplexity());
+			novoMetodo.setNumberOfParameters(metodo.getNumberOfParameters());
+			novoMetodo.setClassDesignRole(metodo.getClassDesignRole());
+			novoMetodo.setSmell(metodo.getSmell());
+			novoMetodo.addMensagem(mensagemSmell);
+			novoMetodo.addTecnica(tecnica);
+			metodosSmell.add(novoMetodo);
 		}
-
-		dadosMetodoSmell.setLinesOfCode(metricas.getLinesOfCode());
-		dadosMetodoSmell.setEfferent(metricas.getEfferentCoupling());
-		dadosMetodoSmell.setComplexity(metricas.getComplexity());
-		dadosMetodoSmell.setNumberOfParameters(metricas.getNumberOfParameters());
-		dadosMetodoSmell.addMensagem(mensagem);
-		dadosMetodoSmell.addTecnica(tecnica);
-		dadosMetodoSmell.setClassDesignRole(classe.getDesignRole());
-
-		metodosSmell.put(dadosMetodoSmell.getKey(), dadosMetodoSmell);
 	}
 
-	public static void gravarMetodosSmell(HashMap<String, DadosMetodoSmell> metodosSmell, String arquivoDestino) {
+	public static void gravarMetodosSmell(HashSet<DadosMetodo> metodosSmell, String arquivoDestino) {
 
 		PersistenceMechanism pm = new CSVFile(System.getProperty("user.dir") + "\\" + arquivoDestino);
-		pm.write(
-				"Tecnicas;Design Role;Classe;Método;LOC;CC;Efferent;NOP;Problema de Design;Deveria ser REFATORADO por conta desse problema?; Se DISCORDAR, quais os motivos? ");
-		for (DadosMetodoSmell metodoSmell : metodosSmell.values()) {
-			pm.write(metodoSmell.getListaTecnicas().toString().replace('[', ' ').replace(']', ' ') + ";"
-					+ metodoSmell.getClassDesignRole() + ";" + metodoSmell.getNomeClasse() + ";"
-					+ metodoSmell.getNomeMetodo() + ";" + +metodoSmell.getLinesOfCode() + ";"
-					+ metodoSmell.getComplexity() + ";" + metodoSmell.getEfferent() + ";"
-					+ metodoSmell.getNumberOfParameters() + ";" + metodoSmell.getSmell() + ";"
-					+ "(1) Discordo Fortemente;;");
-		}
-		System.out.println("Total de métodos longos: " + metodosSmell.size());
-	}
-
-	public static void gravarMetodosSmellRefactored(HashMap<String, DadosMetodoSmell> metodosSmell,
-			String arquivoDestino) {
-
-		PersistenceMechanism pm = new CSVFile(System.getProperty("user.dir") + "\\" + arquivoDestino);
-		pm.write("Tecnicas;Design Role;Classe;Método;LOC;CC;Efferent;NOP;Refactoring Aplicados; Quantidade");
-		for (DadosMetodoSmell metodoSmell : metodosSmell.values()) {
-			// if (metodoSmell.getAppliedRefactorings())
-			pm.write(metodoSmell.getListaTecnicas().toString().replace('[', ' ').replace(']', ' ') + ";"
-					+ metodoSmell.getClassDesignRole() + ";" + metodoSmell.getNomeClasse() + ";"
-					+ metodoSmell.getNomeMetodo() + ";" + +metodoSmell.getLinesOfCode() + ";"
-					+ metodoSmell.getComplexity() + ";" + metodoSmell.getEfferent() + ";"
-					+ metodoSmell.getNumberOfParameters() + ";" + metodoSmell.getSmell() + ";"
-					+ "(1) Discordo Fortemente;;");
+		pm.write("Tecnicas", "Design Role", "Classe", "Método", "LOC", "CC", "Efferent", "NOP", "Problema de Design",
+				"Deveria ser REFATORADO por conta desse problema?", "Se DISCORDAR, quais os motivos? ");
+		for (DadosMetodo metodoSmell : metodosSmell) {
+			pm.write(metodoSmell.getListaTecnicas().toString().replace('[', ' ').replace(']', ' '),
+					metodoSmell.getClassDesignRole(), metodoSmell.getNomeClasse(), metodoSmell.getNomeMetodo(),
+					metodoSmell.getLinesOfCode(), metodoSmell.getComplexity(), metodoSmell.getEfferent(),
+					metodoSmell.getNumberOfParameters(), metodoSmell.getSmell(), "(1) Discordo Fortemente;");
 		}
 		System.out.println("Total de métodos longos: " + metodosSmell.size());
 	}

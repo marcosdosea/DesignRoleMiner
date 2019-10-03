@@ -1,33 +1,24 @@
 package org.designroleminer.smelldetector.model;
 
-import java.util.HashMap;
 import java.util.HashSet;
-
-import com.github.mauricioaniche.ck.MethodData;
 
 public class FilterSmellResult {
 
-	private HashMap<String, DadosMetodoSmell> metodosSmell;
-	private HashSet<MethodData> listaMethodsSmelly;
-	private HashSet<MethodData> listaMethodsNotSmelly;
-	public HashMap<String, DadosMetodoSmell> getMetodosSmell() {
+	private HashSet<DadosMetodo> metodosSmell;
+	private HashSet<DadosMetodo> metodosNotSmelly;
+
+
+	public HashSet<DadosMetodo> getMetodosNotSmelly() {
+		return metodosNotSmelly;
+	}
+	public void setMetodosNotSmelly(HashSet<DadosMetodo> metodosNotSmelly) {
+		this.metodosNotSmelly = metodosNotSmelly;
+	}
+	public HashSet<DadosMetodo> getMetodosSmell() {
 		return metodosSmell;
 	}
-	public void setMetodosSmell(HashMap<String, DadosMetodoSmell> metodosSmell) {
+	public void setMetodosSmell(HashSet<DadosMetodo> metodosSmell) {
 		this.metodosSmell = metodosSmell;
 	}
-	public HashSet<MethodData> getListaMethodsSmelly() {
-		return listaMethodsSmelly;
-	}
-	public void setListaMethodsSmelly(HashSet<MethodData> listaMethodsSmelly) {
-		this.listaMethodsSmelly = listaMethodsSmelly;
-	}
-	public HashSet<MethodData> getListaMethodsNotSmelly() {
-		return listaMethodsNotSmelly;
-	}
-	public void setListaMethodsNotSmelly(HashSet<MethodData> listaMethodsNotSmelly) {
-		this.listaMethodsNotSmelly = listaMethodsNotSmelly;
-	}
-	
 	
 }
