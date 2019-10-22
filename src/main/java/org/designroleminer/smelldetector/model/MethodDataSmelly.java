@@ -2,7 +2,7 @@ package org.designroleminer.smelldetector.model;
 
 import java.util.HashSet;
 
-public class DadosMetodo {
+public class MethodDataSmelly {
 
 	private String commit;
 	private String diretorioDaClasse;
@@ -149,7 +149,7 @@ public class DadosMetodo {
 	public boolean equals(Object arg0) {
 		if (arg0 == null)
 			return false;
-		DadosMetodo metodo = (DadosMetodo) arg0;
+		MethodDataSmelly metodo = (MethodDataSmelly) arg0;
 		if (smell != null) {
 			return metodo.getDiretorioDaClasse().equals(getDiretorioDaClasse()) 
 					&& metodo.getNomeClasse().equals(getNomeClasse()) 

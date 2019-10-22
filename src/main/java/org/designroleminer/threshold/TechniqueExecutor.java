@@ -38,9 +38,10 @@ public class TechniqueExecutor {
 		techinique.generate(classes, fileResultado);
 	}
 
-	public ArrayList<ClassMetricResult> getMetricsFromProjects(ArrayList<String> projetos, String pathResultado) {
+	public ArrayList<ClassMetricResult> getMetricsFromProjects(ArrayList<String> projetos, String pathResultado,
+			boolean reuseCalculations) {
 
-		ExtractSaveMetricsToFiles(projetos, pathResultado);
+		ExtractSaveMetricsToFiles(projetos, pathResultado, reuseCalculations);
 		ArrayList<ClassMetricResult> listaClasses = LoadMetricsFromFiles(projetos, pathResultado);
 
 		return listaClasses;
@@ -143,7 +144,8 @@ public class TechniqueExecutor {
 		return listaClasses;
 	}
 
-	private void ExtractSaveMetricsToFiles(ArrayList<String> projetos, String pathResultado) {
+	private void ExtractSaveMetricsToFiles(ArrayList<String> projetos, String pathResultado,
+			boolean reuseCalculations) {
 		for (String path : projetos) {
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
 			String dataHora = sf.format(Calendar.getInstance().getTime());
@@ -159,18 +161,16 @@ public class TechniqueExecutor {
 			File dir = new File(pathResultado);
 			if (!dir.exists())
 				dir.mkdir();
-			
+
 			File fileMethods = new File(filePathMethods);
 			File fileClasses = new File(filePathClasses);
 			File fileProject = new File(filePathProject);
 
-			
-			
 			long totalMetodos = 0;
 			long totalLoc = 0;
 			long totalClasses = 0;
 
-			if (!fileMethods.exists() && !fileClasses.exists() && !fileProject.exists()) {
+			if (!reuseCalculations || (!fileMethods.exists() && !fileClasses.exists() && !fileProject.exists())) {
 				MetricReport report = new CK().calculate(path);
 				Collection<ClassMetricResult> metricasClasses = report.all();
 
@@ -207,11 +207,13 @@ public class TechniqueExecutor {
 					totalClasses++;
 				}
 				pmProject.write(totalClasses, totalLoc, totalMetodos);
+				logger.info("Number of classes: " + totalClasses);
+				logger.info("Number of methods: " + totalMetodos);
+				logger.info("Total Lines of Code: " + totalLoc);
+				pmClasses.close();
+				pmMethods.close();
+				pmProject.close();
 			}
-
-			logger.info("Number of classes: " + totalClasses);
-			logger.info("Number of methods: " + totalMetodos);
-			logger.info("Total Lines of Code: " + totalLoc);
 		}
 	}
 

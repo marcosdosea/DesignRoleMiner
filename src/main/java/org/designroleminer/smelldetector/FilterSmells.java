@@ -7,11 +7,10 @@ import java.util.List;
 
 import org.designroleminer.ClassMetricResult;
 import org.designroleminer.MethodMetricResult;
-import org.designroleminer.smelldetector.model.DadosMetodo;
+import org.designroleminer.smelldetector.model.MethodDataSmelly;
 import org.designroleminer.smelldetector.model.FilterSmellResult;
 import org.designroleminer.smelldetector.model.LimiarMetrica;
 import org.designroleminer.smelldetector.model.LimiarTecnica;
-import org.hamcrest.core.Is;
 import org.repodriller.persistence.PersistenceMechanism;
 import org.repodriller.persistence.csv.CSVFile;
 
@@ -24,8 +23,8 @@ public class FilterSmells {
 	public static FilterSmellResult filtrar(ArrayList<ClassMetricResult> classesAnalisar,
 			List<LimiarTecnica> listaTecnicas, String commitAnalisado) {
 
-		HashSet<DadosMetodo> listaMethodsSmelly = new HashSet<>();
-		HashSet<DadosMetodo> listaMethodsNotSmelly = new HashSet<>();
+		HashSet<MethodDataSmelly> listaMethodsSmelly = new HashSet<>();
+		HashSet<MethodDataSmelly> listaMethodsNotSmelly = new HashSet<>();
 
 		for (ClassMetricResult classe : classesAnalisar) {
 			for (LimiarTecnica limiarTecnica : listaTecnicas) {
@@ -58,7 +57,7 @@ public class FilterSmells {
 
 					MethodMetricResult methodMetrics = classe.getMetricsByMethod().get(methodData);
 
-					DadosMetodo metodo = new DadosMetodo();
+					MethodDataSmelly metodo = new MethodDataSmelly();
 					metodo.setCommit(commitAnalisado);
 					metodo.setCharFinal(methodData.getFinalChar());
 					metodo.setCharInicial(methodData.getInitialChar());
@@ -110,6 +109,18 @@ public class FilterSmells {
 				}
 			}
 		}
+		
+		for (MethodDataSmelly methodSmelly : listaMethodsSmelly) {
+			for (MethodDataSmelly methodNotSmelly: listaMethodsNotSmelly) {
+				if (methodSmelly.getNomeClasse().equals(methodNotSmelly.getNomeClasse()) &&
+						methodSmelly.getNomeMetodo().equals(methodNotSmelly.getNomeMetodo()) &&
+						methodSmelly.getCommit().equals(methodNotSmelly.getCommit()) &&
+						methodSmelly.getCharInicial() == methodNotSmelly.getCharInicial()) {
+					listaMethodsNotSmelly.remove(methodNotSmelly);
+					break;
+				}
+			}
+		}
 
 		FilterSmellResult result = new FilterSmellResult();
 
@@ -118,12 +129,12 @@ public class FilterSmells {
 		return result;
 	}
 
-	private static void addMetodoSmell(DadosMetodo metodo, String typeSmell, String mensagemSmell,
-			HashSet<DadosMetodo> metodosSmell, String tecnica) {
+	private static void addMetodoSmell(MethodDataSmelly metodo, String typeSmell, String mensagemSmell,
+			HashSet<MethodDataSmelly> metodosSmell, String tecnica) {
 
 		metodo.setSmell(typeSmell);
 		if (metodosSmell.contains(metodo)) {
-			for (DadosMetodo metodoSmell : metodosSmell) {
+			for (MethodDataSmelly metodoSmell : metodosSmell) {
 				if (metodoSmell.equals(metodo)) {
 					metodoSmell.addMensagem(mensagemSmell);
 					metodoSmell.addTecnica(tecnica);
@@ -131,7 +142,7 @@ public class FilterSmells {
 				}
 			}
 		} else {
-			DadosMetodo novoMetodo = new DadosMetodo();
+			MethodDataSmelly novoMetodo = new MethodDataSmelly();
 			novoMetodo.setCommit(metodo.getCommit());
 			novoMetodo.setCharFinal(metodo.getCharFinal());
 			novoMetodo.setCharInicial(metodo.getCharInicial());
@@ -151,12 +162,12 @@ public class FilterSmells {
 		}
 	}
 
-	public static void gravarMetodosSmell(HashSet<DadosMetodo> metodosSmell, String arquivoDestino) {
+	public static void gravarMetodosSmell(HashSet<MethodDataSmelly> metodosSmell, String arquivoDestino) {
 
 		PersistenceMechanism pm = new CSVFile(System.getProperty("user.dir") + "\\" + arquivoDestino);
 		pm.write("Tecnicas", "Design Role", "Classe", "Método", "LOC", "CC", "Efferent", "NOP", "Problema de Design",
 				"Deveria ser REFATORADO por conta desse problema?", "Se DISCORDAR, quais os motivos? ");
-		for (DadosMetodo metodoSmell : metodosSmell) {
+		for (MethodDataSmelly metodoSmell : metodosSmell) {
 			pm.write(metodoSmell.getListaTecnicas().toString().replace('[', ' ').replace(']', ' '),
 					metodoSmell.getClassDesignRole(), metodoSmell.getNomeClasse(), metodoSmell.getNomeMetodo(),
 					metodoSmell.getLinesOfCode(), metodoSmell.getComplexity(), metodoSmell.getEfferent(),
