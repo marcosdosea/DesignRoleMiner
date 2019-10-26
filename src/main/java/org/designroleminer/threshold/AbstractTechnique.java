@@ -3,9 +3,9 @@ package org.designroleminer.threshold;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 
 import org.designroleminer.ClassMetricResult;
 import org.designroleminer.MethodMetricResult;
@@ -19,7 +19,7 @@ public abstract class AbstractTechnique {
 	 * @param classes
 	 * @param fileResultado
 	 */
-	abstract void generate(List<ClassMetricResult> classes, String fileResultado);
+	abstract void generate(Collection<ClassMetricResult> classes, String fileResultado);
 
 	/**
 	 * 
@@ -116,7 +116,7 @@ public abstract class AbstractTechnique {
 		return limiarMetrica;
 	}
 
-	public long obterTotalLinhasCodigoPorDesignRole(List<ClassMetricResult> classes,
+	public long obterTotalLinhasCodigoPorDesignRole(Collection<ClassMetricResult> classes,
 			HashMap<String, Long> linhasDeCodigoPorDesignRole) {
 		long total = 0;
 		if (linhasDeCodigoPorDesignRole == null)

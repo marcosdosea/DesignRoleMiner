@@ -53,7 +53,7 @@ public class MethodMetric extends ASTVisitor implements Metric {
 	private Set<String> usedTypes;
 	private int currentInitialChar;
 	private CompilationUnit cu;
-	
+
 	public MethodMetric() {
 		metricsByMethod = new HashMap<MethodData, MethodMetricResult>();
 		methodStack = new Stack<MethodData>();

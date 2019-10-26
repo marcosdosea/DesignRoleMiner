@@ -13,7 +13,10 @@ public class MetricReport implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private Map<String, ClassMetricResult> results;
-
+	private int numberOfClasses;
+	private int systemLOC; 
+	private int numberOfMethods; 
+	
 	public MetricReport() {
 		this.results = new HashMap<String, ClassMetricResult>();
 	}
@@ -38,4 +41,30 @@ public class MetricReport implements Serializable {
 
 		return null;
 	}
+
+	public int getNumberOfClasses() {
+		return numberOfClasses;
+	}
+
+	public void setNumberOfClasses(int numberOfClasses) {
+		this.numberOfClasses = numberOfClasses;
+	}
+
+	public int getSystemLOC() {
+		return systemLOC;
+	}
+
+	public void setSystemLOC(int systemLOC) {
+		this.systemLOC = systemLOC;
+	}
+
+	public int getNumberOfMethods() {
+		return numberOfMethods;
+	}
+
+	public void setNumberOfMethods(int numberOfMethods) {
+		this.numberOfMethods = numberOfMethods;
+	}
+	
+	
 }

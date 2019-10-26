@@ -1,8 +1,8 @@
 package org.designroleminer.threshold;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 import org.designroleminer.ClassMetricResult;
 import org.designroleminer.MethodMetricResult;
@@ -19,7 +19,7 @@ public class AnicheTechnique extends AbstractTechnique {
 	 * @param fileResultado
 	 */
 	@Override
-	public void generate(List<ClassMetricResult> classes, String fileResultado) {
+	public void generate(Collection<ClassMetricResult> classes, String fileResultado) {
 		PersistenceMechanism pm = new CSVFile(fileResultado);
 		pm.write("DesignRoleTechnique;LOC;CC;Efferent;NOP;");
 
@@ -63,8 +63,8 @@ public class AnicheTechnique extends AbstractTechnique {
 					+ limiarEfferent.getLimiarMaximo() + ";" + limiarNOP.getLimiarMaximo() + ";");
 		}
 	}
-	
-	private long obterTotalLinhasCodigoPorArchitecturalRole(List<ClassMetricResult> classes,
+
+	private long obterTotalLinhasCodigoPorArchitecturalRole(Collection<ClassMetricResult> classes,
 			HashMap<String, Long> linhasDeCodigoPorDesignRole) {
 		long total = 0;
 		if (linhasDeCodigoPorDesignRole == null)
@@ -88,6 +88,5 @@ public class AnicheTechnique extends AbstractTechnique {
 		}
 		return total;
 	}
-
 
 }

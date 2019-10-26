@@ -1,8 +1,8 @@
 package org.designroleminer.threshold;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 import org.designroleminer.ClassMetricResult;
 import org.designroleminer.MethodMetricResult;
@@ -19,7 +19,7 @@ public class AlvesTechnique extends AbstractTechnique {
 	 * @param fileResultado
 	 */
 	@Override
-	public void generate(List<ClassMetricResult> classes, String fileResultado) {
+	public void generate(Collection<ClassMetricResult> classes, String fileResultado) {
 		PersistenceMechanism pm = new CSVFile(fileResultado);
 		pm.write("DesignRoleTechnique;LOC;CC;Efferent;NOP;");
 

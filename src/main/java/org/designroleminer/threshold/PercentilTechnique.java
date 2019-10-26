@@ -1,7 +1,7 @@
 package org.designroleminer.threshold;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 import org.designroleminer.ClassMetricResult;
 import org.designroleminer.MethodMetricResult;
@@ -26,7 +26,7 @@ public class PercentilTechnique extends AbstractTechnique {
 	 * @param quartil
 	 */
 	@Override
-	public void generate(List<ClassMetricResult> classes, String fileResultado) {
+	public void generate(Collection<ClassMetricResult> classes, String fileResultado) {
 		PersistenceMechanism pm = new CSVFile(fileResultado);
 		pm.write("DesignRoleTechnique;LOC;CC;Efferent;NOP;");
 
@@ -43,28 +43,22 @@ public class PercentilTechnique extends AbstractTechnique {
 				listaNOP.add(method.getNumberOfParameters());
 			}
 		}
-		
+
 		double limiarLOC = new BoxPlotOutlier(convert(listaLOC)).getValuePercentil(percentile);
 		double limiarCC = new BoxPlotOutlier(convert(listaCC)).getValuePercentil(percentile);
 		double limiarEfferent = new BoxPlotOutlier(convert(listaEfferent)).getValuePercentil(percentile);
 		double limiarNOP = new BoxPlotOutlier(convert(listaNOP)).getValuePercentil(percentile);
-		
-		pm.write(LimiarMetrica.DESIGN_ROLE_UNDEFINED + ";" + limiarLOC + ";"
-				+ limiarCC + ";"
-				+ limiarEfferent + ";"
+
+		pm.write(LimiarMetrica.DESIGN_ROLE_UNDEFINED + ";" + limiarLOC + ";" + limiarCC + ";" + limiarEfferent + ";"
 				+ limiarNOP + ";");
 	}
-	
-	
+
 	private double[] convert(ArrayList<Integer> myIntegerValues) {
 		double[] myList = new double[myIntegerValues.size()];
-		for (int i=0; i<myIntegerValues.size(); i++) {
-		   myList[i] = (double) myIntegerValues.get(i);
+		for (int i = 0; i < myIntegerValues.size(); i++) {
+			myList[i] = (double) myIntegerValues.get(i);
 		}
 		return myList;
 	}
 
 }
-
-
-

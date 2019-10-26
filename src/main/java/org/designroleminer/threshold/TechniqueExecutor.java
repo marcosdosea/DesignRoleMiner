@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -34,21 +33,25 @@ public class TechniqueExecutor {
 		this.techinique = techinique;
 	}
 
-	public void execute(List<ClassMetricResult> classes, String fileResultado) {
+	public void execute(Collection<ClassMetricResult> classes, String fileResultado) {
 		techinique.generate(classes, fileResultado);
 	}
 
-	public ArrayList<ClassMetricResult> getMetricsFromProjects(ArrayList<String> projetos, String pathResultado,
+	public MetricReport getMetricsFromProjects(Collection<String> projetos, String pathResultado,
 			boolean reuseCalculations) {
 
 		ExtractSaveMetricsToFiles(projetos, pathResultado, reuseCalculations);
-		ArrayList<ClassMetricResult> listaClasses = LoadMetricsFromFiles(projetos, pathResultado);
+		MetricReport report = LoadMetricsFromFiles(projetos, pathResultado);
 
-		return listaClasses;
+		return report;
 	}
 
-	private ArrayList<ClassMetricResult> LoadMetricsFromFiles(ArrayList<String> projetos, String pathResultado) {
-		ArrayList<ClassMetricResult> listaClasses = new ArrayList<ClassMetricResult>();
+	private MetricReport LoadMetricsFromFiles(Collection<String> projetos, String pathResultado) {
+		// ArrayList<ClassMetricResult> listaClasses = new
+		// ArrayList<ClassMetricResult>();
+
+		MetricReport report = new MetricReport();
+
 		for (String path : projetos) {
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
 			String dataHora = sf.format(Calendar.getInstance().getTime());
@@ -66,9 +69,9 @@ public class TechniqueExecutor {
 			File fileClasses = new File(filePathClasses);
 			File fileProject = new File(filePathProject);
 
-			long totalMetodos = 0;
-			long totalLoc = 0;
-			long totalClasses = 0;
+			int numberOfMethods = 0;
+			int systemLOC = 0;
+			int numberOfClasses = 0;
 			try {
 				String line;
 				BufferedReader brProject = new BufferedReader(new FileReader(fileProject));
@@ -76,9 +79,9 @@ public class TechniqueExecutor {
 				while ((line = brProject.readLine()) != null) {
 					if (count > 0) {
 						String[] values = line.split(",");
-						totalClasses = Integer.parseInt(values[0]);
-						totalLoc = Integer.parseInt(values[1]);
-						totalMetodos = Integer.parseInt(values[2]);
+						numberOfClasses = Integer.parseInt(values[0]);
+						systemLOC = Integer.parseInt(values[1]);
+						numberOfMethods = Integer.parseInt(values[2]);
 					}
 					count++;
 				}
@@ -102,7 +105,7 @@ public class TechniqueExecutor {
 						classMetric.setWmc(Integer.parseInt(values[9]));
 						classMetric.setArchitecturalRole(Boolean.parseBoolean(values[12]));
 						classMetric.setMetricsByMethod(new HashMap<>());
-						listaClasses.add(classMetric);
+						report.add(classMetric);
 					}
 					count++;
 				}
@@ -123,9 +126,7 @@ public class TechniqueExecutor {
 						metrics.setEfferentCoupling(Integer.parseInt(values[5]));
 						metrics.setLinesOfCode(Integer.parseInt(values[3]));
 						metrics.setNumberOfParameters(Integer.parseInt(values[6]));
-						ClassMetricResult classMetricResult = new ClassMetricResult(values[9], "", "");
-						int index = listaClasses.indexOf(classMetricResult);
-						ClassMetricResult classMetric = listaClasses.get(index);
+						ClassMetricResult classMetric = report.get(values[9]); // name file
 						Map<MethodData, MethodMetricResult> map = classMetric.getMetricsByMethod();
 						map.put(methodData, metrics);
 						classMetric.setMetricsByMethod(map);
@@ -136,15 +137,14 @@ public class TechniqueExecutor {
 				e.printStackTrace();
 			}
 
-			logger.info("Number of classes: " + totalClasses);
-			logger.info("Number of methods: " + totalMetodos);
-			logger.info("Total Lines of Code: " + totalLoc);
-
+			report.setNumberOfClasses(numberOfClasses);
+			report.setNumberOfMethods(numberOfMethods);
+			report.setSystemLOC(systemLOC);
 		}
-		return listaClasses;
+		return report;
 	}
 
-	private void ExtractSaveMetricsToFiles(ArrayList<String> projetos, String pathResultado,
+	private void ExtractSaveMetricsToFiles(Collection<String> projetos, String pathResultado,
 			boolean reuseCalculations) {
 		for (String path : projetos) {
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");

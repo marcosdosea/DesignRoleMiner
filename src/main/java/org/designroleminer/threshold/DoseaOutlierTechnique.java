@@ -2,6 +2,7 @@ package org.designroleminer.threshold;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class DoseaOutlierTechnique extends AbstractTechnique {
 	 * @param fileResultado
 	 */
 	@Override
-	public void generate(List<ClassMetricResult> classes, String fileResultado) {
+	public void generate(Collection<ClassMetricResult> classes, String fileResultado) {
 		PersistenceMechanism pm = new CSVFile(fileResultado);
 		pm.write("DesignRoleTechnique;LOC;CC;Efferent;NOP;");
 
@@ -57,17 +58,21 @@ public class DoseaOutlierTechnique extends AbstractTechnique {
 						method.getLinesOfCode(), LimiarMetrica.METRICA_EC + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaNOP, method.getNumberOfParameters(),
 						method.getLinesOfCode(), LimiarMetrica.METRICA_NOP + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
-			
-				adicionarMetricaDesignRole(metricasLOCPorDesignRole, classe.getDesignRole().toUpperCase(), method.getLinesOfCode());
-				adicionarMetricaDesignRole(metricasCCPorDesignRole, classe.getDesignRole().toUpperCase(), method.getComplexity());
-				adicionarMetricaDesignRole(metricasEfferentPorDesignRole, classe.getDesignRole().toUpperCase(), method.getEfferentCoupling());
-				adicionarMetricaDesignRole(metricasNOPPorDesignRole, classe.getDesignRole().toUpperCase(), method.getNumberOfParameters());
+
+				adicionarMetricaDesignRole(metricasLOCPorDesignRole, classe.getDesignRole().toUpperCase(),
+						method.getLinesOfCode());
+				adicionarMetricaDesignRole(metricasCCPorDesignRole, classe.getDesignRole().toUpperCase(),
+						method.getComplexity());
+				adicionarMetricaDesignRole(metricasEfferentPorDesignRole, classe.getDesignRole().toUpperCase(),
+						method.getEfferentCoupling());
+				adicionarMetricaDesignRole(metricasNOPPorDesignRole, classe.getDesignRole().toUpperCase(),
+						method.getNumberOfParameters());
 			}
 		}
 
 		LimiarMetrica limiarLOCUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaLOC, totalLoc, 5, 70, 90,
 				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_LOC, false);
-		
+
 		LimiarMetrica limiarCCUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCC, totalLoc, 5, 70, 90,
 				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_CC, false);
 		LimiarMetrica limiarEfferentUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaEfferent, totalLoc, 5,
@@ -82,12 +87,12 @@ public class DoseaOutlierTechnique extends AbstractTechnique {
 		for (String designRole : linhasDeCodigoPorDesignRole.keySet()) {
 			designRole = designRole.toUpperCase();
 			if (!designRole.contains(LimiarMetrica.DESIGN_ROLE_UNDEFINED)) {
-				//long totalLOCPorDesignRole = linhasDeCodigoPorDesignRole.get(designRole);
+				// long totalLOCPorDesignRole = linhasDeCodigoPorDesignRole.get(designRole);
 				LimiarMetrica limiarLOC = obterLimiaresBoxPlot(metricasLOCPorDesignRole, designRole);
 				LimiarMetrica limiarCC = obterLimiaresBoxPlot(metricasCCPorDesignRole, designRole);
 				LimiarMetrica limiarEfferent = obterLimiaresBoxPlot(metricasEfferentPorDesignRole, designRole);
 				LimiarMetrica limiarNOP = obterLimiaresBoxPlot(metricasNOPPorDesignRole, designRole);
-				
+
 				// para limiares muitos baixos assume o limiar médio da aplicacao
 				if (limiarLOC.getLimiarMaximo() < limiarLOCUndefined.getLimiarMedio())
 					limiarLOC.setLimiarMaximo(limiarLOCUndefined.getLimiarMedio());
@@ -105,21 +110,21 @@ public class DoseaOutlierTechnique extends AbstractTechnique {
 
 	private LimiarMetrica obterLimiaresBoxPlot(HashMap<String, List<Integer>> metricasPorDesignRole,
 			String designRole) {
-		
+
 		if (designRole.equals("ABSTRACTATTRIBUTEDTYPE"))
 			System.out.println("ABSTRACTATTRIBUTEDTYPE");
-		
+
 		LimiarMetrica limiarMetrica = new LimiarMetrica();
 		List<Integer> valores = metricasPorDesignRole.get(designRole.toUpperCase());
 		if (valores != null) {
 			double[] listaValoresDouble = new double[valores.size()];
- 			for (int i=0; i < valores.size(); i++) {
+			for (int i = 0; i < valores.size(); i++) {
 				listaValoresDouble[i] = valores.get(i);
 			}
- 			BoxPlotOutlier boxplot = new BoxPlotOutlier(listaValoresDouble);
- 			limiarMetrica.setLimiarMinimo((int) boxplot.getLowerThresholdAdjusted());
- 			limiarMetrica.setLimiarMaximo((int) boxplot.getUpperThresholdAdjusted());
- 			limiarMetrica.setLimiarMedio((int) boxplot.getQ3());
+			BoxPlotOutlier boxplot = new BoxPlotOutlier(listaValoresDouble);
+			limiarMetrica.setLimiarMinimo((int) boxplot.getLowerThresholdAdjusted());
+			limiarMetrica.setLimiarMaximo((int) boxplot.getUpperThresholdAdjusted());
+			limiarMetrica.setLimiarMedio((int) boxplot.getQ3());
 		}
 		return limiarMetrica;
 	}
@@ -132,6 +137,5 @@ public class DoseaOutlierTechnique extends AbstractTechnique {
 		listaValores.add(valorMetrica);
 		metricasPorDesignRole.put(designRole, listaValores);
 	}
-		
 
 }

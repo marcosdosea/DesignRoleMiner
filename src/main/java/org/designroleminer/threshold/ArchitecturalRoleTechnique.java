@@ -1,6 +1,6 @@
 package org.designroleminer.threshold;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.designroleminer.ClassMetricResult;
 import org.repodriller.persistence.PersistenceMechanism;
@@ -15,7 +15,7 @@ public class ArchitecturalRoleTechnique extends AbstractTechnique {
 	 * @param fileResultado
 	 */
 	@Override
-	public void generate(List<ClassMetricResult> classes, String fileResultado) {
+	public void generate(Collection<ClassMetricResult> classes, String fileResultado) {
 		PersistenceMechanism pm = new CSVFile(fileResultado);
 		pm.write("Classe                              ;ArchitecturalRole                        ;");
 

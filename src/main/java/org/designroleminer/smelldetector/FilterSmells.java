@@ -1,6 +1,7 @@
 package org.designroleminer.smelldetector;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -20,7 +21,7 @@ public class FilterSmells {
 
 	static final String TECNICA_ANICHE = "X";
 
-	public static FilterSmellResult filtrar(ArrayList<ClassMetricResult> classesAnalisar,
+	public static FilterSmellResult filtrar(Collection<ClassMetricResult> classesAnalisar,
 			List<LimiarTecnica> listaTecnicas, String commitAnalisado) {
 
 		HashSet<MethodDataSmelly> listaMethodsSmelly = new HashSet<>();
