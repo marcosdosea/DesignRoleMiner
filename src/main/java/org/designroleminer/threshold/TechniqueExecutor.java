@@ -56,7 +56,7 @@ public class TechniqueExecutor {
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
 			String dataHora = sf.format(Calendar.getInstance().getTime());
 
-			logger.info("[" + dataHora + "] Extracting metrics from project " + path + "...");
+			//logger.info("[" + dataHora + "] Extracting metrics from project " + path + "...");
 
 			int lastIndex = path.lastIndexOf("\\");
 			String nameLastFolder = path.substring(lastIndex + 1);
@@ -150,7 +150,7 @@ public class TechniqueExecutor {
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
 			String dataHora = sf.format(Calendar.getInstance().getTime());
 
-			logger.info("[" + dataHora + "] Extracting metrics from project " + path + "...");
+			//logger.info("[" + dataHora + "] Extracting metrics from project " + path + "...");
 
 			int lastIndex = path.lastIndexOf("\\");
 			String nameLastFolder = path.substring(lastIndex + 1);
@@ -207,9 +207,9 @@ public class TechniqueExecutor {
 					totalClasses++;
 				}
 				pmProject.write(totalClasses, totalLoc, totalMetodos);
-				logger.info("Number of classes: " + totalClasses);
-				logger.info("Number of methods: " + totalMetodos);
-				logger.info("Total Lines of Code: " + totalLoc);
+				//logger.info("Number of classes: " + totalClasses);
+				//logger.info("Number of methods: " + totalMetodos);
+				//logger.info("Total Lines of Code: " + totalLoc);
 				pmClasses.close();
 				pmMethods.close();
 				pmProject.close();

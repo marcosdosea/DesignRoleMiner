@@ -54,12 +54,12 @@ public class DoseaDesignRoleTechnique extends AbstractTechnique {
 			}
 		}
 
-		LimiarMetrica limiarLOCUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaLOC, totalLoc, 5, 70, 90,
+		LimiarMetrica limiarLOCUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaLOC, totalLoc, 5, 80, 90,
 				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_LOC, true);
-		LimiarMetrica limiarCCUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCC, totalLoc, 5, 70, 90,
+		LimiarMetrica limiarCCUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCC, totalLoc, 5, 80, 90,
 				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_CC, true);
 		LimiarMetrica limiarEfferentUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaEfferent, totalLoc, 5,
-				70, 90, LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_EC, true);
+				80, 90, LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_EC, true);
 		LimiarMetrica limiarNOPUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaNOP, totalLoc, 3, 90, 95,
 				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_NOP, true);
 
@@ -72,11 +72,11 @@ public class DoseaDesignRoleTechnique extends AbstractTechnique {
 			if (!designRole.contains(LimiarMetrica.DESIGN_ROLE_UNDEFINED)) {
 				long totalLOCPorDesignRole = linhasDeCodigoPorDesignRole.get(designRole);
 				LimiarMetrica limiarLOC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaLOC, totalLOCPorDesignRole,
-						5, 70, 90, designRole, LimiarMetrica.METRICA_LOC, true);
+						5, 75, 90, designRole, LimiarMetrica.METRICA_LOC, true);
 				LimiarMetrica limiarCC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCC, totalLOCPorDesignRole, 5,
-						70, 90, designRole, LimiarMetrica.METRICA_CC, true);
+						75, 90, designRole, LimiarMetrica.METRICA_CC, true);
 				LimiarMetrica limiarEfferent = obterLimiaresMetrica(distribuicaoCodigoPorMetricaEfferent,
-						totalLOCPorDesignRole, 5, 70, 90, designRole, LimiarMetrica.METRICA_EC, true);
+						totalLOCPorDesignRole, 5, 75, 90, designRole, LimiarMetrica.METRICA_EC, true);
 				LimiarMetrica limiarNOP = obterLimiaresMetrica(distribuicaoCodigoPorMetricaNOP, totalLOCPorDesignRole,
 						3, 90, 95, designRole, LimiarMetrica.METRICA_NOP, true);
 

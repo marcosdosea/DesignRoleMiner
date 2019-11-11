@@ -1,6 +1,5 @@
 package org.designroleminer.smelldetector;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,10 +7,10 @@ import java.util.List;
 
 import org.designroleminer.ClassMetricResult;
 import org.designroleminer.MethodMetricResult;
-import org.designroleminer.smelldetector.model.MethodDataSmelly;
 import org.designroleminer.smelldetector.model.FilterSmellResult;
 import org.designroleminer.smelldetector.model.LimiarMetrica;
 import org.designroleminer.smelldetector.model.LimiarTecnica;
+import org.designroleminer.smelldetector.model.MethodDataSmelly;
 import org.repodriller.persistence.PersistenceMechanism;
 import org.repodriller.persistence.csv.CSVFile;
 

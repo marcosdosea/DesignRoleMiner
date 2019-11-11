@@ -65,12 +65,13 @@ public class ValeTechnique extends AbstractTechnique {
 			metodosPorDesignRole = new HashMap<>();
 
 		for (ClassMetricResult classe : classes) {
-			total += classe.getNom();
+			int numeroMetodosClasse = classe.getMetricsByMethod().size();
+			total += numeroMetodosClasse;
 			Long somaMetodosPorDesignRole = metodosPorDesignRole.get(classe.getDesignRole());
 			if (somaMetodosPorDesignRole == null) {
-				metodosPorDesignRole.put(classe.getDesignRole(), new Long(classe.getNom()));
+				metodosPorDesignRole.put(classe.getDesignRole(), new Long(numeroMetodosClasse));
 			} else {
-				somaMetodosPorDesignRole += classe.getNom();
+				somaMetodosPorDesignRole += numeroMetodosClasse;
 				metodosPorDesignRole.put(classe.getDesignRole(), somaMetodosPorDesignRole);
 			}
 		}

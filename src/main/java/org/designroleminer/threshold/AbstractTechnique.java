@@ -76,7 +76,7 @@ public abstract class AbstractTechnique {
 			BigDecimal pMedio = new BigDecimal(percentilMedio).divide(new BigDecimal(100), MathContext.DECIMAL128);
 			BigDecimal pMaximo = new BigDecimal(percentilMaximo).divide(new BigDecimal(100), MathContext.DECIMAL128);
 			BigDecimal somaPeso = null;
-
+			BigDecimal somaValor = null;
 			int indexMinimo = 0;
 			int indexMedio = 0;
 			int indexMaximo = 0;
@@ -84,10 +84,11 @@ public abstract class AbstractTechnique {
 			int indexLista = 0;
 			for (Integer valorMetrica : listaOrdenadaMetrica) {
 				BigDecimal valorAgrupado = valoresMetricas.get(valorMetrica);
-				BigDecimal peso = totalValorAgrupado > 0
-						? valorAgrupado.divide(new BigDecimal(totalValorAgrupado), MathContext.DECIMAL128)
+				
+				somaValor = (somaValor == null) ? valorAgrupado : somaValor.add(valorAgrupado, MathContext.DECIMAL128);
+				somaPeso = totalValorAgrupado > 0 
+						? somaValor.divide(new BigDecimal(totalValorAgrupado), MathContext.DECIMAL128)
 						: new BigDecimal(0);
-				somaPeso = (somaPeso == null) ? peso : somaPeso.add(peso, MathContext.DECIMAL128);
 				if (somaPeso.compareTo(pMinimo) <= 0)
 					indexMinimo = indexLista;
 				if (somaPeso.compareTo(pMedio) <= 0)
