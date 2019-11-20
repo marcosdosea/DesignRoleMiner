@@ -4,9 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.text.SimpleDateFormat;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +15,10 @@ import org.designroleminer.ClassMetricResult;
 import org.designroleminer.FileLocUtil;
 import org.designroleminer.MethodMetricResult;
 import org.designroleminer.MetricReport;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.Repository;
 import org.repodriller.persistence.PersistenceMechanism;
 import org.repodriller.persistence.csv.CSVFile;
 import org.slf4j.Logger;
@@ -37,30 +40,34 @@ public class TechniqueExecutor {
 		techinique.generate(classes, fileResultado);
 	}
 
-	public MetricReport getMetricsFromProjects(Collection<String> projetos, String pathResultado,
-			boolean reuseCalculations) {
+	public MetricReport getMetricsFromProjects(Collection<String> projetos, String pathResultado, String commit) {
 
-		ExtractSaveMetricsToFiles(projetos, pathResultado, reuseCalculations);
-		MetricReport report = LoadMetricsFromFiles(projetos, pathResultado);
+		ExtractSaveMetricsToFiles(projetos, pathResultado, commit);
+		MetricReport report = LoadMetricsFromFiles(projetos, pathResultado, commit);
 
 		return report;
 	}
 
-	private MetricReport LoadMetricsFromFiles(Collection<String> projetos, String pathResultado) {
-		// ArrayList<ClassMetricResult> listaClasses = new
-		// ArrayList<ClassMetricResult>();
+	private MetricReport LoadMetricsFromFiles(Collection<String> projetos, String pathResultado, String commit) {
 
 		MetricReport report = new MetricReport();
 
 		for (String path : projetos) {
-			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
-			String dataHora = sf.format(Calendar.getInstance().getTime());
 
-			//logger.info("[" + dataHora + "] Extracting metrics from project " + path + "...");
+			if (projetos.size() > 1 || commit.isEmpty()) {
+				Repository repository;
+				try {
+					repository = Git.open(new File(path)).getRepository();
+					ObjectId lastCommitId = repository.resolve(Constants.HEAD);
+					commit = lastCommitId.getName();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
 
 			int lastIndex = path.lastIndexOf("\\");
-			String nameLastFolder = path.substring(lastIndex + 1);
-
+			String nameLastFolder = path.substring(lastIndex + 1) + "-" + commit;
 			String filePathMethods = pathResultado + nameLastFolder + "-methods.csv";
 			String filePathClasses = pathResultado + nameLastFolder + "-classes.csv";
 			String filePathProject = pathResultado + nameLastFolder + "-project.csv";
@@ -133,6 +140,9 @@ public class TechniqueExecutor {
 					}
 					count++;
 				}
+				brClasses.close();
+				brMethods.close();
+				brProject.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -144,16 +154,10 @@ public class TechniqueExecutor {
 		return report;
 	}
 
-	private void ExtractSaveMetricsToFiles(Collection<String> projetos, String pathResultado,
-			boolean reuseCalculations) {
+	private void ExtractSaveMetricsToFiles(Collection<String> projetos, String pathResultado, String commit) {
 		for (String path : projetos) {
-			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
-			String dataHora = sf.format(Calendar.getInstance().getTime());
-
-			//logger.info("[" + dataHora + "] Extracting metrics from project " + path + "...");
-
 			int lastIndex = path.lastIndexOf("\\");
-			String nameLastFolder = path.substring(lastIndex + 1);
+			String nameLastFolder = path.substring(lastIndex + 1) + "-" + commit;
 			String filePathMethods = pathResultado + nameLastFolder + "-methods.csv";
 			String filePathClasses = pathResultado + nameLastFolder + "-classes.csv";
 			String filePathProject = pathResultado + nameLastFolder + "-project.csv";
@@ -170,7 +174,7 @@ public class TechniqueExecutor {
 			long totalLoc = 0;
 			long totalClasses = 0;
 
-			if (!reuseCalculations || (!fileMethods.exists() && !fileClasses.exists() && !fileProject.exists())) {
+			if (!fileMethods.exists() && !fileClasses.exists() && !fileProject.exists()) {
 				MetricReport report = new CK().calculate(path);
 				Collection<ClassMetricResult> metricasClasses = report.all();
 
@@ -207,9 +211,9 @@ public class TechniqueExecutor {
 					totalClasses++;
 				}
 				pmProject.write(totalClasses, totalLoc, totalMetodos);
-				//logger.info("Number of classes: " + totalClasses);
-				//logger.info("Number of methods: " + totalMetodos);
-				//logger.info("Total Lines of Code: " + totalLoc);
+				// logger.info("Number of classes: " + totalClasses);
+				// logger.info("Number of methods: " + totalMetodos);
+				// logger.info("Total Lines of Code: " + totalLoc);
 				pmClasses.close();
 				pmMethods.close();
 				pmProject.close();
