@@ -111,6 +111,10 @@ public class TechniqueExecutor {
 						classMetric.setRfc(Integer.parseInt(values[8]));
 						classMetric.setWmc(Integer.parseInt(values[9]));
 						classMetric.setArchitecturalRole(Boolean.parseBoolean(values[12]));
+						if (values.length > 13 && !values[13].isEmpty())
+							classMetric.setLoc(Integer.parseInt(values[13]));
+						else
+							classMetric.setLoc(0);
 						classMetric.setMetricsByMethod(new HashMap<>());
 						report.add(classMetric);
 					}
@@ -185,20 +189,24 @@ public class TechniqueExecutor {
 				pmMethods.write("DesignRole", "Classe", "Método", "LOC", "CC", "Efferent", "NOP", "Cohesion",
 						"InitialChar", "File");
 				pmClasses.write("DesignRole", "Classe", "NOM", "DIT", "CBO", "LCom", "NOC", "NOM", "RFC", "WMC", "File",
-						"Type", "IsArchitecturalRole");
+						"Type", "IsArchitecturalRole", "LOC");
 				pmProject.write("Number of Classes", "LOC", "NOM");
 				for (ClassMetricResult ckNumber : metricasClasses) {
 					if (!ckNumber.getType().equals("class"))
 						continue;
+					int locClass = FileLocUtil.countLineNumbers(FileLocUtil.readFile(new File(ckNumber.getFile())));
 					pmClasses.write(ckNumber.getDesignRole(), ckNumber.getClassName(), ckNumber.getNom(),
 							ckNumber.getDit(), ckNumber.getCbo(), ckNumber.getLcom(), ckNumber.getNoc(),
 							ckNumber.getNom(), ckNumber.getRfc(), ckNumber.getWmc(), ckNumber.getFile(),
-							ckNumber.getType(), ckNumber.isArchitecturalRole());
+							ckNumber.getType(), ckNumber.isArchitecturalRole(), locClass);
 					if (ckNumber.getDesignRole() != null) {
 						totalMetodos += ckNumber.getNom();
-						totalLoc += FileLocUtil.countLineNumbers(FileLocUtil.readFile(new File(ckNumber.getFile())));
+						totalLoc += locClass;
 						// listaClasses.add(ckNumber);
+					} else {
+						System.out.println("Design role is null");
 					}
+					
 					for (MethodData method : ckNumber.getMetricsByMethod().keySet()) {
 						MethodMetricResult methodMetrics = ckNumber.getMetricsByMethod().get(method);
 						if (!method.isConstructor()) {

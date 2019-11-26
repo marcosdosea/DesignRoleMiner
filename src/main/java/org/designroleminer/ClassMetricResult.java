@@ -29,6 +29,7 @@ public class ClassMetricResult implements Serializable {
 	private int lcom;
 	private int rfc;
 	private int nom;
+	private int loc;
 
 	private Map<String, Integer> specific;
 	private Map<MethodData, MethodMetricResult> metricsByMethod;
@@ -76,6 +77,14 @@ public class ClassMetricResult implements Serializable {
 
 	public void setDit(int dit) {
 		this.dit = dit;
+	}
+	
+	public int getLoc() {
+		return loc;
+	}
+
+	public void setLoc(int loc) {
+		this.loc = loc;
 	}
 
 	public void setFile(String file) {
