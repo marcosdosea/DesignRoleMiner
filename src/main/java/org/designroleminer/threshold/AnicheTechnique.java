@@ -21,15 +21,19 @@ public class AnicheTechnique extends AbstractTechnique {
 	@Override
 	public void generate(Collection<ClassMetricResult> classes, String fileResultado) {
 		PersistenceMechanism pm = new CSVFile(fileResultado);
-		pm.write("DesignRoleTechnique;LOC;CC;Efferent;NOP;");
+		pm.write("DesignRoleTechnique;LOC;CC;Efferent;NOP;CLOC;");
 
 		HashMap<String, Long> linhasDeCodigoPorArchitecturalRole = new HashMap<>();
 		obterTotalLinhasCodigoPorArchitecturalRole(classes, linhasDeCodigoPorArchitecturalRole);
 
+		// METHOD THRESHOLDS
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaLOC = new HashMap<>();
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaCC = new HashMap<>();
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaEfferent = new HashMap<>();
+		// CLASS THRESHOLDS
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaNOP = new HashMap<>();
+
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaCLOC = new HashMap<>();
 
 		for (ClassMetricResult classe : classes) {
 			String architecturalRole = LimiarMetrica.DESIGN_ROLE_UNDEFINED;
@@ -46,11 +50,15 @@ public class AnicheTechnique extends AbstractTechnique {
 				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaNOP, method.getNumberOfParameters(),
 						method.getLinesOfCode(), LimiarMetrica.METRICA_NOP + architecturalRole);
 			}
+			agrupaPorValorMetrica(distribuicaoCodigoPorMetricaCLOC, classe.getLoc(),
+					classe.getLoc(), LimiarMetrica.METRICA_CLOC + architecturalRole);
+			
 		}
 
 		for (String architecuturalRole : linhasDeCodigoPorArchitecturalRole.keySet()) {
 			architecuturalRole = architecuturalRole.toUpperCase();
 			long totalLOCPorArchitecturalRole = linhasDeCodigoPorArchitecturalRole.get(architecuturalRole);
+			// METHOD THRESHOLDS
 			LimiarMetrica limiarLOC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaLOC,
 					totalLOCPorArchitecturalRole, 5, 70, 90, architecuturalRole, LimiarMetrica.METRICA_LOC, false);
 			LimiarMetrica limiarCC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCC, totalLOCPorArchitecturalRole,
@@ -59,8 +67,11 @@ public class AnicheTechnique extends AbstractTechnique {
 					totalLOCPorArchitecturalRole, 5, 70, 90, architecuturalRole, LimiarMetrica.METRICA_EC, false);
 			LimiarMetrica limiarNOP = obterLimiaresMetrica(distribuicaoCodigoPorMetricaNOP,
 					totalLOCPorArchitecturalRole, 5, 90, 95, architecuturalRole, LimiarMetrica.METRICA_NOP, false);
+			// CLASS THRESHOLDS
+			LimiarMetrica limiarCLOC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCLOC,
+					totalLOCPorArchitecturalRole, 5, 70, 90, architecuturalRole, LimiarMetrica.METRICA_CLOC, false);
 			pm.write(architecuturalRole + ";" + limiarLOC.getLimiarMaximo() + ";" + limiarCC.getLimiarMaximo() + ";"
-					+ limiarEfferent.getLimiarMaximo() + ";" + limiarNOP.getLimiarMaximo() + ";");
+					+ limiarEfferent.getLimiarMaximo() + ";" + limiarNOP.getLimiarMaximo() + ";" + limiarCLOC.getLimiarMaximo() + ";");
 		}
 	}
 

@@ -2,13 +2,14 @@ package org.designroleminer.smelldetector.model;
 
 public class LimiarMetrica {
 	
-	public static final int NUMERO_METRICAS_DISPONIVEIS = 4;
+	//public static final int NUMERO_METRICAS_DISPONIVEIS = 4;
 	public static final String DESIGN_ROLE_UNDEFINED = "UNDEFINED";
 	
 	public static final String METRICA_LOC = "LOC";
 	public static final String METRICA_CC = "CC";
 	public static final String METRICA_EC = "EC";
 	public static final String METRICA_NOP = "NOP";
+	public static final String METRICA_CLOC = "CLOC";
 	
 	private String metrica;
 	private String designRole;

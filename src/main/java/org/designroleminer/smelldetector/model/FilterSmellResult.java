@@ -7,6 +7,8 @@ public class FilterSmellResult {
 	private HashSet<MethodDataSmelly> metodosSmell;
 	private HashSet<MethodDataSmelly> metodosNotSmelly;
 
+	private HashSet<ClassDataSmelly> classesSmell;
+	private HashSet<ClassDataSmelly> classesNotSmelly;
 
 	public HashSet<MethodDataSmelly> getMetodosNotSmelly() {
 		return metodosNotSmelly;
@@ -20,5 +22,16 @@ public class FilterSmellResult {
 	public void setMetodosSmell(HashSet<MethodDataSmelly> metodosSmell) {
 		this.metodosSmell = metodosSmell;
 	}
-	
+	public HashSet<ClassDataSmelly> getClassesSmell() {
+		return classesSmell;
+	}
+	public void setClassesSmell(HashSet<ClassDataSmelly> classesSmell) {
+		this.classesSmell = classesSmell;
+	}
+	public HashSet<ClassDataSmelly> getClassesNotSmelly() {
+		return classesNotSmelly;
+	}
+	public void setClassesNotSmelly(HashSet<ClassDataSmelly> classesNotSmelly) {
+		this.classesNotSmelly = classesNotSmelly;
+	}
 }

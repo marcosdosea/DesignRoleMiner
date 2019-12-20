@@ -19,6 +19,7 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
+import org.refactoringminer.api.GitService;
 import org.repodriller.persistence.PersistenceMechanism;
 import org.repodriller.persistence.csv.CSVFile;
 import org.slf4j.Logger;
@@ -30,13 +31,20 @@ import com.github.mauricioaniche.ck.MethodData;
 public class TechniqueExecutor {
 
 	static Logger logger = LoggerFactory.getLogger(TechniqueExecutor.class);
-	AbstractTechnique techinique;
+	private Repository repository;
+	private GitService gitService;
 
-	public TechniqueExecutor(AbstractTechnique techinique) {
-		this.techinique = techinique;
+	public TechniqueExecutor() {
+		repository = null;
+		gitService = null;
+	}
+	
+	public TechniqueExecutor(Repository repository, GitService gitService) {
+		this.repository = repository;
+		this.gitService = gitService;
 	}
 
-	public void execute(Collection<ClassMetricResult> classes, String fileResultado) {
+	public void execute(Collection<ClassMetricResult> classes, String fileResultado, AbstractTechnique techinique) {
 		techinique.generate(classes, fileResultado);
 	}
 
@@ -46,6 +54,27 @@ public class TechniqueExecutor {
 		MetricReport report = LoadMetricsFromFiles(projetos, pathResultado, commit);
 
 		return report;
+	}
+
+	public void saveDesignRoles(Collection<ClassMetricResult> classes, String fileResultado) {
+		PersistenceMechanism pm = new CSVFile(fileResultado);
+		pm.write("Classe                              ;DesignRoleTechnique                        ;Concorda?;");
+
+		for (ClassMetricResult classe : classes) {
+			pm.write(classe.getClassName() + ";" + classe.getDesignRole() + ";" + "SIM;");
+		}
+	}
+	
+	public void saveArchitecturalRoles(Collection<ClassMetricResult> classes, String fileResultado) {
+		PersistenceMechanism pm = new CSVFile(fileResultado);
+		pm.write("Classe                              ;ArchitecturalRole                        ;");
+
+		for (ClassMetricResult classe : classes) {
+			if (classe.isArchitecturalRole())
+				pm.write(classe.getClassName() + ";" + classe.getDesignRole() + ";");
+			else
+				pm.write(classe.getClassName() + ";UNINDENTIFIED;");
+		}
 	}
 
 	private MetricReport LoadMetricsFromFiles(Collection<String> projetos, String pathResultado, String commit) {
@@ -68,6 +97,7 @@ public class TechniqueExecutor {
 
 			int lastIndex = path.lastIndexOf("\\");
 			String nameLastFolder = path.substring(lastIndex + 1) + "-" + commit;
+			
 			String filePathMethods = pathResultado + nameLastFolder + "-methods.csv";
 			String filePathClasses = pathResultado + nameLastFolder + "-classes.csv";
 			String filePathProject = pathResultado + nameLastFolder + "-project.csv";
@@ -161,6 +191,19 @@ public class TechniqueExecutor {
 	private void ExtractSaveMetricsToFiles(Collection<String> projetos, String pathResultado, String commit) {
 		for (String path : projetos) {
 			int lastIndex = path.lastIndexOf("\\");
+			
+			if (projetos.size() > 1 || commit.isEmpty()) {
+				Repository repository;
+				try {
+					repository = Git.open(new File(path)).getRepository();
+					ObjectId lastCommitId = repository.resolve(Constants.HEAD);
+					commit = lastCommitId.getName();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			
 			String nameLastFolder = path.substring(lastIndex + 1) + "-" + commit;
 			String filePathMethods = pathResultado + nameLastFolder + "-methods.csv";
 			String filePathClasses = pathResultado + nameLastFolder + "-classes.csv";
@@ -179,6 +222,16 @@ public class TechniqueExecutor {
 			long totalClasses = 0;
 
 			if (!fileMethods.exists() && !fileClasses.exists() && !fileProject.exists()) {
+				
+				try {
+					if ((repository != null) && (gitService != null))
+						gitService.checkout(repository, commit);
+				} catch (Exception e) {
+					logger.error("Erro inesperado ao realizar checkout do projeto no commit " + commit);
+					e.printStackTrace();
+				}
+				
+				
 				MetricReport report = new CK().calculate(path);
 				Collection<ClassMetricResult> metricasClasses = report.all();
 
@@ -190,7 +243,7 @@ public class TechniqueExecutor {
 						"InitialChar", "File");
 				pmClasses.write("DesignRole", "Classe", "NOM", "DIT", "CBO", "LCom", "NOC", "NOM", "RFC", "WMC", "File",
 						"Type", "IsArchitecturalRole", "LOC");
-				pmProject.write("Number of Classes", "LOC", "NOM");
+				pmProject.write("Number of Classes", "LOC", "NOM", "Commit");
 				for (ClassMetricResult ckNumber : metricasClasses) {
 					if (!ckNumber.getType().equals("class"))
 						continue;
@@ -206,7 +259,7 @@ public class TechniqueExecutor {
 					} else {
 						System.out.println("Design role is null");
 					}
-					
+
 					for (MethodData method : ckNumber.getMetricsByMethod().keySet()) {
 						MethodMetricResult methodMetrics = ckNumber.getMetricsByMethod().get(method);
 						if (!method.isConstructor()) {
@@ -218,7 +271,7 @@ public class TechniqueExecutor {
 					}
 					totalClasses++;
 				}
-				pmProject.write(totalClasses, totalLoc, totalMetodos);
+				pmProject.write(totalClasses, totalLoc, totalMetodos, commit);
 				// logger.info("Number of classes: " + totalClasses);
 				// logger.info("Number of methods: " + totalMetodos);
 				// logger.info("Total Lines of Code: " + totalLoc);
@@ -246,14 +299,4 @@ public class TechniqueExecutor {
 		}
 		return projetos;
 	}
-
-	/**
-	 * set strategy
-	 * 
-	 * @param techinique
-	 */
-	public void setTechinique(AbstractTechnique techinique) {
-		this.techinique = techinique;
-	}
-
 }
