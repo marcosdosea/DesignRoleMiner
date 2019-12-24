@@ -50,8 +50,8 @@ public class AnicheTechnique extends AbstractTechnique {
 				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaNOP, method.getNumberOfParameters(),
 						method.getLinesOfCode(), LimiarMetrica.METRICA_NOP + architecturalRole);
 			}
-			agrupaPorValorMetrica(distribuicaoCodigoPorMetricaCLOC, classe.getLoc(),
-					classe.getLoc(), LimiarMetrica.METRICA_CLOC + architecturalRole);
+			agrupaPorValorMetrica(distribuicaoCodigoPorMetricaCLOC, classe.getCLoc(),
+					classe.getCLoc(), LimiarMetrica.METRICA_CLOC + architecturalRole);
 			
 		}
 

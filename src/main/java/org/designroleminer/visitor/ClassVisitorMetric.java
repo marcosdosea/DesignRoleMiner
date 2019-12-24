@@ -35,7 +35,7 @@ public class ClassVisitorMetric implements CommitVisitor {
 			MetricReport report = ck.calculate(repo.getPath());
 
 			writer.write("Commit", "Class", "Design Role", "SuperClass", "interfaces", "DIT", "NOM", "CBO", "LCOM",
-					"NOC", "RFC", "WMC");
+					"NOC", "RFC", "WMC", "CLOC");
 
 			// desconsiderarConcerns(commit, writer, report, 1);
 

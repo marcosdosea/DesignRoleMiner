@@ -247,14 +247,14 @@ public class TechniqueExecutor {
 				for (ClassMetricResult ckNumber : metricasClasses) {
 					if (!ckNumber.getType().equals("class"))
 						continue;
-					int locClass = FileLocUtil.countLineNumbers(FileLocUtil.readFile(new File(ckNumber.getFile())));
+					//int locClass = FileLocUtil.countLineNumbers(FileLocUtil.readFile(new File(ckNumber.getFile())));
 					pmClasses.write(ckNumber.getDesignRole(), ckNumber.getClassName(), ckNumber.getNom(),
 							ckNumber.getDit(), ckNumber.getCbo(), ckNumber.getLcom(), ckNumber.getNoc(),
 							ckNumber.getNom(), ckNumber.getRfc(), ckNumber.getWmc(), ckNumber.getFile(),
-							ckNumber.getType(), ckNumber.isArchitecturalRole(), locClass);
+							ckNumber.getType(), ckNumber.isArchitecturalRole(), ckNumber.getCLoc());
 					if (ckNumber.getDesignRole() != null) {
 						totalMetodos += ckNumber.getNom();
-						totalLoc += locClass;
+						totalLoc += ckNumber.getCLoc();
 						// listaClasses.add(ckNumber);
 					} else {
 						System.out.println("Design role is null");

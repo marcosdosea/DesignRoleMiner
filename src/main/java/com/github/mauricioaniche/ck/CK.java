@@ -8,6 +8,7 @@ import java.util.concurrent.Callable;
 
 import org.apache.log4j.Logger;
 import org.designroleminer.MetricReport;
+import org.designroleminer.metric.CLOC;
 import org.designroleminer.metric.DIT;
 import org.designroleminer.metric.DesignRole;
 import org.designroleminer.metric.MethodMetric;
@@ -94,7 +95,7 @@ public class CK {
 
 	private List<Metric> defaultMetrics() {
 		return new ArrayList<>(Arrays.asList(new DIT(), new NOC(), new WMC(), new CBO(), new LCOM(), new RFC(),
-				new NOM(), new MethodMetric(), new DesignRole()));
+				new NOM(), new MethodMetric(), new DesignRole(), new CLOC()));
 		// return new ArrayList<>(Arrays.asList(new MethodMetric()));
 	}
 

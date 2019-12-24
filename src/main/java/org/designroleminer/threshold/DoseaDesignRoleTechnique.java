@@ -56,10 +56,10 @@ public class DoseaDesignRoleTechnique extends AbstractTechnique {
 						method.getLinesOfCode(), LimiarMetrica.METRICA_NOP + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 			}
 			if (!classe.getDesignRole().toUpperCase().equals(LimiarMetrica.DESIGN_ROLE_UNDEFINED)) {
-				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaCLOC, classe.getLoc(),
-						classe.getLoc(), LimiarMetrica.METRICA_CLOC + classe.getDesignRole());
+				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaCLOC, classe.getCLoc(),
+						classe.getCLoc(), LimiarMetrica.METRICA_CLOC + classe.getDesignRole());
 			}
-			agrupaPorValorMetrica(distribuicaoCodigoPorMetricaCLOC, classe.getLoc(), classe.getLoc(),
+			agrupaPorValorMetrica(distribuicaoCodigoPorMetricaCLOC, classe.getCLoc(), classe.getCLoc(),
 					LimiarMetrica.METRICA_CLOC + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 		}
 

@@ -68,10 +68,10 @@ public class FilterSmells {
 				classeSmelly.setClassDesignRole(classe.getDesignRole());
 				classeSmelly.setCommit(commitAnalisado);
 				classeSmelly.setDiretorioDaClasse(classe.getFile());
-				classeSmelly.setLinesOfCode(classe.getLoc());
+				classeSmelly.setLinesOfCode(classe.getCLoc());
 				classeSmelly.setNomeClasse(classe.getClassName());
 				boolean isClassSmelly = false;
-				if (classe.getLoc() > limiarCLOC.getLimiarMaximo()) {
+				if (classe.getCLoc() > limiarCLOC.getLimiarMaximo()) {
 					String mensagem = "Class in this system have on maximum " + limiarLOC.getLimiarMaximo()
 							+ " lines of code. " + "\nMake sure refactoring could be applied.";
 					String type = ClassDataSmelly.LONG_CLASS;

@@ -46,7 +46,7 @@ public class ValeTechnique extends AbstractTechnique {
 				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaNOP, method.getNumberOfParameters(), 1,
 						LimiarMetrica.METRICA_NOP + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 			}
-			agrupaPorValorMetrica(distribuicaoCodigoPorMetricaCLOC, classe.getLoc(), 1,
+			agrupaPorValorMetrica(distribuicaoCodigoPorMetricaCLOC, classe.getCLoc(), 1,
 					LimiarMetrica.METRICA_CLOC + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 		}
 

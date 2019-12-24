@@ -45,7 +45,7 @@ public class AlvesTechnique extends AbstractTechnique {
 				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaNOP, method.getNumberOfParameters(),
 						method.getLinesOfCode(), LimiarMetrica.METRICA_NOP + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 			}
-			agrupaPorValorMetrica(distribuicaoCodigoPorMetricaCLOC, classe.getLoc(), classe.getLoc(),
+			agrupaPorValorMetrica(distribuicaoCodigoPorMetricaCLOC, classe.getCLoc(), classe.getCLoc(),
 					LimiarMetrica.METRICA_CLOC + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 			
 		}
