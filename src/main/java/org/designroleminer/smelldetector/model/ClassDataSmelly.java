@@ -2,25 +2,14 @@ package org.designroleminer.smelldetector.model;
 
 import java.util.HashSet;
 
-public class MethodDataSmelly {
+public class ClassDataSmelly {
 
-	public static String LONG_METHOD = "Metodo Longo";
-	public static String COMPLEX_METHOD = "Muitos Desvios";
-	public static String HIGH_EFFERENT_COUPLING = "Alto Acoplamento Efferent";
-	public static String MANY_PARAMETERS = "Muitos Parametros";
-		
+	public static String LONG_CLASS = "Class Longa";
 	
 	private String commit;
 	private String diretorioDaClasse;
 	private String nomeClasse;
-	private String nomeMetodo;
-	private int linhaInicial;
 	private int linesOfCode;
-	private int complexity;
-	private int numberOfParameters;
-	private int efferent;
-	private int charInicial;
-	private int charFinal;
 	private String classDesignRole;
 	private HashSet<String> listaTecnicas;
 	private HashSet<String> listaMensagens;
@@ -59,22 +48,6 @@ public class MethodDataSmelly {
 		this.nomeClasse = nomeClasse;
 	}
 
-	public String getNomeMetodo() {
-		return nomeMetodo;
-	}
-
-	public void setNomeMetodo(String nomeMetodo) {
-		this.nomeMetodo = nomeMetodo;
-	}
-
-	public int getLinhaInicial() {
-		return linhaInicial;
-	}
-
-	public void setLinhaInicial(int linhaInicial) {
-		this.linhaInicial = linhaInicial;
-	}
-
 	public int getLinesOfCode() {
 		return linesOfCode;
 	}
@@ -83,46 +56,6 @@ public class MethodDataSmelly {
 		this.linesOfCode = numeroLinhas;
 	}
 
-	public int getCharInicial() {
-		return charInicial;
-	}
-
-	public void setCharInicial(int charInicial) {
-		this.charInicial = charInicial;
-	}
-
-	public int getCharFinal() {
-		return charFinal;
-	}
-
-	public void setCharFinal(int charFinal) {
-		this.charFinal = charFinal;
-	}
-
-	public int getComplexity() {
-		return complexity;
-	}
-
-	public void setComplexity(int complexity) {
-		this.complexity = complexity;
-	}
-
-	public int getNumberOfParameters() {
-		return numberOfParameters;
-	}
-
-	public void setNumberOfParameters(int numberOfParameters) {
-		this.numberOfParameters = numberOfParameters;
-	}
-
-	public int getEfferent() {
-		return efferent;
-	}
-
-	public void setEfferent(int efferent) {
-		this.efferent = efferent;
-	}
-	
 	public HashSet<String> getListaTecnicas() {
 		return listaTecnicas;
 	}
@@ -155,17 +88,15 @@ public class MethodDataSmelly {
 	public boolean equals(Object arg0) {
 		if (arg0 == null)
 			return false;
-		MethodDataSmelly metodo = (MethodDataSmelly) arg0;
+		ClassDataSmelly metodo = (ClassDataSmelly) arg0;
 		if (smell != null) {
 			return metodo.getDiretorioDaClasse().equals(getDiretorioDaClasse()) 
 					&& metodo.getNomeClasse().equals(getNomeClasse()) 
-					&& metodo.getNomeMetodo().equals(getNomeMetodo())
 					&& metodo.getCommit().equals(getCommit())
 					&& metodo.getSmell().equals(getSmell());
 		}
 		return metodo.getDiretorioDaClasse().equals(getDiretorioDaClasse())
 				&& metodo.getNomeClasse().equals(getNomeClasse()) 
-				&& metodo.getNomeMetodo().equals(getNomeMetodo())
 				&& metodo.getCommit().equals(getCommit());
 	}
 
@@ -173,8 +104,8 @@ public class MethodDataSmelly {
 	public int hashCode() {
 		if (smell != null )
 			return getDiretorioDaClasse().hashCode() + getNomeClasse().hashCode() 
-					+ getNomeMetodo().hashCode() + getCommit().hashCode() + getSmell().hashCode();
+					+ getCommit().hashCode() + getSmell().hashCode();
 		return getDiretorioDaClasse().hashCode() + getNomeClasse().hashCode() 
-				+ getNomeMetodo().hashCode() + getCommit().hashCode();
+				+ getCommit().hashCode();
 	}
 }

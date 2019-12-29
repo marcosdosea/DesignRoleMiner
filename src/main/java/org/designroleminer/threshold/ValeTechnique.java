@@ -21,16 +21,20 @@ public class ValeTechnique extends AbstractTechnique {
 	@Override
 	public void generate(Collection<ClassMetricResult> classes, String fileResultado) {
 		PersistenceMechanism pm = new CSVFile(fileResultado);
-		pm.write("DesignRoleTechnique;LOC;CC;Efferent;NOP;");
+		pm.write("DesignRoleTechnique;LOC;CC;Efferent;NOP;CLOC;");
 
 		HashMap<String, Long> metodosPorDesignRole = new HashMap<>();
 		long totalMetodos = obterTotalMetodosPorDesignRole(classes, metodosPorDesignRole);
 
+		// METHOD THRESHOLD
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaLOC = new HashMap<>();
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaCC = new HashMap<>();
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaEfferent = new HashMap<>();
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaNOP = new HashMap<>();
-
+		// CLASS THRESHOLD
+		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaCLOC = new HashMap<>();
+		
+		
 		for (ClassMetricResult classe : classes) {
 			for (MethodMetricResult method : classe.getMetricsByMethod().values()) {
 				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaLOC, method.getLinesOfCode(), 1,
@@ -42,8 +46,11 @@ public class ValeTechnique extends AbstractTechnique {
 				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaNOP, method.getNumberOfParameters(), 1,
 						LimiarMetrica.METRICA_NOP + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 			}
+			agrupaPorValorMetrica(distribuicaoCodigoPorMetricaCLOC, classe.getCLoc(), 1,
+					LimiarMetrica.METRICA_CLOC + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 		}
 
+		// METHOD THRESHOLDS
 		LimiarMetrica limiarLOC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaLOC, totalMetodos, 3, 90, 95,
 				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_LOC, false);
 		LimiarMetrica limiarCC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCC, totalMetodos, 3, 90, 95,
@@ -53,9 +60,13 @@ public class ValeTechnique extends AbstractTechnique {
 		LimiarMetrica limiarNOP = obterLimiaresMetrica(distribuicaoCodigoPorMetricaNOP, totalMetodos, 3, 90, 95,
 				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_NOP, false);
 
+		// CLASS THRESHOLDS
+		LimiarMetrica limiarCLOC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCLOC, totalMetodos, 3, 90, 95,
+				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_CLOC, false);
+		
 		pm.write(LimiarMetrica.DESIGN_ROLE_UNDEFINED + ";" + limiarLOC.getLimiarMaximo() + ";"
 				+ limiarCC.getLimiarMaximo() + ";" + limiarEfferent.getLimiarMaximo() + ";"
-				+ limiarNOP.getLimiarMaximo() + ";");
+				+ limiarNOP.getLimiarMaximo() + ";"+ limiarCLOC.getLimiarMaximo() + ";");
 	}
 
 	private long obterTotalMetodosPorDesignRole(Collection<ClassMetricResult> classes,
@@ -65,12 +76,13 @@ public class ValeTechnique extends AbstractTechnique {
 			metodosPorDesignRole = new HashMap<>();
 
 		for (ClassMetricResult classe : classes) {
-			total += classe.getNom();
+			int numeroMetodosClasse = classe.getMetricsByMethod().size();
+			total += numeroMetodosClasse;
 			Long somaMetodosPorDesignRole = metodosPorDesignRole.get(classe.getDesignRole());
 			if (somaMetodosPorDesignRole == null) {
-				metodosPorDesignRole.put(classe.getDesignRole(), new Long(classe.getNom()));
+				metodosPorDesignRole.put(classe.getDesignRole(), new Long(numeroMetodosClasse));
 			} else {
-				somaMetodosPorDesignRole += classe.getNom();
+				somaMetodosPorDesignRole += numeroMetodosClasse;
 				metodosPorDesignRole.put(classe.getDesignRole(), somaMetodosPorDesignRole);
 			}
 		}

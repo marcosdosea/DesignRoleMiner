@@ -20,9 +20,6 @@ public class DIT extends ASTVisitor implements Metric {
 	public boolean visit(TypeDeclaration node) {
 		ITypeBinding binding = node.resolveBinding();
 
-		if (binding.getQualifiedName().contains("XOAuthConsumer"))
-			System.out.println("aqui");
-
 		if (binding.isMember())
 			return false;
 

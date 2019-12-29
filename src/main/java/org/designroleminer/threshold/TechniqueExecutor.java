@@ -4,9 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.text.SimpleDateFormat;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +15,11 @@ import org.designroleminer.ClassMetricResult;
 import org.designroleminer.FileLocUtil;
 import org.designroleminer.MethodMetricResult;
 import org.designroleminer.MetricReport;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.Repository;
+import org.refactoringminer.api.GitService;
 import org.repodriller.persistence.PersistenceMechanism;
 import org.repodriller.persistence.csv.CSVFile;
 import org.slf4j.Logger;
@@ -27,40 +31,73 @@ import com.github.mauricioaniche.ck.MethodData;
 public class TechniqueExecutor {
 
 	static Logger logger = LoggerFactory.getLogger(TechniqueExecutor.class);
-	AbstractTechnique techinique;
+	private Repository repository;
+	private GitService gitService;
 
-	public TechniqueExecutor(AbstractTechnique techinique) {
-		this.techinique = techinique;
+	public TechniqueExecutor() {
+		repository = null;
+		gitService = null;
+	}
+	
+	public TechniqueExecutor(Repository repository, GitService gitService) {
+		this.repository = repository;
+		this.gitService = gitService;
 	}
 
-	public void execute(Collection<ClassMetricResult> classes, String fileResultado) {
+	public void execute(Collection<ClassMetricResult> classes, String fileResultado, AbstractTechnique techinique) {
 		techinique.generate(classes, fileResultado);
 	}
 
-	public MetricReport getMetricsFromProjects(Collection<String> projetos, String pathResultado,
-			boolean reuseCalculations) {
+	public MetricReport getMetricsFromProjects(Collection<String> projetos, String pathResultado, String commit) {
 
-		ExtractSaveMetricsToFiles(projetos, pathResultado, reuseCalculations);
-		MetricReport report = LoadMetricsFromFiles(projetos, pathResultado);
+		ExtractSaveMetricsToFiles(projetos, pathResultado, commit);
+		MetricReport report = LoadMetricsFromFiles(projetos, pathResultado, commit);
 
 		return report;
 	}
 
-	private MetricReport LoadMetricsFromFiles(Collection<String> projetos, String pathResultado) {
-		// ArrayList<ClassMetricResult> listaClasses = new
-		// ArrayList<ClassMetricResult>();
+	public void saveDesignRoles(Collection<ClassMetricResult> classes, String fileResultado) {
+		PersistenceMechanism pm = new CSVFile(fileResultado);
+		pm.write("Classe                              ;DesignRoleTechnique                        ;Concorda?;");
+
+		for (ClassMetricResult classe : classes) {
+			pm.write(classe.getClassName() + ";" + classe.getDesignRole() + ";" + "SIM;");
+		}
+	}
+	
+	public void saveArchitecturalRoles(Collection<ClassMetricResult> classes, String fileResultado) {
+		PersistenceMechanism pm = new CSVFile(fileResultado);
+		pm.write("Classe                              ;ArchitecturalRole                        ;");
+
+		for (ClassMetricResult classe : classes) {
+			if (classe.isArchitecturalRole())
+				pm.write(classe.getClassName() + ";" + classe.getDesignRole() + ";");
+			else
+				pm.write(classe.getClassName() + ";UNINDENTIFIED;");
+		}
+	}
+
+	private MetricReport LoadMetricsFromFiles(Collection<String> projetos, String pathResultado, String commit) {
 
 		MetricReport report = new MetricReport();
 
 		for (String path : projetos) {
-			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
-			String dataHora = sf.format(Calendar.getInstance().getTime());
 
-			logger.info("[" + dataHora + "] Extracting metrics from project " + path + "...");
+			if (projetos.size() > 1 || commit.isEmpty()) {
+				Repository repository;
+				try {
+					repository = Git.open(new File(path)).getRepository();
+					ObjectId lastCommitId = repository.resolve(Constants.HEAD);
+					commit = lastCommitId.getName();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
 
 			int lastIndex = path.lastIndexOf("\\");
-			String nameLastFolder = path.substring(lastIndex + 1);
-
+			String nameLastFolder = path.substring(lastIndex + 1) + "-" + commit;
+			
 			String filePathMethods = pathResultado + nameLastFolder + "-methods.csv";
 			String filePathClasses = pathResultado + nameLastFolder + "-classes.csv";
 			String filePathProject = pathResultado + nameLastFolder + "-project.csv";
@@ -104,6 +141,10 @@ public class TechniqueExecutor {
 						classMetric.setRfc(Integer.parseInt(values[8]));
 						classMetric.setWmc(Integer.parseInt(values[9]));
 						classMetric.setArchitecturalRole(Boolean.parseBoolean(values[12]));
+						if (values.length > 13 && !values[13].isEmpty())
+							classMetric.setLoc(Integer.parseInt(values[13]));
+						else
+							classMetric.setLoc(0);
 						classMetric.setMetricsByMethod(new HashMap<>());
 						report.add(classMetric);
 					}
@@ -133,6 +174,9 @@ public class TechniqueExecutor {
 					}
 					count++;
 				}
+				brClasses.close();
+				brMethods.close();
+				brProject.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -144,16 +188,23 @@ public class TechniqueExecutor {
 		return report;
 	}
 
-	private void ExtractSaveMetricsToFiles(Collection<String> projetos, String pathResultado,
-			boolean reuseCalculations) {
+	private void ExtractSaveMetricsToFiles(Collection<String> projetos, String pathResultado, String commit) {
 		for (String path : projetos) {
-			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
-			String dataHora = sf.format(Calendar.getInstance().getTime());
-
-			logger.info("[" + dataHora + "] Extracting metrics from project " + path + "...");
-
 			int lastIndex = path.lastIndexOf("\\");
-			String nameLastFolder = path.substring(lastIndex + 1);
+			
+			if (projetos.size() > 1 || commit.isEmpty()) {
+				Repository repository;
+				try {
+					repository = Git.open(new File(path)).getRepository();
+					ObjectId lastCommitId = repository.resolve(Constants.HEAD);
+					commit = lastCommitId.getName();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			
+			String nameLastFolder = path.substring(lastIndex + 1) + "-" + commit;
 			String filePathMethods = pathResultado + nameLastFolder + "-methods.csv";
 			String filePathClasses = pathResultado + nameLastFolder + "-classes.csv";
 			String filePathProject = pathResultado + nameLastFolder + "-project.csv";
@@ -170,7 +221,17 @@ public class TechniqueExecutor {
 			long totalLoc = 0;
 			long totalClasses = 0;
 
-			if (!reuseCalculations || (!fileMethods.exists() && !fileClasses.exists() && !fileProject.exists())) {
+			if (!fileMethods.exists() && !fileClasses.exists() && !fileProject.exists()) {
+				
+				try {
+					if ((repository != null) && (gitService != null))
+						gitService.checkout(repository, commit);
+				} catch (Exception e) {
+					logger.error("Erro inesperado ao realizar checkout do projeto no commit " + commit);
+					e.printStackTrace();
+				}
+				
+				
 				MetricReport report = new CK().calculate(path);
 				Collection<ClassMetricResult> metricasClasses = report.all();
 
@@ -181,20 +242,24 @@ public class TechniqueExecutor {
 				pmMethods.write("DesignRole", "Classe", "Método", "LOC", "CC", "Efferent", "NOP", "Cohesion",
 						"InitialChar", "File");
 				pmClasses.write("DesignRole", "Classe", "NOM", "DIT", "CBO", "LCom", "NOC", "NOM", "RFC", "WMC", "File",
-						"Type", "IsArchitecturalRole");
-				pmProject.write("Number of Classes", "LOC", "NOM");
+						"Type", "IsArchitecturalRole", "LOC");
+				pmProject.write("Number of Classes", "LOC", "NOM", "Commit");
 				for (ClassMetricResult ckNumber : metricasClasses) {
 					if (!ckNumber.getType().equals("class"))
 						continue;
+					//int locClass = FileLocUtil.countLineNumbers(FileLocUtil.readFile(new File(ckNumber.getFile())));
 					pmClasses.write(ckNumber.getDesignRole(), ckNumber.getClassName(), ckNumber.getNom(),
 							ckNumber.getDit(), ckNumber.getCbo(), ckNumber.getLcom(), ckNumber.getNoc(),
 							ckNumber.getNom(), ckNumber.getRfc(), ckNumber.getWmc(), ckNumber.getFile(),
-							ckNumber.getType(), ckNumber.isArchitecturalRole());
+							ckNumber.getType(), ckNumber.isArchitecturalRole(), ckNumber.getCLoc());
 					if (ckNumber.getDesignRole() != null) {
 						totalMetodos += ckNumber.getNom();
-						totalLoc += FileLocUtil.countLineNumbers(FileLocUtil.readFile(new File(ckNumber.getFile())));
+						totalLoc += ckNumber.getCLoc();
 						// listaClasses.add(ckNumber);
+					} else {
+						System.out.println("Design role is null");
 					}
+
 					for (MethodData method : ckNumber.getMetricsByMethod().keySet()) {
 						MethodMetricResult methodMetrics = ckNumber.getMetricsByMethod().get(method);
 						if (!method.isConstructor()) {
@@ -206,10 +271,10 @@ public class TechniqueExecutor {
 					}
 					totalClasses++;
 				}
-				pmProject.write(totalClasses, totalLoc, totalMetodos);
-				logger.info("Number of classes: " + totalClasses);
-				logger.info("Number of methods: " + totalMetodos);
-				logger.info("Total Lines of Code: " + totalLoc);
+				pmProject.write(totalClasses, totalLoc, totalMetodos, commit);
+				// logger.info("Number of classes: " + totalClasses);
+				// logger.info("Number of methods: " + totalMetodos);
+				// logger.info("Total Lines of Code: " + totalLoc);
 				pmClasses.close();
 				pmMethods.close();
 				pmProject.close();
@@ -234,14 +299,4 @@ public class TechniqueExecutor {
 		}
 		return projetos;
 	}
-
-	/**
-	 * set strategy
-	 * 
-	 * @param techinique
-	 */
-	public void setTechinique(AbstractTechnique techinique) {
-		this.techinique = techinique;
-	}
-
 }

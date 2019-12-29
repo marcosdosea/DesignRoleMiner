@@ -75,6 +75,14 @@ public class CarregaSalvaArquivo {
 							nop.setLimiarMaximo(scanner.nextInt());
 							nop.setMetrica(LimiarMetrica.METRICA_NOP);
 							limiares.put(nop.getKey(), nop);
+							
+							LimiarMetrica cloc = new LimiarMetrica();
+							cloc.setDesignRole(designRole);
+							cloc.setLimiarMaximo(scanner.nextInt());
+							cloc.setMetrica(LimiarMetrica.METRICA_CLOC);
+							limiares.put(cloc.getKey(), cloc);
+
+							
 							if (scanner.hasNextLine())
 								scanner.nextLine();
 						}
