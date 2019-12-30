@@ -1,5 +1,6 @@
 package org.designroleminer.smelldetector;
 
+import java.io.Console;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,12 +15,16 @@ import org.designroleminer.smelldetector.model.LimiarTecnica;
 import org.designroleminer.smelldetector.model.MethodDataSmelly;
 import org.repodriller.persistence.PersistenceMechanism;
 import org.repodriller.persistence.csv.CSVFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.mauricioaniche.ck.MethodData;
 
 public class FilterSmells {
 
 	static final String TECNICA_ANICHE = "X";
+
+	static Logger logger = LoggerFactory.getLogger(FilterSmells.class);
 
 	public static FilterSmellResult filtrar(Collection<ClassMetricResult> classesAnalisar,
 			List<LimiarTecnica> listaTecnicas, String commitAnalisado) {
@@ -78,8 +83,9 @@ public class FilterSmells {
 					addClasseSmell(classeSmelly, type, mensagem, listaClassesSmelly, limiarTecnica.getTecnica());
 					isClassSmelly = true;
 				}
-				if (!isClassSmelly)
+				if (!isClassSmelly) {
 					listaClassesNotSmelly.add(classeSmelly);
+				}
 
 				for (MethodData methodData : classe.getMetricsByMethod().keySet()) {
 
@@ -244,7 +250,6 @@ public class FilterSmells {
 		System.out.println("Total de métodos longos: " + metodosSmell.size());
 	}
 
-
 	public static void gravarClassesSmellProgramador(HashSet<ClassDataSmelly> classesSmell, String arquivoDestino) {
 
 		PersistenceMechanism pm = new CSVFile(arquivoDestino);
@@ -252,13 +257,12 @@ public class FilterSmells {
 				"Deveria ser REFATORADO por conta desse problema?", "Se DISCORDAR, quais os motivos? ");
 		for (ClassDataSmelly classeSmell : classesSmell) {
 			pm.write(classeSmell.getListaTecnicas().toString().replace('[', ' ').replace(']', ' '),
-					classeSmell.getClassDesignRole(), classeSmell.getNomeClasse(), classeSmell.getLinesOfCode(), 
+					classeSmell.getClassDesignRole(), classeSmell.getNomeClasse(), classeSmell.getLinesOfCode(),
 					classeSmell.getSmell(), "(1) Discordo Fortemente;");
 		}
 		System.out.println("Total de classes longas: " + classesSmell.size());
 	}
 
-	
 	public static void gravarMetodosSmell(HashSet<MethodDataSmelly> metodosSmell, String arquivoDestino) {
 
 		PersistenceMechanism pm = new CSVFile(arquivoDestino);
@@ -269,6 +273,18 @@ public class FilterSmells {
 					metodoSmell.getLinesOfCode(), metodoSmell.getComplexity(), metodoSmell.getEfferent(),
 					metodoSmell.getNumberOfParameters(), metodoSmell.getSmell());
 		}
+	}
+
+	public static void gravarClassesSmell(HashSet<ClassDataSmelly> classesSmell, String arquivoDestino) {
+
+		PersistenceMechanism pm = new CSVFile(arquivoDestino);
+		pm.write("Tecnicas", "Design Role", "Classe", "LOC", "Problema de Design");
+		for (ClassDataSmelly classeSmell : classesSmell) {
+			pm.write(classeSmell.getListaTecnicas().toString().replace('[', ' ').replace(']', ' '),
+					classeSmell.getClassDesignRole(), classeSmell.getNomeClasse(), classeSmell.getLinesOfCode(),
+					classeSmell.getSmell());
+		}
+
 	}
 
 }
