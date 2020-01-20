@@ -4,12 +4,21 @@ import java.util.HashSet;
 
 public class FilterSmellResult {
 
+	private String commitId;
 	private HashSet<MethodDataSmelly> metodosSmell;
 	private HashSet<MethodDataSmelly> metodosNotSmelly;
 
 	private HashSet<ClassDataSmelly> classesSmell;
 	private HashSet<ClassDataSmelly> classesNotSmelly;
 
+	
+	public FilterSmellResult(String commitId) {
+		this.commitId = commitId;
+	}
+	public String getCommitId() {
+		return commitId;
+	}
+	
 	public HashSet<MethodDataSmelly> getMetodosNotSmelly() {
 		return metodosNotSmelly;
 	}
@@ -22,6 +31,7 @@ public class FilterSmellResult {
 	public void setMetodosSmell(HashSet<MethodDataSmelly> metodosSmell) {
 		this.metodosSmell = metodosSmell;
 	}
+
 	public HashSet<ClassDataSmelly> getClassesSmell() {
 		return classesSmell;
 	}

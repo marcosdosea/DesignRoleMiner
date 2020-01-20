@@ -254,7 +254,7 @@ public class DesignRole extends ASTVisitor implements Metric {
 	 * Avalia atribuir um design role default pelos tokens da superclasse ou
 	 * interface
 	 */
-	private String findDefaultDesignRole(String designRole) {
+	public String findDefaultDesignRole(String designRole) {
 			for (String tokenDesignRole : defaultDesignRoles.keySet()) {
 			if (designRole.toLowerCase().contains(tokenDesignRole.toLowerCase())) {
 				return defaultDesignRoles.get(tokenDesignRole);
