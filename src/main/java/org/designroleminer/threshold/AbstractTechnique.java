@@ -13,6 +13,7 @@ import org.designroleminer.smelldetector.model.LimiarMetrica;
 
 public abstract class AbstractTechnique {
 
+	
 	/**
 	 * Generate some result from collected metrics
 	 * 
@@ -102,7 +103,7 @@ public abstract class AbstractTechnique {
 
 			int tamanhoLista = listaOrdenadaMetrica.size();
 			if (tamanhoLista > 0) {
-				// Dosea's techniques rules
+				// Design Role technique rules
 				if (usarIndexAcimapercentil) {
 					indexMinimo = (indexMinimo < (tamanhoLista - 1)) ? indexMinimo + 1 : indexMinimo;
 					indexMedio = (indexMedio < (tamanhoLista - 1)) ? indexMedio + 1 : indexMedio;

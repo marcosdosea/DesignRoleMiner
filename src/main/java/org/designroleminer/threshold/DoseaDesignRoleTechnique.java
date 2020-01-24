@@ -12,6 +12,15 @@ import org.repodriller.persistence.csv.CSVFile;
 
 public class DoseaDesignRoleTechnique extends AbstractTechnique {
 
+	
+	private Collection<ClassMetricResult> classesProjetoAnalisado;
+	
+	
+	public DoseaDesignRoleTechnique(Collection<ClassMetricResult> classesProjetoAnalisado) {
+		super();
+		this.classesProjetoAnalisado = classesProjetoAnalisado;
+	}
+	
 	/**
 	 * Generate sheet with design role assigned to each class
 	 * 
@@ -26,7 +35,10 @@ public class DoseaDesignRoleTechnique extends AbstractTechnique {
 		HashMap<String, Long> linhasDeCodigoPorDesignRole = new HashMap<>();
 		long totalLoc = obterTotalLinhasCodigoPorDesignRole(classes, linhasDeCodigoPorDesignRole);
 
-		//METHOD THRESHOLDS
+		HashMap<String, Long> linhasDeCodigoPorDesignRoleProjetoAnalisado = new HashMap<>();
+		long totalLocProjetoAnalisado = obterTotalLinhasCodigoPorDesignRole(classesProjetoAnalisado, linhasDeCodigoPorDesignRoleProjetoAnalisado);
+
+		// METHOD THRESHOLDS
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaLOC = new HashMap<>();
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaCC = new HashMap<>();
 		HashMap<String, HashMap<Integer, BigDecimal>> distribuicaoCodigoPorMetricaEfferent = new HashMap<>();
@@ -56,46 +68,49 @@ public class DoseaDesignRoleTechnique extends AbstractTechnique {
 						method.getLinesOfCode(), LimiarMetrica.METRICA_NOP + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 			}
 			if (!classe.getDesignRole().toUpperCase().equals(LimiarMetrica.DESIGN_ROLE_UNDEFINED)) {
-				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaCLOC, classe.getCLoc(),
-						classe.getCLoc(), LimiarMetrica.METRICA_CLOC + classe.getDesignRole());
+				agrupaPorValorMetrica(distribuicaoCodigoPorMetricaCLOC, classe.getCLoc(), classe.getCLoc(),
+						LimiarMetrica.METRICA_CLOC + classe.getDesignRole());
 			}
 			agrupaPorValorMetrica(distribuicaoCodigoPorMetricaCLOC, classe.getCLoc(), classe.getCLoc(),
 					LimiarMetrica.METRICA_CLOC + LimiarMetrica.DESIGN_ROLE_UNDEFINED);
+
 		}
 
-		//METHOD THRESHOLD
-		LimiarMetrica limiarLOCUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaLOC, totalLoc, 5, 80, 90,
-				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_LOC, true);
-		LimiarMetrica limiarCCUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCC, totalLoc, 5, 80, 90,
-				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_CC, true);
+		// METHOD THRESHOLD
+		LimiarMetrica limiarLOCUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaLOC, totalLoc, 5, 70, 90,
+				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_LOC, false);
+		LimiarMetrica limiarCCUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCC, totalLoc, 5, 70, 90,
+				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_CC, false);
 		LimiarMetrica limiarEfferentUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaEfferent, totalLoc, 5,
-				80, 90, LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_EC, true);
-		LimiarMetrica limiarNOPUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaNOP, totalLoc, 3, 90, 95,
-				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_NOP, true);
+				70, 90, LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_EC, false);
+		LimiarMetrica limiarNOPUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaNOP, totalLoc, 7, 90, 95,
+				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_NOP, false);
 		// CLASS THRESHOLD
-		LimiarMetrica limiarCLOCUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCLOC, totalLoc, 5, 80, 90,
-				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_CLOC, true);
-		
+		LimiarMetrica limiarCLOCUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCLOC, totalLoc, 5, 70, 90,
+				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_CLOC, false);
+
 		pm.write(LimiarMetrica.DESIGN_ROLE_UNDEFINED + ";" + limiarLOCUndefined.getLimiarMaximo() + ";"
 				+ limiarCCUndefined.getLimiarMaximo() + ";" + limiarEfferentUndefined.getLimiarMaximo() + ";"
-				+ limiarNOPUndefined.getLimiarMaximo() + ";"+ limiarCLOCUndefined.getLimiarMaximo() + ";");
+				+ limiarNOPUndefined.getLimiarMaximo() + ";" + limiarCLOCUndefined.getLimiarMaximo() + ";");
 
 		for (String designRole : linhasDeCodigoPorDesignRole.keySet()) {
-			designRole = designRole.toUpperCase();
-			if (!designRole.contains(LimiarMetrica.DESIGN_ROLE_UNDEFINED)) {
+			Long linhasDR = linhasDeCodigoPorDesignRoleProjetoAnalisado.get(designRole);
+			boolean avaliarDesignRole = (linhasDR != null); //&& (((float) linhasDR/totalLocProjetoAnalisado) >= 0.01);
+			if (!designRole.contains(LimiarMetrica.DESIGN_ROLE_UNDEFINED) && avaliarDesignRole) {
 				long totalLOCPorDesignRole = linhasDeCodigoPorDesignRole.get(designRole);
+				
 				// METHOD THRESHOLDS
 				LimiarMetrica limiarLOC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaLOC, totalLOCPorDesignRole,
-						5, 75, 90, designRole, LimiarMetrica.METRICA_LOC, true);
+						5, 70, 90, designRole, LimiarMetrica.METRICA_LOC, true);
 				LimiarMetrica limiarCC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCC, totalLOCPorDesignRole, 5,
-						75, 90, designRole, LimiarMetrica.METRICA_CC, true);
+						70, 90, designRole, LimiarMetrica.METRICA_CC, true);
 				LimiarMetrica limiarEfferent = obterLimiaresMetrica(distribuicaoCodigoPorMetricaEfferent,
-						totalLOCPorDesignRole, 5, 75, 90, designRole, LimiarMetrica.METRICA_EC, true);
+						totalLOCPorDesignRole, 5, 70, 90, designRole, LimiarMetrica.METRICA_EC, true);
 				LimiarMetrica limiarNOP = obterLimiaresMetrica(distribuicaoCodigoPorMetricaNOP, totalLOCPorDesignRole,
-						3, 90, 95, designRole, LimiarMetrica.METRICA_NOP, true);
+						5, 70, 95, designRole, LimiarMetrica.METRICA_NOP, true);
 				// CLASS THRESHOLDS
 				LimiarMetrica limiarCLOC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCLOC, totalLOCPorDesignRole,
-						5, 75, 90, designRole, LimiarMetrica.METRICA_CLOC, true);
+						5, 70, 90, designRole, LimiarMetrica.METRICA_CLOC, true);
 
 				// para limiares muitos baixos assume o limiar médio da aplicacao
 				// METHOD
@@ -110,7 +125,7 @@ public class DoseaDesignRoleTechnique extends AbstractTechnique {
 				// CLASS
 				if (limiarCLOC.getLimiarMaximo() < limiarCLOCUndefined.getLimiarMedio())
 					limiarCLOC.setLimiarMaximo(limiarCLOCUndefined.getLimiarMedio());
-				
+
 				pm.write(designRole + ";" + limiarLOC.getLimiarMaximo() + ";" + limiarCC.getLimiarMaximo() + ";"
 						+ limiarEfferent.getLimiarMaximo() + ";" + limiarNOP.getLimiarMaximo() + ";"
 						+ limiarCLOC.getLimiarMaximo() + ";");

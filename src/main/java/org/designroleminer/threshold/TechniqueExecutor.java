@@ -190,8 +190,8 @@ public class TechniqueExecutor {
 
 	private void ExtractSaveMetricsToFiles(Collection<String> projetos, String pathResultado, String commit) {
 		for (String path : projetos) {
+			logger.info("Iniciando coleta no projeto " + path);
 			int lastIndex = path.lastIndexOf("\\");
-			
 			if (projetos.size() > 1 || commit.isEmpty()) {
 				Repository repository;
 				try {
