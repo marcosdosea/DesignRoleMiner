@@ -52,7 +52,7 @@ public class DesignRole extends ASTVisitor implements Metric {
 		// web
 		defaultDesignRoles.put("entity", "Entity");
 		defaultDesignRoles.put("pojo", "Entity");
-		defaultDesignRoles.put("bean", "Entity");
+		defaultDesignRoles.put("bean", "Bean");
 		defaultDesignRoles.put("controller", "Controller");
 		defaultDesignRoles.put("model", "Model");
 		defaultDesignRoles.put("service", "Service");

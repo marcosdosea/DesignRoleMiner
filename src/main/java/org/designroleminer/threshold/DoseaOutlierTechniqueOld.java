@@ -12,7 +12,7 @@ import org.designroleminer.smelldetector.model.LimiarMetrica;
 import org.repodriller.persistence.PersistenceMechanism;
 import org.repodriller.persistence.csv.CSVFile;
 
-public class DoseaOutlierTechnique extends AbstractTechnique {
+public class DoseaOutlierTechniqueOld extends AbstractTechnique {
 
 	/**
 	 * Generate sheet with design role assigned to each class

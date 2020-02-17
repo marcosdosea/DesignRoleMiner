@@ -4,6 +4,8 @@ public class LimiarMetrica {
 	
 	//public static final int NUMERO_METRICAS_DISPONIVEIS = 4;
 	public static final String DESIGN_ROLE_UNDEFINED = "UNDEFINED";
+	public static final String DESIGN_ROLE_TEST = "TEST";
+	public static final String DESIGN_ROLE_ENTITY = "ENTITY";
 	
 	public static final String METRICA_LOC = "LOC";
 	public static final String METRICA_CC = "CC";

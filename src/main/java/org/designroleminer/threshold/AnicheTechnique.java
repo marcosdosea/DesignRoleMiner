@@ -21,7 +21,7 @@ public class AnicheTechnique extends AbstractTechnique {
 	@Override
 	public void generate(Collection<ClassMetricResult> classes, String fileResultado) {
 		PersistenceMechanism pm = new CSVFile(fileResultado);
-		pm.write("DesignRoleTechnique;LOC;CC;Efferent;NOP;CLOC;");
+		pm.write("DesignRole;LOC;CC;Efferent;NOP;CLOC;");
 
 		HashMap<String, Long> linhasDeCodigoPorArchitecturalRole = new HashMap<>();
 		obterTotalLinhasCodigoPorArchitecturalRole(classes, linhasDeCodigoPorArchitecturalRole);

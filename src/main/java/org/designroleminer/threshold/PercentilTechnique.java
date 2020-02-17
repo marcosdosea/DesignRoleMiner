@@ -28,7 +28,7 @@ public class PercentilTechnique extends AbstractTechnique {
 	@Override
 	public void generate(Collection<ClassMetricResult> classes, String fileResultado) {
 		PersistenceMechanism pm = new CSVFile(fileResultado);
-		pm.write("DesignRoleTechnique;LOC;CC;Efferent;NOP;");
+		pm.write("DesignRole;LOC;CC;Efferent;NOP;");
 
 		ArrayList<Integer> listaLOC = new ArrayList<>();
 		ArrayList<Integer> listaCC = new ArrayList<>();
