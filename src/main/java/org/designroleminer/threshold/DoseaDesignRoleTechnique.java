@@ -134,21 +134,6 @@ public class DoseaDesignRoleTechnique extends AbstractTechnique {
 				if (limiarCLOC.getLimiarMaximo() < limiarCLOCUndefined.getLimiarMedio())
 					limiarCLOC.setLimiarMaximo(limiarCLOCUndefined.getLimiarMedio());
 
-//				if (designRole.contains(LimiarMetrica.DESIGN_ROLE_TEST)
-//						|| designRole.contains(LimiarMetrica.DESIGN_ROLE_ENTITY)) {
-//					if (limiarLOC.getLimiarMaximo() < limiarLOCUndefined.getLimiarMaximo())
-//						limiarLOC.setLimiarMaximo(limiarLOCUndefined.getLimiarMaximo());
-//					if (limiarCC.getLimiarMaximo() < limiarCCUndefined.getLimiarMaximo())
-//						limiarCC.setLimiarMaximo(limiarCCUndefined.getLimiarMaximo());
-//					if (limiarEfferent.getLimiarMaximo() < limiarEfferentUndefined.getLimiarMaximo())
-//						limiarEfferent.setLimiarMaximo(limiarEfferentUndefined.getLimiarMaximo());
-//					if (limiarNOP.getLimiarMaximo() < limiarNOPUndefined.getLimiarMaximo())
-//						limiarNOP.setLimiarMaximo(limiarNOPUndefined.getLimiarMaximo());
-//					// CLASS
-//					if (limiarCLOC.getLimiarMaximo() < limiarCLOCUndefined.getLimiarMaximo())
-//						limiarCLOC.setLimiarMaximo(limiarCLOCUndefined.getLimiarMaximo());
-//				}
-
 				pm.write(designRole + ";" + limiarLOC.getLimiarMaximo() + ";" + limiarCC.getLimiarMaximo() + ";"
 						+ limiarEfferent.getLimiarMaximo() + ";" + limiarNOP.getLimiarMaximo() + ";"
 						+ limiarCLOC.getLimiarMaximo() + ";" + formatter.format(percLocDesignRole) + ";");
