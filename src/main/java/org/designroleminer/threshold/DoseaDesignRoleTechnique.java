@@ -91,7 +91,9 @@ public class DoseaDesignRoleTechnique extends AbstractTechnique {
 
 		Long linhasDR = linhasDeCodigoPorDesignRoleProjetoAnalisado.get(LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 
-		float percLocDesignRole = ((float) linhasDR / totalLocProjetoAnalisado * 100);
+		float percLocDesignRole = 0;
+		if (linhasDR != null)
+			percLocDesignRole = ((float) linhasDR / totalLocProjetoAnalisado * 100);
 
 		NumberFormat formatter = NumberFormat.getInstance(Locale.US);
 		formatter.setMaximumFractionDigits(2);
@@ -105,8 +107,8 @@ public class DoseaDesignRoleTechnique extends AbstractTechnique {
 			linhasDR = linhasDeCodigoPorDesignRoleProjetoAnalisado.get(designRole);
 			if (linhasDR != null)
 				percLocDesignRole = ((float) linhasDR / totalLocProjetoAnalisado * 100);
-			boolean avaliarDesignRole = (linhasDR != null) && (percLocDesignRole > 1);
-			if (!designRole.contains(LimiarMetrica.DESIGN_ROLE_UNDEFINED) && avaliarDesignRole) {
+			//boolean avaliarDesignRole = (linhasDR != null) && (percLocDesignRole > 1);
+			if (!designRole.contains(LimiarMetrica.DESIGN_ROLE_UNDEFINED)) {// && avaliarDesignRole) {
 				long totalLOCPorDesignRole = linhasDeCodigoPorDesignRole.get(designRole);
 				// METHOD THRESHOLDS
 				LimiarMetrica limiarLOC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaLOC, totalLOCPorDesignRole,
