@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Scanner;
 
 import org.designroleminer.ClassMetricResult;
-import org.designroleminer.FileLocUtil;
 import org.designroleminer.MethodMetricResult;
 import org.designroleminer.MetricReport;
 import org.eclipse.jgit.api.Git;
@@ -38,7 +37,7 @@ public class TechniqueExecutor {
 		repository = null;
 		gitService = null;
 	}
-	
+
 	public TechniqueExecutor(Repository repository, GitService gitService) {
 		this.repository = repository;
 		this.gitService = gitService;
@@ -64,7 +63,7 @@ public class TechniqueExecutor {
 			pm.write(classe.getClassName() + ";" + classe.getDesignRole() + ";" + "SIM;");
 		}
 	}
-	
+
 	public void saveArchitecturalRoles(Collection<ClassMetricResult> classes, String fileResultado) {
 		PersistenceMechanism pm = new CSVFile(fileResultado);
 		pm.write("Classe                              ;ArchitecturalRole                        ;");
@@ -97,7 +96,7 @@ public class TechniqueExecutor {
 
 			int lastIndex = path.lastIndexOf("\\");
 			String nameLastFolder = path.substring(lastIndex + 1) + "-" + commit;
-			
+
 			String filePathMethods = pathResultado + nameLastFolder + "-methods.csv";
 			String filePathClasses = pathResultado + nameLastFolder + "-classes.csv";
 			String filePathProject = pathResultado + nameLastFolder + "-project.csv";
@@ -203,7 +202,7 @@ public class TechniqueExecutor {
 					e1.printStackTrace();
 				}
 			}
-			
+
 			String nameLastFolder = path.substring(lastIndex + 1) + "-" + commit;
 			String filePathMethods = pathResultado + nameLastFolder + "-methods.csv";
 			String filePathClasses = pathResultado + nameLastFolder + "-classes.csv";
@@ -222,7 +221,7 @@ public class TechniqueExecutor {
 			long totalClasses = 0;
 
 			if (!fileMethods.exists() && !fileClasses.exists() && !fileProject.exists()) {
-				
+
 				try {
 					if ((repository != null) && (gitService != null))
 						gitService.checkout(repository, commit);
@@ -230,8 +229,7 @@ public class TechniqueExecutor {
 					logger.error("Erro inesperado ao realizar checkout do projeto no commit " + commit);
 					e.printStackTrace();
 				}
-				
-				
+
 				MetricReport report = new CK().calculate(path);
 				Collection<ClassMetricResult> metricasClasses = report.all();
 
@@ -247,7 +245,8 @@ public class TechniqueExecutor {
 				for (ClassMetricResult ckNumber : metricasClasses) {
 					if (!ckNumber.getType().equals("class"))
 						continue;
-					//int locClass = FileLocUtil.countLineNumbers(FileLocUtil.readFile(new File(ckNumber.getFile())));
+					// int locClass = FileLocUtil.countLineNumbers(FileLocUtil.readFile(new
+					// File(ckNumber.getFile())));
 					pmClasses.write(ckNumber.getDesignRole(), ckNumber.getClassName(), ckNumber.getNom(),
 							ckNumber.getDit(), ckNumber.getCbo(), ckNumber.getLcom(), ckNumber.getNoc(),
 							ckNumber.getNom(), ckNumber.getRfc(), ckNumber.getWmc(), ckNumber.getFile(),

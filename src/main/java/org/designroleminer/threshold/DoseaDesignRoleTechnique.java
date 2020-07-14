@@ -78,16 +78,16 @@ public class DoseaDesignRoleTechnique extends AbstractTechnique {
 		}
 
 		LimiarMetrica limiarLOCUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaLOC, totalLoc, 5, 70, 90,
-				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_LOC, false);
+				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_LOC);
 		LimiarMetrica limiarCCUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCC, totalLoc, 5, 70, 90,
-				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_CC, false);
+				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_CC);
 		LimiarMetrica limiarEfferentUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaEfferent, totalLoc, 5,
-				70, 90, LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_EC, false);
-		LimiarMetrica limiarNOPUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaNOP, totalLoc, 7, 90, 95,
-				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_NOP, false);
+				70, 90, LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_EC);
+		LimiarMetrica limiarNOPUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaNOP, totalLoc, 5, 90, 95,
+				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_NOP);
 		// CLASS THRESHOLD
 		LimiarMetrica limiarCLOCUndefined = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCLOC, totalLoc, 5, 70, 90,
-				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_CLOC, false);
+				LimiarMetrica.DESIGN_ROLE_UNDEFINED, LimiarMetrica.METRICA_CLOC);
 
 		Long linhasDR = linhasDeCodigoPorDesignRoleProjetoAnalisado.get(LimiarMetrica.DESIGN_ROLE_UNDEFINED);
 
@@ -107,21 +107,21 @@ public class DoseaDesignRoleTechnique extends AbstractTechnique {
 			linhasDR = linhasDeCodigoPorDesignRoleProjetoAnalisado.get(designRole);
 			if (linhasDR != null)
 				percLocDesignRole = ((float) linhasDR / totalLocProjetoAnalisado * 100);
-			//boolean avaliarDesignRole = (linhasDR != null) && (percLocDesignRole > 1);
-			if (!designRole.contains(LimiarMetrica.DESIGN_ROLE_UNDEFINED)) {// && avaliarDesignRole) {
+			boolean avaliarDesignRole = (linhasDR != null) && (percLocDesignRole > 0);
+			if (!designRole.contains(LimiarMetrica.DESIGN_ROLE_UNDEFINED) && avaliarDesignRole) {
 				long totalLOCPorDesignRole = linhasDeCodigoPorDesignRole.get(designRole);
 				// METHOD THRESHOLDS
 				LimiarMetrica limiarLOC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaLOC, totalLOCPorDesignRole,
-						5, 70, 90, designRole, LimiarMetrica.METRICA_LOC, false);
+						5, 70, 90, designRole, LimiarMetrica.METRICA_LOC);
 				LimiarMetrica limiarCC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCC, totalLOCPorDesignRole, 5,
-						70, 90, designRole, LimiarMetrica.METRICA_CC, false);
+						70, 90, designRole, LimiarMetrica.METRICA_CC);
 				LimiarMetrica limiarEfferent = obterLimiaresMetrica(distribuicaoCodigoPorMetricaEfferent,
-						totalLOCPorDesignRole, 5, 70, 90, designRole, LimiarMetrica.METRICA_EC, false);
+						totalLOCPorDesignRole, 5, 70, 90, designRole, LimiarMetrica.METRICA_EC);
 				LimiarMetrica limiarNOP = obterLimiaresMetrica(distribuicaoCodigoPorMetricaNOP, totalLOCPorDesignRole,
-						7, 90, 95, designRole, LimiarMetrica.METRICA_NOP, false);
+						7, 90, 95, designRole, LimiarMetrica.METRICA_NOP);
 				// CLASS THRESHOLDS
 				LimiarMetrica limiarCLOC = obterLimiaresMetrica(distribuicaoCodigoPorMetricaCLOC, totalLOCPorDesignRole,
-						5, 70, 90, designRole, LimiarMetrica.METRICA_CLOC, false);
+						5, 70, 90, designRole, LimiarMetrica.METRICA_CLOC);
 
 				// para limiares muitos baixos assume o limiar médio da aplicacao
 				if (limiarLOC.getLimiarMaximo() < limiarLOCUndefined.getLimiarMedio())

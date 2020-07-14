@@ -112,6 +112,8 @@ public class DesignRole extends ASTVisitor implements Metric {
 		architecturalRole.add("SERVICE");
 		architecturalRole.add("ENTITY");
 		architecturalRole.add("COMPONENT");
+		architecturalRole.add("ACTIVITY");
+		architecturalRole.add("FRAGMENT");
 		return architecturalRole.contains(designRole.toUpperCase());
 	}
 
