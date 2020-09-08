@@ -24,10 +24,23 @@ public class DesignRole extends ASTVisitor implements Metric {
 	String designRole;
 	boolean ehArchitecturalRole = false;
 	int dit = 1;
-	static final HashMap<String, String> defaultDesignRoles = new LinkedHashMap<String, String>();
 	Set<String> listAnnotations = new HashSet<String>();
+	static final HashMap<String, String> defaultDesignRoles = new LinkedHashMap<String, String>();
+	static final HashSet<String> architecturalRoleMVC = new HashSet<>();
+	static final HashSet<String> architecturalRoleAndroid = new HashSet<>();
 
 	static {
+
+		architecturalRoleMVC.add("CONTROLLER");
+		architecturalRoleMVC.add("REPOSITORY");
+		architecturalRoleMVC.add("SERVICE");
+		architecturalRoleMVC.add("ENTITY");
+		architecturalRoleMVC.add("COMPONENT");
+
+		architecturalRoleAndroid.add("ACTIVITY");
+		architecturalRoleAndroid.add("FRAGMENT");
+		architecturalRoleAndroid.add("ASYNCTASK");
+
 		// general
 		defaultDesignRoles.put("test", "Test");
 		defaultDesignRoles.put("exception", "Exception");
@@ -76,8 +89,8 @@ public class DesignRole extends ASTVisitor implements Metric {
 		defaultDesignRoles.put("widget", "Widget");
 		defaultDesignRoles.put("notification", "Notification");
 		// eclipse
-		defaultDesignRoles.put("wizard", "View");
-		defaultDesignRoles.put("page", "View");
+		defaultDesignRoles.put("wizard", "Wizard");
+		defaultDesignRoles.put("page", "Page");
 		defaultDesignRoles.put("action", "Action");
 	}
 
@@ -105,18 +118,6 @@ public class DesignRole extends ASTVisitor implements Metric {
 		return super.visit(node);
 	}
 
-	private boolean verificaArchitecturalRole(String designRole) {
-		HashSet<String> architecturalRole = new HashSet<>();
-		architecturalRole.add("CONTROLLER");
-		architecturalRole.add("REPOSITORY");
-		architecturalRole.add("SERVICE");
-		architecturalRole.add("ENTITY");
-		architecturalRole.add("COMPONENT");
-		architecturalRole.add("ACTIVITY");
-		architecturalRole.add("FRAGMENT");
-		return architecturalRole.contains(designRole.toUpperCase());
-	}
-
 	private void calculateAnnotation(ITypeBinding binding, int ditAnnotation) {
 		ITypeBinding father = binding.getSuperclass();
 
@@ -137,6 +138,8 @@ public class DesignRole extends ASTVisitor implements Metric {
 	@Override
 	public boolean visit(TypeDeclaration node) {
 		ITypeBinding binding = node.resolveBinding();
+		if (binding == null)
+			return false;
 		if (binding.isMember())
 			return false;
 		// if (binding.isInterface())
@@ -225,18 +228,21 @@ public class DesignRole extends ASTVisitor implements Metric {
 
 	@Override
 	public void setResult(ClassMetricResult result) {
-		// Avalia atribuir um concern default pelos tokens das anotações da
+		// Atribui design role pela anotação
 		for (String annotation : listAnnotations) {
 			for (String tokenConcern : defaultDesignRoles.keySet()) {
 				if (annotation.toLowerCase().equals(tokenConcern.toLowerCase())) {
 					designRole = defaultDesignRoles.get(tokenConcern);
-					ehArchitecturalRole = verificaArchitecturalRole(tokenConcern);
+					ehArchitecturalRole = architecturalRoleMVC.contains(tokenConcern.toUpperCase().trim());
 				}
 			}
 		}
 		if (designRole != null)
 			designRole = extractParameters(designRole);
 		result.setDesignRole(designRole);
+		if (!ehArchitecturalRole && (designRole != null)) {
+			ehArchitecturalRole = architecturalRoleAndroid.contains(designRole.toUpperCase().trim());
+		}
 		result.setArchitecturalRole(ehArchitecturalRole);
 	}
 
@@ -257,7 +263,7 @@ public class DesignRole extends ASTVisitor implements Metric {
 	 * interface
 	 */
 	private String findDefaultDesignRole(String designRole) {
-			for (String tokenDesignRole : defaultDesignRoles.keySet()) {
+		for (String tokenDesignRole : defaultDesignRoles.keySet()) {
 			if (designRole.toLowerCase().contains(tokenDesignRole.toLowerCase())) {
 				return defaultDesignRoles.get(tokenDesignRole);
 			}

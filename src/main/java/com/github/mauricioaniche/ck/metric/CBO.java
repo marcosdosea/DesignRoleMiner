@@ -72,6 +72,8 @@ public class CBO extends ASTVisitor implements Metric {
 	public boolean visit(TypeDeclaration node) {
 		ITypeBinding type = node.resolveBinding();
 		
+		if (type == null)
+			return false;
 		ITypeBinding binding = type.getSuperclass();
 		if(binding!=null) coupleTo(binding);
 		
