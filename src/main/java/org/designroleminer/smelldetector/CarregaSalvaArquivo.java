@@ -28,7 +28,6 @@ public class CarregaSalvaArquivo {
 		return projetos;
 	}
 
-	@SuppressWarnings("unchecked")
 	public static List<LimiarTecnica> carregarLimiares(String pastaDestino) {
 		ArrayList<LimiarTecnica> limiarTecnicas = new ArrayList<>();
 		// String diretorioLimiares = pastaDestino;

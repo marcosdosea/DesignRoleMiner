@@ -1,9 +1,7 @@
 package org.designroleminer.visitor;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.designroleminer.ClassMetricResult;
 import org.designroleminer.MetricReport;
@@ -63,27 +61,6 @@ public class ClassVisitorMetric implements CommitVisitor {
 		} finally {
 			repo.getScm().reset();
 		}
-	}
-
-	private void desconsiderarConcerns(Commit commit, PersistenceMechanism writer, MetricReport report,
-			int quantidadeCorte) {
-
-		// primeiro conta quantas classes associadas ao conecern
-		Map<String, Integer> mapConcerns = new HashMap<String, Integer>();
-		for (ClassMetricResult classMetrics : report.all()) {
-			Integer quantidade = mapConcerns.get(classMetrics.getDesignRole());
-			if (quantidade != null)
-				mapConcerns.put(classMetrics.getDesignRole(), ++quantidade);
-			else
-				mapConcerns.put(classMetrics.getDesignRole(), 1);
-		}
-		// Verifica se conncer deve ser desconsiderado
-		for (ClassMetricResult classMetrics : report.all()) {
-			Integer quantidade = mapConcerns.get(classMetrics.getDesignRole());
-			if (quantidade <= quantidadeCorte)
-				classMetrics.setDesignRole("UNDEFINED");
-		}
-
 	}
 
 	@Override

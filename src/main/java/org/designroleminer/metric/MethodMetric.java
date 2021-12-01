@@ -66,6 +66,7 @@ public class MethodMetric extends ASTVisitor implements Metric {
 		return super.visit(node);
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean visit(TypeDeclaration node) {
 		if (node.isInterface() || (node.superInterfaceTypes() == null)) {
 			return false;
@@ -85,6 +86,7 @@ public class MethodMetric extends ASTVisitor implements Metric {
 		return super.visit(node);
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean visit(MethodDeclaration node) {
 		currentMethod = node.getName().getIdentifier();
 		currentInitialChar = node.getStartPosition();
@@ -141,6 +143,7 @@ public class MethodMetric extends ASTVisitor implements Metric {
 		return super.visit(node);
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean visit(FieldDeclaration node) {
 		String typeDeclared = node.getType().toString();
 
@@ -163,6 +166,7 @@ public class MethodMetric extends ASTVisitor implements Metric {
 		return super.visit(node);
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean visit(MethodInvocation node) {
 		List<Expression> arguments = (List<Expression>) node.arguments();
 
