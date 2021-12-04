@@ -47,7 +47,7 @@ public class CK {
 	private static Logger log = Logger.getLogger(CK.class);
 
 	public CK() {
-		this.pluggedMetrics = new ArrayList<>();
+		this.pluggedMetrics = new ArrayList<Callable<Metric>>();
 	}
 
 	public CK plug(Callable<Metric> metric) {
@@ -60,7 +60,11 @@ public class CK {
 		String[] javaFiles = FileUtils.getAllJavaFiles(path);
 		log.info("Found " + javaFiles.length + " java files");
 
-		MetricsExecutor storage = new MetricsExecutor(() -> metrics());
+		MetricsExecutor storage = new MetricsExecutor(new Callable<List<Metric>>() {
+			public List<Metric> call() throws Exception {
+				return metrics();
+			}
+		});
 
 		List<List<String>> partitions = Lists.partition(Arrays.asList(javaFiles), MAX_AT_ONCE);
 		log.info("Max partition size: " + MAX_AT_ONCE + ", total partitions=" + partitions.size());
@@ -94,7 +98,7 @@ public class CK {
 	}
 
 	private List<Metric> defaultMetrics() {
-		return new ArrayList<>(Arrays.asList(new DIT(), new NOC(), new WMC(), new CBO(), new LCOM(), new RFC(),
+		return new ArrayList<Metric>(Arrays.asList(new DIT(), new NOC(), new WMC(), new CBO(), new LCOM(), new RFC(),
 				new NOM(), new MethodMetric(), new DesignRole(), new CLOC()));
 		// return new ArrayList<>(Arrays.asList(new MethodMetric()));
 	}

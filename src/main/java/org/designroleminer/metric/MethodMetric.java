@@ -58,7 +58,7 @@ public class MethodMetric extends ASTVisitor implements Metric {
 		metricsByMethod = new HashMap<MethodData, MethodMetricResult>();
 		methodStack = new Stack<MethodData>();
 		usedTypes = new HashSet<String>();
-		declaredTypes = new HashMap<>();
+		declaredTypes = new HashMap<String, String>();
 	}
 
 	public boolean visit(PackageDeclaration node) {

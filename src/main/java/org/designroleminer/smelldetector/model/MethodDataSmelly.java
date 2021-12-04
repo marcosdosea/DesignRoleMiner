@@ -129,13 +129,13 @@ public class MethodDataSmelly {
 
 	public void addTecnica(String tecnica) {
 		if (listaTecnicas == null)
-			listaTecnicas = new HashSet<>();
+			listaTecnicas = new HashSet<String>();
 		listaTecnicas.add(tecnica);
 	}
 
 	public void addMensagem(String mensagem) {
 		if (listaMensagens == null)
-			listaMensagens = new HashSet<>();
+			listaMensagens = new HashSet<String>();
 		listaMensagens.add(mensagem);
 	}
 

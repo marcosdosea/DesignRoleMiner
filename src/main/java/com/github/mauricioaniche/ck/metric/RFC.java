@@ -38,12 +38,10 @@ public class RFC extends ASTVisitor implements Metric {
 		return method;
 	}
 	
-	@Override
 	public void execute(CompilationUnit cu, ClassMetricResult number, MetricReport report) {
 		cu.accept(this);
 	}
 
-	@Override
 	public void setResult(ClassMetricResult result) {
 		result.setRfc(methodInvocations.size());
 		

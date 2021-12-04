@@ -97,13 +97,11 @@ public class WMC extends ASTVisitor implements Metric {
     	cc++;
     }
 
-	@Override
 	public void execute(CompilationUnit cu, ClassMetricResult number, MetricReport report) {
 		cu.accept(this);
 		
 	}
 
-	@Override
 	public void setResult(ClassMetricResult result) {
 		result.setWmc(cc);
 	}

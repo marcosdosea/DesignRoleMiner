@@ -29,11 +29,11 @@ public class FilterSmells {
 
 		Collection<ClassMetricResult> classesAnalisar = report.all();
 
-		HashSet<MethodDataSmelly> listaMethodsSmelly = new HashSet<>();
-		HashSet<MethodDataSmelly> listaMethodsNotSmelly = new HashSet<>();
+		HashSet<MethodDataSmelly> listaMethodsSmelly = new HashSet<MethodDataSmelly>();
+		HashSet<MethodDataSmelly> listaMethodsNotSmelly = new HashSet<MethodDataSmelly>();
 
-		HashSet<ClassDataSmelly> listaClassesSmelly = new HashSet<>();
-		HashSet<ClassDataSmelly> listaClassesNotSmelly = new HashSet<>();
+		HashSet<ClassDataSmelly> listaClassesSmelly = new HashSet<ClassDataSmelly>();
+		HashSet<ClassDataSmelly> listaClassesNotSmelly = new HashSet<ClassDataSmelly>();
 		try {
 			for (ClassMetricResult classe : classesAnalisar) {
 				for (LimiarTecnica limiarTecnica : listaTecnicas) {

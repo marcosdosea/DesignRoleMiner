@@ -154,12 +154,10 @@ public class CBO extends ASTVisitor implements Metric {
 		return type.startsWith("java.") || type.startsWith("javax.");
 	}
 
-	@Override
 	public void execute(CompilationUnit cu, ClassMetricResult number, MetricReport report) {
 		cu.accept(this);
 	}
 
-	@Override
 	public void setResult(ClassMetricResult result) {
 		result.setCbo(coupling.size());
 		

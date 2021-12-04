@@ -18,7 +18,7 @@ public class CarregaSalvaArquivo {
 
 	@SuppressWarnings("unchecked")
 	public static ArrayList<String> carregarProjetos() {
-		ArrayList<String> projetos = new ArrayList<>();
+		ArrayList<String> projetos = new ArrayList<String>();
 		try {
 			projetos = (ArrayList<String>) readFromFile(projetos, "Projetos.txt");
 			System.out.println("Dados dos alunos carregados com sucesso!");
@@ -29,7 +29,7 @@ public class CarregaSalvaArquivo {
 	}
 
 	public static List<LimiarTecnica> carregarLimiares(String pastaDestino) {
-		ArrayList<LimiarTecnica> limiarTecnicas = new ArrayList<>();
+		ArrayList<LimiarTecnica> limiarTecnicas = new ArrayList<LimiarTecnica>();
 		// String diretorioLimiares = pastaDestino;
 		File file = new File(pastaDestino);
 		File afile[] = file.listFiles();
@@ -37,7 +37,7 @@ public class CarregaSalvaArquivo {
 		for (int j = afile.length; i < j; i++) {
 			File arquivoLimiar = afile[i];
 			try {
-				HashMap<String, LimiarMetrica> limiares = new HashMap<>();
+				HashMap<String, LimiarMetrica> limiares = new HashMap<String, LimiarMetrica>();
 				LimiarTecnica limiarTecnica = new LimiarTecnica();
 				if (arquivoLimiar.getName().contains(".csv") && arquivoLimiar.getName().length() == 5) {
 					limiarTecnica

@@ -21,7 +21,7 @@ public class MethodVisitorMetric implements CommitVisitor {
 	List<String> listaDesignRoles = new ArrayList<String>();
 	String applicationName;
 	Map<String, String> tags = null;
-	Map<String, Map<String, Integer>> metricsByTagDesignRole = new HashMap<>();
+	Map<String, Map<String, Integer>> metricsByTagDesignRole = new HashMap<String, Map<String, Integer>>();
 
 	public MethodVisitorMetric(List<String> listaDesignRoles, String applicationName) {
 		this.listaDesignRoles = listaDesignRoles;
@@ -76,7 +76,7 @@ public class MethodVisitorMetric implements CommitVisitor {
 						Map<String, Integer> metricas = metricsByTagDesignRole
 								.get("\"" + classMetrics.getDesignRole() + "\"" + "," + tag);
 						if (metricas == null) {
-							metricas = new HashMap<>();
+							metricas = new HashMap<String, Integer>();
 							metricas.put("LOC", 0);
 							metricas.put("CC", 0);
 						}

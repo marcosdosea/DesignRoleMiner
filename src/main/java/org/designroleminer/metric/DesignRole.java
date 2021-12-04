@@ -26,8 +26,8 @@ public class DesignRole extends ASTVisitor implements Metric {
 	int dit = 1;
 	Set<String> listAnnotations = new HashSet<String>();
 	static final HashMap<String, String> defaultDesignRoles = new LinkedHashMap<String, String>();
-	static final HashSet<String> architecturalRoleMVC = new HashSet<>();
-	static final HashSet<String> architecturalRoleAndroid = new HashSet<>();
+	static final HashSet<String> architecturalRoleMVC = new HashSet<String>();
+	static final HashSet<String> architecturalRoleAndroid = new HashSet<String>();
 
 	static {
 
@@ -221,12 +221,10 @@ public class DesignRole extends ASTVisitor implements Metric {
 		return (porcentagemGetSet >= 0.9) && !hasStaticFinalFields;
 	}
 
-	@Override
 	public void execute(CompilationUnit cu, ClassMetricResult number, MetricReport report) {
 		cu.accept(this);
 	}
 
-	@Override
 	public void setResult(ClassMetricResult result) {
 		// Atribui design role pela anotação
 		for (String annotation : listAnnotations) {
