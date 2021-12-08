@@ -23,12 +23,10 @@ public class CLOC extends ASTVisitor implements Metric {
 		return false;
 	}
 
-	@Override
 	public void execute(CompilationUnit cu, ClassMetricResult number, MetricReport report) {
 		cu.accept(this);
 	}
 
-	@Override
 	public void setResult(ClassMetricResult result) {
 		result.setLoc(this.loc);
 	}

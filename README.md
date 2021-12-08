@@ -1,2 +1,2 @@
-# minerconcern
+# DesignRoleMiner
 Miner Software code repository.

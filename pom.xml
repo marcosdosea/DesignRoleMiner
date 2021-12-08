@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.designroleminer</groupId>
 	<packaging>jar</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>designroleminer</name>
 	<url>http://maven.apache.org</url>
 
@@ -55,5 +55,5 @@
 			<version>2.0</version>
 		</dependency>
 	</dependencies>
-	<artifactId>designroleminer</artifactId>
+	<artifactId>DesignRoleMiner</artifactId>
 </project>

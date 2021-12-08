@@ -28,7 +28,6 @@ public class ClassVisitorDesignRole implements CommitVisitor {
 		super();
 	}
 
-	@Override
 	public void process(SCMRepository repo, Commit commit, PersistenceMechanism writer) {
 		try {
 			repo.getScm().checkout(commit.getHash());
@@ -79,7 +78,6 @@ public class ClassVisitorDesignRole implements CommitVisitor {
 		}
 	}
 
-	@Override
 	public String name() {
 		return "dr";
 	}

@@ -63,12 +63,10 @@ public class DIT extends ASTVisitor implements Metric {
 
 	}
 
-	@Override
 	public void execute(CompilationUnit cu, ClassMetricResult number, MetricReport report) {
 		cu.accept(this);
 	}
 
-	@Override
 	public void setResult(ClassMetricResult result) {
 		result.setDit(dit);
 		result.setSuperClassNameLevel1(superClassLevel1);

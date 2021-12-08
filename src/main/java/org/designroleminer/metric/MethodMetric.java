@@ -304,13 +304,11 @@ public class MethodMetric extends ASTVisitor implements Metric {
 		return methodData;
 	}
 
-	@Override
 	public void execute(CompilationUnit cu, ClassMetricResult result, MetricReport report) {
 		this.cu = cu;
 		cu.accept(this);
 	}
 
-	@Override
 	public void setResult(ClassMetricResult result) {
 		result.setMetricsByMethod(metricsByMethod);
 		result.setPackageName(currentPackage);

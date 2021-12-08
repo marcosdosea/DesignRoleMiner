@@ -43,7 +43,6 @@ public class MethodVisitorMetric implements CommitVisitor {
 		super();
 	}
 
-	@Override
 	public void process(SCMRepository repo, Commit commit, PersistenceMechanism writer) {
 		try {
 			repo.getScm().checkout(commit.getHash());
@@ -163,7 +162,6 @@ public class MethodVisitorMetric implements CommitVisitor {
 
 	}
 
-	@Override
 	public String name() {
 		return "ck";
 	}
